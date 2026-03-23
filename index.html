@@ -1,0 +1,1264 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tech Bridge Brand Identity System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@1&family=JetBrains+Mono:wght@300;400;700&family=Noto+Sans+SC:wght@300;400;700;900&family=Noto+Serif+SC:wght@400;700;900&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Colors */
+            --orange-main: #e95d21;
+            --orange-deep: #D4571A;
+            --orange-light: #FF8F4C;
+            --orange-glow: #FFAB73;
+            --orange-pale: #FFF3EB;
+
+            --green-main: #008C8C;
+            --green-deep: #006F6F;
+            --green-light: #20B2AA;
+            --green-dark: #004D4D;
+            --green-pale: #E0F2F2;
+
+            --bg-warm-black: #1A1A18;
+            --bg-charcoal: #2C2C28;
+            --text-warm-grey: #8A8580;
+            --text-sand: #C8BFB3;
+            --bg-cream: #F7F4F0;
+            --text-warm-white: #FFFCF8;
+
+            --surface-dark: #1E1E1B;
+            --surface-card: #252522;
+            --border-dark: #3A3A35;
+
+            /* Gradients */
+            --grad-main: linear-gradient(135deg, #e95d21, #D4571A, #008C8C);
+            --grad-warm: linear-gradient(135deg, #e95d21, #FF8F4C);
+            --grad-cool: linear-gradient(135deg, #008C8C, #20B2AA);
+            --grad-cross: linear-gradient(90deg, #e95d21, #008C8C);
+            --grad-orange-green: linear-gradient(to right, #e95d21, #008C8C);
+
+            /* Fonts */
+            --font-en-display: 'Syne', sans-serif;
+            --font-en-serif: 'DM Serif Display', serif;
+            --font-cn-display: 'Noto Serif SC', serif;
+            --font-cn-body: 'Noto Sans SC', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+
+            /* Spacing */
+            --padding-section-y: 120px;
+            --padding-section-x: 48px;
+            --max-width: 1240px;
+        }
+
+        /* Global Reset & Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--bg-warm-black);
+            color: var(--text-warm-white);
+            font-family: var(--font-cn-body);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-warm-black);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--orange-main);
+            border-radius: 2.5px;
+        }
+
+        /* Typography Utilities */
+        .font-syne { font-family: var(--font-en-display); }
+        .font-serif { font-family: var(--font-en-serif); }
+        .font-cn-serif { font-family: var(--font-cn-display); }
+        .font-mono { font-family: var(--font-mono); }
+        
+        a { text-decoration: none; color: inherit; }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;
+            background: rgba(26, 26, 24, 0.8);
+            backdrop-filter: blur(24px);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 48px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--orange-main);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .logo-icon svg {
+            width: 24px;
+            height: 24px;
+            fill: var(--text-warm-white);
+        }
+
+        .logo-text {
+            font-family: var(--font-en-display);
+            font-weight: 700;
+            font-size: 18px;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+        }
+
+        .nav-link {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-warm-grey);
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover {
+            color: var(--orange-main);
+        }
+
+        /* Layout Container */
+        .container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 var(--padding-section-x);
+        }
+
+        /* Section Styling */
+        section {
+            padding: var(--padding-section-y) 0;
+            border-bottom: 1px solid var(--border-dark);
+            position: relative;
+        }
+
+        .section-header {
+            margin-bottom: 64px;
+        }
+
+        .section-label {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--orange-main);
+            text-transform: uppercase;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .section-title {
+            font-family: var(--font-en-display);
+            font-weight: 800;
+            font-size: 48px;
+            letter-spacing: -2px;
+            margin-bottom: 16px;
+        }
+
+        .section-desc {
+            font-size: 16px;
+            color: var(--text-warm-grey);
+            max-width: 600px;
+        }
+
+        /* Module 1: Hero */
+        #hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 80px 80px;
+        }
+
+        .hero-glow-1 {
+            position: absolute;
+            top: -20%;
+            left: -10%;
+            width: 60vw;
+            height: 60vw;
+            background: radial-gradient(circle, var(--orange-main), transparent 70%);
+            opacity: 0.08;
+            filter: blur(100px);
+        }
+
+        .hero-glow-2 {
+            position: absolute;
+            bottom: -20%;
+            right: -10%;
+            width: 60vw;
+            height: 60vw;
+            background: radial-gradient(circle, var(--green-main), transparent 70%);
+            opacity: 0.08;
+            filter: blur(100px);
+        }
+
+        .hero-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border: 1px solid var(--border-dark);
+            border-radius: 100px;
+            background: rgba(30, 30, 27, 0.5);
+            margin-bottom: 32px;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--text-warm-grey);
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--orange-main);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .hero-title {
+            font-family: var(--font-en-display);
+            font-weight: 800;
+            font-size: clamp(72px, 11vw, 160px);
+            line-height: 0.9;
+            letter-spacing: -0.04em;
+            margin-bottom: 24px;
+            animation: fadeInUp 0.8s ease-out 0.1s forwards;
+            opacity: 0;
+        }
+
+        .text-orange { color: var(--orange-main); }
+        .text-green { color: var(--green-main); }
+
+        .hero-subtitle {
+            font-size: 20px;
+            color: var(--text-warm-grey);
+            margin-bottom: 48px;
+            animation: fadeInUp 0.8s ease-out 0.2s forwards;
+            opacity: 0;
+        }
+
+        .hero-bar {
+            width: 240px;
+            height: 6px;
+            background: linear-gradient(to right, var(--orange-main), var(--orange-deep), var(--orange-light), var(--green-light), var(--green-main));
+            border-radius: 100px;
+            animation: fadeInUp 0.8s ease-out 0.3s forwards;
+            opacity: 0;
+        }
+
+        /* Module 2: Brand Position */
+        .grid-2x2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--surface-dark);
+            border: 1px solid var(--border-dark);
+            border-radius: 20px;
+            padding: 44px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            border-color: var(--orange-main);
+            transform: translateY(-4px);
+        }
+
+        .card-top-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+        }
+
+        .card-tag {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 100px;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-family: var(--font-en-display);
+            font-weight: 700;
+            font-size: 22px;
+            margin-bottom: 12px;
+        }
+
+        .card-desc {
+            color: var(--text-warm-grey);
+            font-size: 14.5px;
+        }
+
+        /* Module 3: Naming Architecture */
+        .naming-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .naming-card {
+            background: var(--surface-dark);
+            border: 1px solid var(--border-dark);
+            border-radius: 20px;
+            padding: 48px;
+            text-align: center;
+            position: relative;
+        }
+
+        .recommend-tag {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: var(--orange-main);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 100px;
+            font-size: 11px;
+            font-family: var(--font-mono);
+        }
+
+        .naming-en {
+            font-family: var(--font-en-display);
+            font-weight: 800;
+            font-size: 34px;
+            margin-bottom: 8px;
+        }
+
+        .naming-cn {
+            font-family: var(--font-cn-display);
+            font-size: 26px;
+            color: var(--orange-main);
+            margin-bottom: 16px;
+        }
+
+        .naming-desc {
+            color: var(--text-warm-grey);
+            font-size: 14px;
+        }
+
+        .account-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--surface-dark);
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .account-table th, .account-table td {
+            padding: 24px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-dark);
+        }
+
+        .account-table th {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--text-warm-grey);
+            text-transform: uppercase;
+        }
+
+        .platform-tag {
+            display: inline-block;
+            padding: 4px 8px;
+            background: var(--bg-warm-black);
+            border: 1px solid var(--border-dark);
+            border-radius: 4px;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            margin-right: 6px;
+        }
+
+        /* Module 4: Logo System */
+        .logo-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .logo-box {
+            height: 320px;
+            border-radius: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            transition: transform 0.3s;
+        }
+
+        .logo-box:hover {
+            transform: translateY(-6px);
+        }
+
+        .logo-bg-dark { background: var(--surface-dark); border: 1px solid var(--border-dark); }
+        .logo-bg-cream { background: var(--bg-cream); }
+        .logo-bg-orange { background: var(--orange-main); }
+        .logo-bg-green { background: var(--green-deep); }
+
+        .logo-box-label {
+            position: absolute;
+            bottom: 24px;
+            left: 24px;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            opacity: 0.6;
+        }
+
+        .bridge-icon-large {
+            width: 72px;
+            height: 72px;
+            margin-bottom: 16px;
+        }
+
+        .logo-title-large {
+            font-family: var(--font-en-display);
+            font-weight: 800;
+            font-size: 32px;
+            letter-spacing: -1px;
+        }
+
+        .logo-slogan-small {
+            font-family: var(--font-en-display);
+            font-size: 14px;
+            opacity: 0.8;
+            margin-top: 4px;
+        }
+
+        /* Module 5: Color Palette */
+        .color-row {
+            display: grid;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .color-row-3 { grid-template-columns: repeat(3, 1fr); }
+        .color-row-5 { grid-template-columns: repeat(5, 1fr); }
+
+        .color-card {
+            border-radius: 14px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .color-preview { flex: 1; }
+        .color-info {
+            background: var(--surface-card);
+            padding: 16px;
+            font-family: var(--font-mono);
+            font-size: 11px;
+        }
+        
+        .color-name { display: block; color: var(--text-warm-white); margin-bottom: 4px; }
+        .color-hex { color: var(--text-warm-grey); }
+
+        .gradient-bar {
+            height: 72px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            font-weight: 700;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        /* Module 6: Typography */
+        .type-list {
+            border-top: 1px solid var(--border-dark);
+        }
+
+        .type-row {
+            display: flex;
+            border-bottom: 1px solid var(--border-dark);
+            padding: 32px 0;
+            align-items: baseline;
+        }
+
+        .type-label {
+            width: 240px;
+            flex-shrink: 0;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--text-warm-grey);
+        }
+
+        .type-preview {
+            color: var(--text-warm-white);
+        }
+
+        /* Module 7: Thumbnail System */
+        .thumb-grid-h {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-bottom: 48px;
+        }
+
+        .thumb-card {
+            aspect-ratio: 16/9;
+            border-radius: 14px;
+            border: 1px solid var(--border-dark);
+            overflow: hidden;
+            position: relative;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .thumb-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--orange-main);
+        }
+
+        .thumb-content {
+            height: 100%;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .thumb-tag {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            text-transform: uppercase;
+        }
+
+        .thumb-watermark {
+            position: absolute;
+            bottom: 16px;
+            right: 16px;
+            opacity: 0.35;
+            font-weight: 700;
+        }
+
+        .thumb-grid-v {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .thumb-v-card {
+            aspect-ratio: 9/16;
+            border-radius: 18px;
+            overflow: hidden;
+            position: relative;
+            background: var(--surface-dark);
+        }
+
+        /* Module 7.5: Design Rules */
+        .rule-dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            margin-right: 8px;
+        }
+        .rule-green { background: var(--green-main); }
+        .rule-orange { background: var(--orange-main); }
+
+        /* Module 8: UI Components */
+        .component-demo {
+            margin-bottom: 40px;
+        }
+
+        .channel-banner {
+            width: 100%;
+            aspect-ratio: 3/1;
+            background: var(--bg-warm-black);
+            position: relative;
+            display: flex;
+            align-items: center;
+            padding-left: 64px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border-dark);
+        }
+
+        .banner-glow {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, var(--orange-main), transparent 70%);
+            opacity: 0.1;
+            filter: blur(50px);
+        }
+
+        .lower-third {
+            display: flex;
+            background: var(--surface-dark);
+            width: fit-content;
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .lt-bar { width: 5px; background: var(--grad-orange-green); }
+        .lt-name { padding: 12px 24px; }
+        .lt-title { background: var(--orange-main); color: white; padding: 12px 24px; font-weight: 700; }
+
+        /* Module 9: Content Strategy */
+        .strategy-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .strategy-card {
+            background: var(--surface-dark);
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        .strategy-header {
+            height: 3px;
+        }
+
+        .strategy-body {
+            padding: 32px;
+        }
+
+        .strategy-list li {
+            list-style: none;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            color: var(--text-warm-grey);
+            font-size: 14px;
+        }
+
+        .arrow-icon {
+            margin-right: 8px;
+            font-weight: bold;
+        }
+
+        /* Footer */
+        footer {
+            padding: 80px 0;
+            text-align: center;
+            border-top: 1px solid var(--border-dark);
+        }
+
+        .footer-bars {
+            display: flex;
+            justify-content: center;
+            gap: 4px;
+            margin-bottom: 24px;
+        }
+
+        .footer-bar-seg {
+            width: 40px;
+            height: 6px;
+            border-radius: 10px;
+        }
+
+        .footer-text {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--text-warm-grey);
+            line-height: 1.8;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; box-shadow: 0 0 0 0 rgba(243, 112, 33, 0.4); }
+            50% { opacity: 0.7; box-shadow: 0 0 0 10px rgba(243, 112, 33, 0); }
+            100% { opacity: 1; box-shadow: 0 0 0 0 rgba(243, 112, 33, 0); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            :root {
+                --padding-section-y: 80px;
+                --padding-section-x: 24px;
+            }
+
+            .nav-links { display: none; }
+            .hero-title { font-size: 48px; }
+            
+            .grid-2x2, .naming-grid, .logo-grid, .thumb-grid-h, .strategy-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .thumb-grid-v { grid-template-columns: repeat(2, 1fr); }
+            .color-row-3, .color-row-5 { grid-template-columns: repeat(3, 1fr); }
+            
+            .type-row { flex-direction: column; gap: 12px; }
+            .type-label { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-logo">
+            <div class="logo-icon">
+                <svg viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="10" y="20" width="7" height="34" rx="3.5" fill="white"/>
+                    <rect x="55" y="20" width="7" height="34" rx="3.5" fill="white"/>
+                    <path d="M13.5 22 Q 36 2 58.5 22" fill="none" stroke="white" stroke-width="6" stroke-linecap="round"/>
+                    <rect x="5" y="45" width="62" height="6" rx="3" fill="white"/>
+                </svg>
+            </div>
+            <span class="logo-text">TECH BRIDGE</span>
+        </div>
+        <div class="nav-links">
+            <a href="#position" class="nav-link">Position</a>
+            <a href="#identity" class="nav-link">Identity</a>
+            <a href="#system" class="nav-link">System</a>
+            <a href="#components" class="nav-link">Components</a>
+        </div>
+    </nav>
+
+    <!-- Module 1: Hero -->
+    <section id="hero">
+        <div class="hero-glow-1"></div>
+        <div class="hero-glow-2"></div>
+        
+        <div class="hero-tag">
+            <div class="pulse-dot"></div>
+            <span>BRAND IDENTITY V2 · 爱马仕橙 × 马尔斯绿</span>
+        </div>
+
+        <h1 class="hero-title">
+            TECH<br>
+            <span class="text-orange">BRI</span><span class="text-green">DGE</span>
+        </h1>
+
+        <div class="hero-subtitle">
+            <div style="font-family: var(--font-en-display);">Bridging Technology & Humanity</div>
+            <div style="font-family: var(--font-cn-display); margin-top: 8px;">连接科技与未来的桥</div>
+        </div>
+
+        <div class="hero-bar"></div>
+    </section>
+
+    <div class="container">
+        <!-- Module 2: Brand Position -->
+        <section id="position">
+            <div class="section-header">
+                <span class="section-label">01 — Brand Position</span>
+                <h2 class="section-title">Core Strategy</h2>
+                <p class="section-desc">明确品牌在科技内容领域的独特站位与价值主张。</p>
+            </div>
+
+            <div class="grid-2x2">
+                <div class="card">
+                    <div class="card-top-bar" style="background: var(--orange-main)"></div>
+                    <span class="card-tag" style="background: rgba(243, 112, 33, 0.2); color: var(--orange-main)">Core Identity</span>
+                    <h3 class="card-title">科技世界的摆渡人</h3>
+                    <p class="card-desc">在复杂的技术与普通人之间架起桥梁，消除认知鸿沟。</p>
+                </div>
+                <div class="card">
+                    <div class="card-top-bar" style="background: var(--green-main)"></div>
+                    <span class="card-tag" style="background: rgba(46, 139, 87, 0.2); color: var(--green-main)">Audience</span>
+                    <h3 class="card-title">对科技好奇的行动派</h3>
+                    <p class="card-desc">创业者、职场人、内容创作者，渴望通过技术改变生活。</p>
+                </div>
+                <div class="card">
+                    <div class="card-top-bar" style="background: var(--grad-cross)"></div>
+                    <span class="card-tag" style="background: rgba(255, 255, 255, 0.1); color: var(--text-warm-white)">Tone</span>
+                    <h3 class="card-title">专业但不端着</h3>
+                    <p class="card-desc">像懂行的朋友跟你聊天，拒绝由于专业术语带来的距离感。</p>
+                </div>
+                <div class="card">
+                    <div class="card-top-bar" style="background: var(--grad-warm)"></div>
+                    <span class="card-tag" style="background: rgba(255, 143, 76, 0.2); color: var(--orange-light)">Slogan</span>
+                    <h3 class="card-title">"Bridge the Gap."</h3>
+                    <p class="card-desc">跨越认知，连接未来。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Module 3: Naming Architecture -->
+        <section id="naming">
+            <div class="section-header">
+                <span class="section-label">02 — Naming Architecture</span>
+                <h2 class="section-title">Naming System</h2>
+                <p class="section-desc">针对不同市场与平台的品牌名称规范。</p>
+            </div>
+
+            <div class="naming-grid">
+                <div class="naming-card">
+                    <div class="recommend-tag">推荐</div>
+                    <div class="naming-en">Tech Bridge</div>
+                    <div class="naming-cn">启见 / 启哥</div>
+                    <div class="naming-desc">标准品牌组合：英文用于国际/视觉，中文用于本土辨识。</div>
+                </div>
+                <div class="naming-card" style="opacity: 0.6;">
+                    <div class="naming-en">Tech Qi</div>
+                    <div class="naming-cn">乔大侠</div>
+                    <div class="naming-desc">备用方案：仅在特定人格化场景使用。</div>
+                </div>
+            </div>
+
+            <table class="account-table">
+                <thead>
+                    <tr>
+                        <th>Account Name</th>
+                        <th>Platforms</th>
+                        <th>Format</th>
+                        <th>Focus</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="font-weight: 700;">Tech Bridge</td>
+                        <td><span class="platform-tag">YouTube</span><span class="platform-tag">TikTok</span><span class="platform-tag">X</span></td>
+                        <td>Mixed</td>
+                        <td>Global AI Trends (English)</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 700;">启见</td>
+                        <td><span class="platform-tag">Bilibili</span><span class="platform-tag">YouTube CN</span></td>
+                        <td>Landscape</td>
+                        <td>深度专题、访谈、趋势解读</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 700;">启哥 / 乔大侠</td>
+                        <td><span class="platform-tag">Douyin</span><span class="platform-tag">Red</span></td>
+                        <td>Portrait</td>
+                        <td>工具测评、热点快评</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Module 4: Logo System -->
+        <section id="logo">
+            <div class="section-header">
+                <span class="section-label">03 — Logo System</span>
+                <h2 class="section-title">Visual Mark</h2>
+                <p class="section-desc">标志在不同背景下的色彩适配规范。</p>
+            </div>
+
+            <div class="logo-grid">
+                <div class="logo-box logo-bg-dark">
+                    <svg class="bridge-icon-large" viewBox="0 0 72 72">
+                        <defs>
+                            <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" style="stop-color:var(--orange-main);stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:var(--green-main);stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                        <rect x="10" y="20" width="7" height="34" rx="3.5" fill="url(#grad1)"/>
+                        <rect x="55" y="20" width="7" height="34" rx="3.5" fill="url(#grad1)"/>
+                        <path d="M13.5 22 Q 36 2 58.5 22" fill="none" stroke="url(#grad1)" stroke-width="6" stroke-linecap="round"/>
+                        <rect x="5" y="45" width="62" height="6" rx="3" fill="url(#grad1)"/>
+                    </svg>
+                    <div class="logo-title-large">Tech Bridge</div>
+                    <div class="logo-slogan-small">Bridge the Gap</div>
+                    <div class="logo-box-label">ON DARK</div>
+                </div>
+                <div class="logo-box logo-bg-cream">
+                    <svg class="bridge-icon-large" viewBox="0 0 72 72">
+                        <rect x="10" y="20" width="7" height="34" rx="3.5" fill="url(#grad1)"/>
+                        <rect x="55" y="20" width="7" height="34" rx="3.5" fill="url(#grad1)"/>
+                        <path d="M13.5 22 Q 36 2 58.5 22" fill="none" stroke="url(#grad1)" stroke-width="6" stroke-linecap="round"/>
+                        <rect x="5" y="45" width="62" height="6" rx="3" fill="url(#grad1)"/>
+                    </svg>
+                    <div class="logo-title-large" style="color: var(--bg-warm-black)">Tech Bridge</div>
+                    <div class="logo-slogan-small" style="color: var(--bg-warm-black)">Bridge the Gap</div>
+                    <div class="logo-box-label" style="color: var(--bg-warm-black)">ON LIGHT</div>
+                </div>
+                <div class="logo-box logo-bg-orange">
+                    <svg class="bridge-icon-large" viewBox="0 0 72 72">
+                        <rect x="10" y="20" width="7" height="34" rx="3.5" fill="white"/>
+                        <rect x="55" y="20" width="7" height="34" rx="3.5" fill="white"/>
+                        <path d="M13.5 22 Q 36 2 58.5 22" fill="none" stroke="white" stroke-width="6" stroke-linecap="round"/>
+                        <rect x="5" y="45" width="62" height="6" rx="3" fill="white"/>
+                    </svg>
+                    <div class="logo-title-large">Tech Bridge</div>
+                    <div class="logo-slogan-small">Bridge the Gap</div>
+                    <div class="logo-box-label">ON BRAND ORANGE</div>
+                </div>
+                <div class="logo-box logo-bg-green">
+                    <svg class="bridge-icon-large" viewBox="0 0 72 72">
+                        <rect x="10" y="20" width="7" height="34" rx="3.5" fill="white"/>
+                        <rect x="55" y="20" width="7" height="34" rx="3.5" fill="white"/>
+                        <path d="M13.5 22 Q 36 2 58.5 22" fill="none" stroke="white" stroke-width="6" stroke-linecap="round"/>
+                        <rect x="5" y="45" width="62" height="6" rx="3" fill="white"/>
+                    </svg>
+                    <div class="logo-title-large">Tech Bridge</div>
+                    <div class="logo-slogan-small">Bridge the Gap</div>
+                    <div class="logo-box-label">ON BRAND GREEN</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Module 5: Color Palette -->
+        <section id="color">
+            <div class="section-header">
+                <span class="section-label">04 — Color Palette</span>
+                <h2 class="section-title">Color System</h2>
+                <p class="section-desc">爱马仕橙与马尔斯绿的碰撞，构建专业与活力的平衡。</p>
+            </div>
+
+            <div class="color-row color-row-3" style="height: 180px;">
+                <div class="color-card">
+                    <div class="color-preview" style="background: var(--orange-main)"></div>
+                    <div class="color-info">
+                        <span class="color-name">Hermès Orange</span>
+                        <span class="color-hex">#e95d21</span>
+                    </div>
+                </div>
+                <div class="color-card">
+                    <div class="color-preview" style="background: var(--green-main)"></div>
+                    <div class="color-info">
+                        <span class="color-name">Mars Green</span>
+                        <span class="color-hex">#008C8C</span>
+                    </div>
+                </div>
+                <div class="color-card">
+                    <div class="color-preview" style="background: var(--bg-warm-black)"></div>
+                    <div class="color-info">
+                        <span class="color-name">Warm Black</span>
+                        <span class="color-hex">#1A1A18</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="color-row color-row-5" style="height: 120px;">
+                <div class="color-card">
+                    <div class="color-preview" style="background: var(--orange-deep)"></div>
+                    <div class="color-info"><span class="color-name">Deep Orange</span><span class="color-hex">#D4571A</span></div>
+                </div>
+                <div class="color-card">
+                    <div class="color-preview" style="background: var(--orange-light)"></div>
+                    <div class="color-info"><span class="color-name">Light Orange</span><span class="color-hex">#FF8F4C</span></div>
+                </div>
+                <div class="color-card">
+                    <div class="color-preview" style="background: var(--green-deep)"></div>
+                    <div class="color-info"><span class="color-name">Deep Green</span><span class="color-hex">#006F6F</span></div>
+                </div>
+                <div class="color-card">
+                    <div class="color-preview" style="background: var(--green-light)"></div>
+                    <div class="color-info"><span class="color-name">Light Green</span><span class="color-hex">#20B2AA</span></div>
+                </div>
+                <div class="color-card">
+                    <div class="color-preview" style="background: var(--bg-cream)"></div>
+                    <div class="color-info"><span class="color-name">Warm Cream</span><span class="color-hex">#F7F4F0</span></div>
+                </div>
+            </div>
+
+            <div class="color-row color-row-3">
+                <div class="gradient-bar" style="background: var(--grad-main)">Main Gradient</div>
+                <div class="gradient-bar" style="background: var(--grad-warm)">Warm Gradient</div>
+                <div class="gradient-bar" style="background: var(--grad-cool)">Cool Gradient</div>
+            </div>
+        </section>
+
+        <!-- Module 6: Typography -->
+        <section id="type">
+            <div class="section-header">
+                <span class="section-label">05 — Typography</span>
+                <h2 class="section-title">Typeface</h2>
+                <p class="section-desc">Syne 用于现代感表达，Noto Serif 用于东方质感沉淀。</p>
+            </div>
+
+            <div class="type-list">
+                <div class="type-row">
+                    <div class="type-label">Display XL — Syne 800</div>
+                    <div class="type-preview font-syne" style="font-weight: 800; font-size: 80px; letter-spacing: -4px; line-height: 1;">Tech Bridge</div>
+                </div>
+                <div class="type-row">
+                    <div class="type-label">Display — Syne 700</div>
+                    <div class="type-preview font-syne" style="font-weight: 700; font-size: 48px; letter-spacing: -2px;">The Future of AI</div>
+                </div>
+                <div class="type-row">
+                    <div class="type-label">Editorial — DM Serif Display</div>
+                    <div class="type-preview font-serif" style="font-size: 52px; color: var(--orange-light);">Innovation</div>
+                </div>
+                <div class="type-row">
+                    <div class="type-label">CN Heading — Noto Serif SC</div>
+                    <div class="type-preview font-cn-serif" style="font-weight: 700; font-size: 40px; letter-spacing: 3px;">跨越认知，连接未来</div>
+                </div>
+                <div class="type-row">
+                    <div class="type-label">CN Body — Noto Sans SC</div>
+                    <div class="type-preview font-cn-body" style="font-size: 18px; color: var(--text-warm-grey);">我们致力于消除技术壁垒，让每个人都能理解 AI 带来的变革。</div>
+                </div>
+                <div class="type-row">
+                    <div class="type-label">Mono — JetBrains Mono</div>
+                    <div class="type-preview font-mono" style="font-size: 14px; color: var(--green-light);">CONST BRAND_COLOR = "#e95d21";</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Module 7: Thumbnail System -->
+        <section id="thumbnails">
+            <div class="section-header">
+                <span class="section-label">06 — Thumbnails</span>
+                <h2 class="section-title">Cover System</h2>
+                <p class="section-desc">统一而多样的封面设计语言，适应不同内容调性。</p>
+            </div>
+
+            <h3 style="margin-bottom: 24px; font-family: var(--font-mono); color: var(--text-warm-grey);">LANDSCAPE (16:9)</h3>
+            <div class="thumb-grid-h">
+                <!-- Style 1 -->
+                <div class="thumb-card" style="background: #000;">
+                    <div class="thumb-content">
+                        <div style="border-left: 4px solid var(--orange-main); padding-left: 16px;">
+                            <div class="thumb-tag" style="color: var(--orange-main); margin-bottom: 8px;">EP.01 REVIEW</div>
+                            <div class="font-syne" style="font-weight: 800; font-size: 24px;">THE NEW<br>AI ERA</div>
+                        </div>
+                        <div class="thumb-watermark">TECH BRIDGE</div>
+                    </div>
+                </div>
+                <!-- Style 2 -->
+                <div class="thumb-card" style="background: var(--grad-warm);">
+                    <div class="thumb-content" style="align-items: center; justify-content: center; text-align: center;">
+                        <div class="font-syne" style="font-weight: 800; font-size: 28px; text-shadow: 0 4px 10px rgba(0,0,0,0.2);">AGI IS<br>COMING</div>
+                        <div class="thumb-watermark" style="color: rgba(255,255,255,0.4)">TECH BRIDGE</div>
+                    </div>
+                </div>
+                <!-- Style 3 -->
+                <div class="thumb-card" style="background: var(--grad-cool);">
+                    <div class="thumb-content" style="justify-content: center;">
+                        <div class="font-cn-serif" style="font-weight: 900; font-size: 26px; text-align: center;">深度解析<br>GPT-5 模型架构</div>
+                    </div>
+                </div>
+                <!-- Style 4 -->
+                <div class="thumb-card" style="background: var(--bg-cream);">
+                    <div class="thumb-content">
+                        <div style="color: var(--bg-warm-black);">
+                            <div class="thumb-tag" style="color: var(--text-warm-grey);">TUTORIAL</div>
+                            <div class="font-syne" style="font-weight: 800; font-size: 24px; margin-top: 8px;">Prompt<br>Engineering</div>
+                        </div>
+                        <div style="height: 4px; width: 40px; background: var(--grad-orange-green);"></div>
+                    </div>
+                </div>
+                <!-- Style 5 -->
+                <div class="thumb-card" style="background: #000;">
+                    <div class="thumb-content" style="justify-content: center;">
+                        <div class="font-cn-serif" style="font-weight: 700; font-size: 28px; text-align: center;">AI 绘画<br>终极指南</div>
+                        <div style="position: absolute; bottom: 0; left: 0; width: 100%; height: 4px; background: var(--grad-orange-green);"></div>
+                    </div>
+                </div>
+                <!-- Style 6 -->
+                <div class="thumb-card" style="background: var(--bg-charcoal); overflow: hidden;">
+                    <div style="position: absolute; top: -50px; right: -50px; width: 150px; height: 150px; background: var(--orange-main); filter: blur(60px); opacity: 0.3;"></div>
+                    <div class="thumb-content">
+                        <div class="font-syne" style="font-weight: 700; font-size: 24px;">Weekly<br>Update</div>
+                    </div>
+                </div>
+            </div>
+
+            <h3 style="margin-bottom: 24px; font-family: var(--font-mono); color: var(--text-warm-grey);">PORTRAIT (9:16)</h3>
+            <div class="thumb-grid-v">
+                <div class="thumb-v-card" style="background: linear-gradient(to bottom, var(--orange-main), #000);">
+                    <div class="thumb-content">
+                        <div></div>
+                        <div>
+                            <div class="thumb-tag">TOOL</div>
+                            <div class="font-cn-body" style="font-weight: 900; font-size: 20px;">效率神器</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="thumb-v-card" style="background: linear-gradient(to bottom, var(--green-main), #000);">
+                    <div class="thumb-content">
+                        <div></div>
+                        <div>
+                            <div class="thumb-tag">NEWS</div>
+                            <div class="font-cn-body" style="font-weight: 900; font-size: 20px;">OpenAI<br>最新发布</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="thumb-v-card" style="background: var(--bg-charcoal); border-left: 4px solid var(--orange-main);">
+                    <div class="thumb-content">
+                        <div></div>
+                        <div>
+                            <div class="font-cn-body" style="font-weight: 900; font-size: 20px;">这三个 AI<br>改变生活</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="thumb-v-card" style="background: linear-gradient(135deg, var(--orange-main), var(--green-deep));">
+                    <div class="thumb-content">
+                        <div></div>
+                        <div>
+                            <div class="font-syne" style="font-weight: 800; font-size: 24px;">MUST<br>WATCH</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Module 7.5: Design Rules -->
+        <section id="rules">
+            <div class="section-header">
+                <span class="section-label">07 — Design Rules</span>
+                <h2 class="section-title">Guidelines</h2>
+            </div>
+            
+            <div class="grid-2x2">
+                <div class="card">
+                    <h3 class="card-title"><span class="rule-dot rule-orange"></span>Action</h3>
+                    <p class="card-desc">橙色用于按钮、CTA、标题强调。占比约 20-40%。</p>
+                </div>
+                <div class="card">
+                    <h3 class="card-title"><span class="rule-dot rule-green"></span>Atmosphere</h3>
+                    <p class="card-desc">绿色用于背景渐变、辅助装饰。避免大面积纯绿。</p>
+                </div>
+                <div class="card" style="border-color: rgba(255,0,0,0.3);">
+                    <h3 class="card-title" style="color: #ff4d4d;"><span class="rule-dot" style="background: #ff4d4d;"></span>Never</h3>
+                    <p class="card-desc">禁止橙色和绿色以相同面积并列；禁止使用纯白背景。</p>
+                </div>
+                <div class="card">
+                    <h3 class="card-title"><span class="rule-dot" style="background: white;"></span>Ratio</h3>
+                    <p class="card-desc">黑色 60% + 橙色 25% + 绿色 15%</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Module 8: UI Components -->
+        <section id="components">
+            <div class="section-header">
+                <span class="section-label">08 — UI Components</span>
+                <h2 class="section-title">Applications</h2>
+            </div>
+
+            <div class="component-demo">
+                <div style="margin-bottom: 12px; font-family: var(--font-mono); color: var(--text-warm-grey);">CHANNEL BANNER</div>
+                <div class="channel-banner">
+                    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: var(--grad-orange-green);"></div>
+                    <div class="banner-glow"></div>
+                    <div style="font-family: var(--font-en-display); font-weight: 800; font-size: 64px; position: relative; z-index: 1;">
+                        TECH <span class="text-orange">BRI</span><span class="text-green">DGE</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="component-demo">
+                <div style="margin-bottom: 12px; font-family: var(--font-mono); color: var(--text-warm-grey);">LOWER THIRD</div>
+                <div class="lower-third">
+                    <div class="lt-bar"></div>
+                    <div class="lt-name">
+                        <div style="font-family: var(--font-cn-display); font-weight: 700; font-size: 18px;">启曜 Qi Yao</div>
+                        <div style="font-family: var(--font-en-display); font-size: 12px; opacity: 0.7;">TECH BRIDGE</div>
+                    </div>
+                    <div class="lt-title">AI & Tech Creator</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Module 9: Content Strategy -->
+        <section id="strategy" style="border-bottom: none;">
+            <div class="section-header">
+                <span class="section-label">09 — Content Strategy</span>
+                <h2 class="section-title">Programming</h2>
+            </div>
+
+            <div class="strategy-grid">
+                <div class="strategy-card">
+                    <div class="strategy-header" style="background: var(--orange-main);"></div>
+                    <div class="strategy-body">
+                        <h3 style="margin-bottom: 24px; font-family: var(--font-en-display); font-weight: 700; font-size: 24px;">Tech Bridge</h3>
+                        <ul class="strategy-list">
+                            <li><span class="arrow-icon" style="color: var(--orange-main);">▸</span>AI News Roundup</li>
+                            <li><span class="arrow-icon" style="color: var(--orange-main);">▸</span>Tech Explained</li>
+                            <li><span class="arrow-icon" style="color: var(--orange-main);">▸</span>Future Trends</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="strategy-card">
+                    <div class="strategy-header" style="background: var(--green-main);"></div>
+                    <div class="strategy-body">
+                        <h3 style="margin-bottom: 24px; font-family: var(--font-cn-display); font-weight: 700; font-size: 24px;">启见</h3>
+                        <ul class="strategy-list">
+                            <li><span class="arrow-icon" style="color: var(--green-main);">▸</span>深度产业观察</li>
+                            <li><span class="arrow-icon" style="color: var(--green-main);">▸</span>大咖访谈</li>
+                            <li><span class="arrow-icon" style="color: var(--green-main);">▸</span>硬核科普</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="strategy-card">
+                    <div class="strategy-header" style="background: var(--grad-orange-green);"></div>
+                    <div class="strategy-body">
+                        <h3 style="margin-bottom: 24px; font-family: var(--font-cn-display); font-weight: 700; font-size: 24px;">乔大侠</h3>
+                        <ul class="strategy-list">
+                            <li><span class="arrow-icon" style="color: var(--orange-light);">▸</span>AI 工具测评</li>
+                            <li><span class="arrow-icon" style="color: var(--orange-light);">▸</span>热点辣评</li>
+                            <li><span class="arrow-icon" style="color: var(--orange-light);">▸</span>效率黑科技</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-bars">
+                <div class="footer-bar-seg" style="background: var(--orange-main);"></div>
+                <div class="footer-bar-seg" style="background: var(--orange-deep);"></div>
+                <div class="footer-bar-seg" style="background: var(--green-light);"></div>
+                <div class="footer-bar-seg" style="background: var(--green-main);"></div>
+            </div>
+            <div class="footer-text">
+                <p style="margin-bottom: 8px;">TECH BRIDGE BRAND IDENTITY SYSTEM V2.0</p>
+                <p style="color: var(--text-sand);">Hermès Orange × Mars Green</p>
+                <p style="margin-top: 24px; opacity: 0.5;">Designed for Qi Yao</p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
