@@ -677,11 +677,11 @@
             50% { transform: translateX(-50%) translateY(-8px); }
         }
 
-        /* Scroll reveal */
+        /* Scroll reveal with stagger */
         .reveal {
             opacity: 0;
-            transform: translateY(40px);
-            transition: opacity 0.8s ease, transform 0.8s ease;
+            transform: translateY(50px);
+            transition: opacity 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
         .reveal.visible {
@@ -689,26 +689,60 @@
             transform: translateY(0);
         }
 
+        .reveal-delay-1 { transition-delay: 0.15s; }
+        .reveal-delay-2 { transition-delay: 0.3s; }
+        .reveal-delay-3 { transition-delay: 0.45s; }
+
+        /* Parallax layers */
+        .parallax-slow { will-change: transform; }
+        .parallax-medium { will-change: transform; }
+
+        /* Section dividers */
+        .section-divider {
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border-dark), rgba(233,93,33,0.3), var(--border-dark), transparent);
+            margin: 0;
+        }
+
+        /* Hero parallax text effect */
+        .hero-title {
+            will-change: transform, opacity;
+        }
+
         /* ========== RESPONSIVE ========== */
         @media (max-width: 768px) {
-            .navbar { padding: 0 24px; }
+            .navbar { padding: 0 20px; height: 64px; }
             .nav-links { display: none; }
             .nav-social { display: none; }
-            .hero-title { font-size: 56px; }
+            .logo-icon { width: 32px; height: 32px; }
+            .logo-text { font-size: 14px; }
+            .hero-title { font-size: 52px; }
+            .hero-subtitle { font-size: 16px; }
+            .hero-subtitle-en { font-size: 12px; }
 
-            .section-about { padding: 100px 24px; }
-            .about-text { font-size: 22px; }
-            .about-platforms { flex-wrap: wrap; gap: 24px; }
+            .section-about { padding: 80px 20px; }
+            .about-text { font-size: 18px; line-height: 2; }
+            .about-platforms { flex-wrap: wrap; gap: 16px 24px; justify-content: center; }
+            .social-icon-link { font-size: 11px; }
+            .social-icon-link svg { width: 16px; height: 16px; }
 
-            .section-featured { padding: 100px 24px; }
-            .section-title { font-size: 36px; }
-            .featured-grid { grid-template-columns: 1fr; }
+            .section-featured { padding: 80px 20px; }
+            .section-header { margin-bottom: 48px; }
+            .section-title { font-size: 32px; }
+            .section-label { font-size: 10px; margin-bottom: 32px; }
+            .featured-grid { grid-template-columns: 1fr; gap: 16px; }
 
-            .section-topics { padding: 100px 24px; }
-            .topic-name { font-size: 28px; }
+            .section-topics { padding: 80px 20px; }
+            .topic-name { font-size: 26px; }
+            .topic-item { padding: 32px 0; }
+            .topic-desc { font-size: 14px; }
 
-            footer { padding: 80px 24px 60px; }
-            .footer-links { flex-wrap: wrap; gap: 20px; }
+            footer { padding: 64px 20px 48px; }
+            .footer-brand { font-size: 16px; margin-bottom: 28px; }
+            .footer-links { flex-wrap: wrap; gap: 16px; margin-bottom: 40px; }
+            .footer-icon-link { width: 40px; height: 40px; }
+            .footer-slogan { font-size: 17px; margin-bottom: 28px; }
         }
     </style>
 </head>
@@ -790,6 +824,8 @@
         </div>
     </section>
 
+    <div class="section-divider"></div>
+
     <!-- Screen 2: About -->
     <section id="about" class="section-about">
         <span class="section-label reveal">01 — About</span>
@@ -828,6 +864,8 @@
         </div>
     </section>
 
+    <div class="section-divider"></div>
+
     <!-- Screen 3: Featured Work -->
     <section id="featured" class="section-featured">
         <div class="section-header reveal">
@@ -836,7 +874,7 @@
         </div>
 
         <div class="featured-grid">
-            <a href="#" class="featured-card reveal" style="background: linear-gradient(135deg, #0a0a0a, #1a1008);">
+            <a href="#" class="featured-card reveal reveal-delay-1" style="background: linear-gradient(135deg, #0a0a0a, #1a1008);">
                 <div class="featured-content">
                     <div>
                         <div class="featured-tag">人工智能</div>
@@ -845,7 +883,7 @@
                     <div class="featured-meta">即将上线</div>
                 </div>
             </a>
-            <a href="#" class="featured-card reveal" style="background: linear-gradient(135deg, #0a0a0a, #081a1a);">
+            <a href="#" class="featured-card reveal reveal-delay-2" style="background: linear-gradient(135deg, #0a0a0a, #081a1a);">
                 <div class="featured-content">
                     <div>
                         <div class="featured-tag">新能源汽车</div>
@@ -854,7 +892,7 @@
                     <div class="featured-meta">即将上线</div>
                 </div>
             </a>
-            <a href="#" class="featured-card reveal" style="background: linear-gradient(135deg, #0a0a0a, #120a08);">
+            <a href="#" class="featured-card reveal reveal-delay-3" style="background: linear-gradient(135deg, #0a0a0a, #120a08);">
                 <div class="featured-content">
                     <div>
                         <div class="featured-tag">科技数码</div>
@@ -865,6 +903,8 @@
             </a>
         </div>
     </section>
+
+    <div class="section-divider"></div>
 
     <!-- Screen 4: Topics -->
     <section id="topics" class="section-topics">
@@ -918,8 +958,60 @@
             entries.forEach(entry => {
                 if (entry.isIntersecting) entry.target.classList.add('visible');
             });
-        }, { threshold: 0.15 });
+        }, { threshold: 0.1 });
         document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // Parallax scroll effects
+        (function() {
+            const hero = document.getElementById('hero');
+            const heroTitle = hero.querySelector('.hero-title');
+            const heroSubEn = hero.querySelector('.hero-subtitle-en');
+            const heroSub = hero.querySelector('.hero-subtitle');
+            const heroBar = hero.querySelector('.hero-bar');
+            const navbar = document.querySelector('.navbar');
+
+            let ticking = false;
+
+            window.addEventListener('scroll', function() {
+                if (!ticking) {
+                    requestAnimationFrame(function() {
+                        const scrollY = window.scrollY;
+                        const vh = window.innerHeight;
+
+                        // Hero parallax — title moves slower, fades out
+                        if (scrollY < vh) {
+                            const progress = scrollY / vh;
+                            const titleY = scrollY * 0.35;
+                            const fade = 1 - progress * 1.5;
+
+                            heroTitle.style.transform = `translateY(${titleY}px)`;
+                            heroTitle.style.opacity = Math.max(fade, 0);
+
+                            heroSubEn.style.transform = `translateY(${scrollY * 0.25}px)`;
+                            heroSubEn.style.opacity = Math.max(fade, 0);
+
+                            heroSub.style.transform = `translateY(${scrollY * 0.2}px)`;
+                            heroSub.style.opacity = Math.max(fade, 0);
+
+                            heroBar.style.transform = `translateY(${scrollY * 0.15}px)`;
+                            heroBar.style.opacity = Math.max(fade, 0);
+                        }
+
+                        // Navbar solidify on scroll
+                        if (scrollY > 100) {
+                            navbar.style.background = 'rgba(26, 26, 24, 0.95)';
+                            navbar.style.borderBottomColor = 'rgba(255,255,255,0.06)';
+                        } else {
+                            navbar.style.background = 'rgba(26, 26, 24, 0.6)';
+                            navbar.style.borderBottomColor = 'rgba(255,255,255,0.04)';
+                        }
+
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            });
+        })();
 
         // Particle System
         (function() {
