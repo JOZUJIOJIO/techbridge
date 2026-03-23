@@ -428,6 +428,22 @@
             margin-bottom: 56px;
         }
 
+        .portrait-wrapper {
+            margin-bottom: 48px;
+        }
+
+        .portrait {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid transparent;
+            background-image: linear-gradient(var(--bg-warm-black), var(--bg-warm-black)), var(--grad-orange-green);
+            background-origin: border-box;
+            background-clip: padding-box, border-box;
+            box-shadow: 0 0 40px rgba(233,93,33,0.15), 0 0 80px rgba(0,140,140,0.1);
+        }
+
         .about-text {
             font-family: var(--font-cn-display);
             font-size: 30px;
@@ -764,6 +780,8 @@
             .hero-subtitle-en { font-size: 12px; }
 
             .section-about { padding: 80px 20px; }
+            .portrait { width: 110px; height: 110px; }
+            .portrait-wrapper { margin-bottom: 36px; }
             .about-text { font-size: 18px; line-height: 2; }
             .about-platforms { flex-wrap: wrap; gap: 16px 24px; justify-content: center; }
             .social-icon-link { font-size: 11px; }
@@ -871,6 +889,9 @@
     <!-- Screen 2: About -->
     <section id="about" class="section-about">
         <span class="section-label reveal">01 — About</span>
+        <div class="portrait-wrapper reveal">
+            <img src="portrait.jpg" alt="桥比特" class="portrait">
+        </div>
         <p class="about-text reveal">
             我是<span class="highlight-orange">桥比特</span>。<br><br>
             <span class="highlight">科技数码</span>、<span class="highlight-orange">人工智能</span>、<span class="highlight-green">新能源汽车</span>，<br>
