@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="ogGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#e95d21"/>
+      <stop offset="100%" stop-color="#008C8C"/>
+    </linearGradient>
+    <radialGradient id="ogGlow1" cx="20%" cy="30%" r="40%">
+      <stop offset="0%" stop-color="#e95d21" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#e95d21" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="ogGlow2" cx="80%" cy="70%" r="40%">
+      <stop offset="0%" stop-color="#008C8C" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#008C8C" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#1A1A18"/>
+  <!-- Glows -->
+  <rect width="1200" height="630" fill="url(#ogGlow1)"/>
+  <rect width="1200" height="630" fill="url(#ogGlow2)"/>
+  <!-- Top bar -->
+  <rect x="0" y="0" width="1200" height="4" fill="url(#ogGrad)"/>
+  <!-- Title: TECH -->
+  <text x="600" y="240" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-weight="900" font-size="140" fill="#FFFCF8" letter-spacing="-5">TECH</text>
+  <!-- Title: BRI -->
+  <text x="470" y="370" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-weight="900" font-size="140" fill="#e95d21" letter-spacing="-5">BRI</text>
+  <!-- Title: DGE -->
+  <text x="730" y="370" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-weight="900" font-size="140" fill="#008C8C" letter-spacing="-5">DGE</text>
+  <!-- Subtitle -->
+  <text x="600" y="430" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#8A8580" letter-spacing="6">BRIDGING AI &amp; HUMANITY</text>
+  <!-- Description -->
+  <text x="600" y="470" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#C8BFB3">科技数码 · 人工智能 · 新能源汽车</text>
+  <!-- Bottom bar -->
+  <rect x="520" y="560" width="160" height="3" rx="1.5" fill="url(#ogGrad)"/>
+  <!-- Domain -->
+  <text x="600" y="595" text-anchor="middle" font-family="monospace" font-size="14" fill="#8A8580" letter-spacing="2">QIAOBIT.COM</text>
+</svg>
