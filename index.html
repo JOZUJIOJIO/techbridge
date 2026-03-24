@@ -432,6 +432,45 @@
             margin-bottom: 48px;
         }
 
+        /* Stats bar */
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 64px;
+            margin-bottom: 56px;
+            padding: 32px 0;
+            border-top: 1px solid var(--border-dark);
+            border-bottom: 1px solid var(--border-dark);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-family: var(--font-mono);
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-warm-white);
+            letter-spacing: -1px;
+        }
+
+        .stat-number .stat-accent {
+            background: var(--grad-orange-green);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--text-warm-grey);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-top: 8px;
+        }
+
         .portrait {
             width: 140px;
             height: 140px;
@@ -467,6 +506,27 @@
         .about-text .highlight-green {
             color: var(--green-main);
             font-weight: 700;
+        }
+
+        .cta-button {
+            display: inline-block;
+            margin-top: 48px;
+            margin-bottom: 16px;
+            padding: 14px 36px;
+            font-family: var(--font-en-display);
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: var(--text-warm-white);
+            background: var(--orange-main);
+            border-radius: 100px;
+            transition: all 0.3s;
+        }
+
+        .cta-button:hover {
+            background: var(--orange-deep);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(233,93,33,0.3);
         }
 
         .about-platforms {
@@ -783,6 +843,9 @@
             .section-about { padding: 80px 20px; }
             .portrait { width: 110px; height: 110px; }
             .portrait-wrapper { margin-bottom: 36px; }
+            .stats-bar { gap: 28px; padding: 24px 0; margin-bottom: 40px; }
+            .stat-number { font-size: 24px; }
+            .stat-label { font-size: 9px; letter-spacing: 1px; }
             .about-text { font-size: 18px; line-height: 2; }
             .about-platforms { flex-wrap: wrap; gap: 16px 24px; justify-content: center; }
             .social-icon-link { font-size: 11px; }
@@ -893,6 +956,20 @@
         <div class="portrait-wrapper reveal">
             <img src="portrait.jpg" alt="桥比特" class="portrait">
         </div>
+        <div class="stats-bar reveal">
+            <div class="stat-item">
+                <div class="stat-number"><span class="stat-accent">10M+</span></div>
+                <div class="stat-label">抖音播放</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number"><span class="stat-accent">3M+</span></div>
+                <div class="stat-label">全平台播放</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number"><span class="stat-accent">5+</span></div>
+                <div class="stat-label">覆盖平台</div>
+            </div>
+        </div>
         <p class="about-text reveal">
             我是<span class="highlight-orange">桥比特</span>。<br><br>
             <span class="highlight">科技数码</span>、<span class="highlight-orange">人工智能</span>、<span class="highlight-green">新能源汽车</span>，<br>
@@ -900,6 +977,9 @@
             我把最前沿的技术，<br>
             翻译成<span class="highlight">每个人都能懂的语言</span>。
         </p>
+        <a href="https://www.youtube.com/@The-Tech-Bridge" target="_blank" rel="noopener" class="cta-button reveal">
+            Subscribe on YouTube →
+        </a>
         <div class="about-platforms reveal">
             <a href="https://www.youtube.com/@The-Tech-Bridge" target="_blank" rel="noopener" class="social-icon-link">
                 <svg viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
