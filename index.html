@@ -603,6 +603,176 @@
             border-color: var(--orange-main);
         }
 
+        /* As Seen In */
+        .seen-in {
+            padding: 64px 48px;
+            text-align: center;
+        }
+
+        .seen-in-label {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--text-warm-grey);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 32px;
+        }
+
+        .seen-in-list {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 32px 48px;
+            font-family: var(--font-cn-body);
+            font-size: 15px;
+            color: var(--text-warm-grey);
+            opacity: 0.6;
+        }
+
+        .seen-in-list span {
+            transition: opacity 0.3s;
+        }
+
+        .seen-in-list span:hover {
+            opacity: 1;
+            color: var(--text-sand);
+        }
+
+        .seen-in-list a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .seen-in-list a:hover span {
+            opacity: 1;
+            color: var(--orange-main);
+        }
+
+        /* Journey timeline */
+        .section-journey {
+            padding: 160px 48px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .timeline {
+            margin-top: 80px;
+            position: relative;
+            padding-left: 40px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--orange-main), var(--green-main));
+            border-radius: 1px;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: 48px;
+        }
+
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -44px;
+            top: 4px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--orange-main);
+            box-shadow: 0 0 12px rgba(233,93,33,0.4);
+        }
+
+        .timeline-item:last-child .timeline-dot {
+            background: var(--green-main);
+            box-shadow: 0 0 12px rgba(0,140,140,0.4);
+        }
+
+        .timeline-era {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--orange-main);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .timeline-title {
+            font-family: var(--font-en-display);
+            font-weight: 700;
+            font-size: 22px;
+            letter-spacing: -0.5px;
+            margin-bottom: 8px;
+        }
+
+        .timeline-desc {
+            font-family: var(--font-cn-body);
+            font-size: 15px;
+            color: var(--text-warm-grey);
+            line-height: 1.7;
+        }
+
+        /* Work With Me */
+        .section-collab {
+            padding: 120px 48px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .collab-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-top: 64px;
+        }
+
+        .collab-card {
+            background: var(--surface-dark);
+            border: 1px solid var(--border-dark);
+            border-radius: 16px;
+            padding: 36px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .collab-card:hover {
+            border-color: var(--orange-main);
+            transform: translateY(-4px);
+        }
+
+        .collab-icon {
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        .collab-title {
+            font-family: var(--font-en-display);
+            font-weight: 700;
+            font-size: 18px;
+            margin-bottom: 12px;
+        }
+
+        .collab-desc {
+            font-family: var(--font-cn-body);
+            font-size: 14px;
+            color: var(--text-warm-grey);
+            line-height: 1.7;
+        }
+
+        .collab-cta {
+            margin-top: 48px;
+            text-align: center;
+        }
+
         /* Newsletter */
         .newsletter {
             padding: 80px 48px;
@@ -1020,6 +1190,12 @@
             .topic-name { font-size: 26px; }
             .topic-desc { font-size: 14px; }
 
+            .seen-in { padding: 48px 20px; }
+            .seen-in-list { gap: 20px 32px; font-size: 13px; }
+            .section-journey { padding: 80px 20px; }
+            .timeline-title { font-size: 18px; }
+            .section-collab { padding: 80px 20px; }
+            .collab-grid { grid-template-columns: 1fr; gap: 16px; }
             .newsletter { padding: 60px 20px; }
             .newsletter-title { font-size: 22px; }
             .newsletter-form { flex-direction: column; }
@@ -1071,6 +1247,7 @@
         <div class="nav-links">
             <a href="#about" class="nav-link">About</a>
             <a href="#topics" class="nav-link">Topics</a>
+            <a href="#collab" class="nav-link">Collab</a>
             <div class="nav-social">
                 <!-- YouTube -->
                 <a href="https://www.youtube.com/@The-Tech-Bridge" title="YouTube" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a>
@@ -1129,31 +1306,31 @@
         </div>
         <div class="stats-bar reveal">
             <div class="stat-item">
+                <div class="stat-number"><span class="stat-accent">5500+</span></div>
+                <div class="stat-label">企业服务</div>
+            </div>
+            <div class="stat-item">
                 <div class="stat-number"><span class="stat-accent">10M+</span></div>
-                <div class="stat-label">抖音播放</div>
+                <div class="stat-label">全网播放</div>
             </div>
             <div class="stat-item">
-                <div class="stat-number"><span class="stat-accent">3M+</span></div>
-                <div class="stat-label">全平台播放</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number"><span class="stat-accent">5+</span></div>
+                <div class="stat-number"><span class="stat-accent">6+</span></div>
                 <div class="stat-label">覆盖平台</div>
             </div>
         </div>
         <p class="about-text reveal" data-lang="zh">
             我是<span class="highlight-orange">桥比特</span>。<br><br>
-            <span class="highlight">科技数码</span>、<span class="highlight-orange">人工智能</span>、<span class="highlight-green">新能源汽车</span>，<br>
-            三条赛道，一个视角。<br><br>
-            我把最前沿的技术，<br>
-            翻译成<span class="highlight">每个人都能懂的语言</span>。
+            <span class="highlight">硅基物语</span>创始人，<span class="highlight-orange">爱奥创</span> CEO。<br>
+            从企业级 AI 平台到消费级智能硬件，<br>
+            从 <span class="highlight">5500 家</span>企业服务到<span class="highlight-green">全球化出海</span>，<br><br>
+            我在科技与商业之间<span class="highlight-orange">架桥</span>。
         </p>
         <p class="about-text reveal" data-lang="en" style="display:none;">
             I'm <span class="highlight-orange">Qiaobit</span>.<br><br>
-            <span class="highlight">Tech & Digital</span>, <span class="highlight-orange">Artificial Intelligence</span>, <span class="highlight-green">Electric Vehicles</span> —<br>
-            three tracks, one perspective.<br><br>
-            I translate cutting-edge technology<br>
-            into <span class="highlight">a language everyone understands</span>.
+            Founder of <span class="highlight">Silicon Story</span>, CEO of <span class="highlight-orange">AioCreate</span>.<br>
+            From enterprise AI platforms to consumer smart hardware,<br>
+            from <span class="highlight">5,500+ businesses</span> to <span class="highlight-green">global expansion</span>,<br><br>
+            I <span class="highlight-orange">bridge</span> technology and business.
         </p>
         <div class="belief-statement reveal">
             <span class="belief-cn">「所有的伟大，源于一个勇敢的开始。」</span>
@@ -1189,6 +1366,20 @@
             </a>
         </div>
     </section>
+
+    <!-- As Seen In -->
+    <div class="seen-in reveal">
+        <div class="seen-in-label">As Seen In</div>
+        <div class="seen-in-list">
+            <a href="http://finance.youth.cn/finance_gdxw/202303/t20230324_14408657.htm" target="_blank" rel="noopener"><span>中国青年报</span></a>
+            <a href="https://mp.weixin.qq.com/s/vLTNpyqTPXa6OlOpQbfyfQ" target="_blank" rel="noopener"><span>每人 Auto</span></a>
+            <a href="https://mp.weixin.qq.com/s/dfn91P50LYvBa1tWsrhd2A" target="_blank" rel="noopener"><span>码客人生</span></a>
+            <span>北京车展 SEEDS</span>
+            <a href="https://app.nio.com/app/radio/share/?item_type=1&item_id=76987&container_id=707&wv=lg" target="_blank" rel="noopener"><span>NIO Radio</span></a>
+            <span>PEC AI 创新者大会</span>
+            <span>HICOOL 大会</span>
+        </div>
+    </div>
 
     <div class="section-divider"></div>
 
@@ -1237,6 +1428,83 @@
             </div>
         </div>
     </section>
+
+    <div class="section-divider"></div>
+
+    <!-- Journey -->
+    <section class="section-journey">
+        <div class="section-header reveal">
+            <span class="section-label">03 — Journey</span>
+            <h2 class="section-title">一路走来.</h2>
+        </div>
+
+        <div class="timeline">
+            <div class="timeline-item reveal">
+                <div class="timeline-dot"></div>
+                <div class="timeline-era">ToB 时代</div>
+                <div class="timeline-title">独角兽集团业务负责人</div>
+                <div class="timeline-desc">累计服务 5500 家企业，深刻洞察企业级需求与痛点。</div>
+            </div>
+            <div class="timeline-item reveal">
+                <div class="timeline-dot"></div>
+                <div class="timeline-era">跨界创业</div>
+                <div class="timeline-title">直播电商实战</div>
+                <div class="timeline-desc">深耕茶叶直播电商领域，锻炼出极强的流量感知与商业变现能力。</div>
+            </div>
+            <div class="timeline-item reveal">
+                <div class="timeline-dot"></div>
+                <div class="timeline-era">All in AI</div>
+                <div class="timeline-title">创立硅基物语</div>
+                <div class="timeline-desc">自营企业级 MaaS 平台，专注服务中小微企业 AI 转型。</div>
+            </div>
+            <div class="timeline-item reveal">
+                <div class="timeline-dot"></div>
+                <div class="timeline-era">硬件出海</div>
+                <div class="timeline-title">创立爱奥创 · LuGy 智能鼠标</div>
+                <div class="timeline-desc">消费级 AI 硬件全球化，支持 OEM/ODM 定制与全球分销。</div>
+            </div>
+            <div class="timeline-item reveal">
+                <div class="timeline-dot"></div>
+                <div class="timeline-era">内容品牌</div>
+                <div class="timeline-title">创立 Tech Bridge</div>
+                <div class="timeline-desc">全平台科技内容覆盖千万级播放，在科技与人之间架桥。</div>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- Work With Me -->
+    <section id="collab" class="section-collab">
+        <div class="section-header reveal">
+            <span class="section-label">04 — Collaboration</span>
+            <h2 class="section-title">Work With Me.</h2>
+        </div>
+
+        <div class="collab-grid">
+            <div class="collab-card reveal">
+                <div class="collab-icon">🎬</div>
+                <div class="collab-title">品牌合作</div>
+                <div class="collab-desc">内容定制、产品测评、品牌联名，覆盖全平台千万级流量。</div>
+            </div>
+            <div class="collab-card reveal">
+                <div class="collab-icon">🤖</div>
+                <div class="collab-title">AI 硬件 OEM</div>
+                <div class="collab-desc">LuGy 智能鼠标等 AI 硬件，支持 OEM（500件起）/ ODM 定制与全球分销。</div>
+            </div>
+            <div class="collab-card reveal">
+                <div class="collab-icon">🎤</div>
+                <div class="collab-title">演讲 & 培训</div>
+                <div class="collab-desc">企业 AI 转型培训、行业大会演讲、AI 趋势分享。</div>
+            </div>
+        </div>
+
+        <div class="collab-cta reveal">
+            <a href="mailto:tczhengqiao88@gmail.com" class="cta-button">Get in Touch →</a>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
 
     <!-- Newsletter -->
     <div class="newsletter reveal">
