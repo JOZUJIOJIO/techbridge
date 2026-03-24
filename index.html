@@ -753,8 +753,28 @@
         }
 
         .collab-icon {
-            font-size: 28px;
-            margin-bottom: 20px;
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .collab-icon svg {
+            width: 32px;
+            height: 32px;
+            stroke: var(--text-warm-grey);
+            fill: none;
+            stroke-width: 1.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            transition: stroke 0.3s, filter 0.3s;
+        }
+
+        .collab-card:hover .collab-icon svg {
+            stroke: var(--orange-main);
+            filter: drop-shadow(0 0 8px rgba(233,93,33,0.4));
         }
 
         .collab-title {
@@ -1149,6 +1169,215 @@
             margin: 0;
         }
 
+        /* Back to top button */
+        .back-to-top {
+            position: fixed;
+            bottom: 32px;
+            right: 32px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--surface-dark);
+            border: 1px solid var(--border-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 999;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s;
+            pointer-events: none;
+        }
+
+        .back-to-top.show {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        .back-to-top:hover {
+            border-color: var(--orange-main);
+            background: rgba(233,93,33,0.1);
+        }
+
+        .back-to-top svg {
+            width: 20px;
+            height: 20px;
+            stroke: var(--text-warm-grey);
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            transition: stroke 0.3s;
+        }
+
+        .back-to-top:hover svg {
+            stroke: var(--orange-main);
+        }
+
+        /* Hamburger menu (mobile) */
+        .hamburger {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            z-index: 1001;
+        }
+
+        .hamburger svg {
+            width: 24px;
+            height: 24px;
+            stroke: var(--text-warm-grey);
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+        }
+
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(26,26,24,0.98);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            z-index: 1000;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 32px;
+        }
+
+        .mobile-menu.open {
+            display: flex;
+        }
+
+        .mobile-menu a {
+            font-family: var(--font-en-display);
+            font-weight: 700;
+            font-size: 28px;
+            color: var(--text-warm-white);
+            transition: color 0.3s;
+        }
+
+        .mobile-menu a:hover {
+            color: var(--orange-main);
+        }
+
+        .mobile-menu-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .mobile-menu-close svg {
+            width: 28px;
+            height: 28px;
+            stroke: var(--text-warm-grey);
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+        }
+
+        .mobile-menu-social {
+            display: flex;
+            gap: 20px;
+            margin-top: 16px;
+        }
+
+        .mobile-menu-social a svg {
+            width: 22px;
+            height: 22px;
+            fill: var(--text-warm-grey);
+            transition: fill 0.3s;
+        }
+
+        .mobile-menu-social a:hover svg {
+            fill: var(--orange-main);
+        }
+
+        /* WeChat modal */
+        .wechat-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(10,10,10,0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .wechat-modal.open {
+            display: flex;
+        }
+
+        .wechat-modal-content {
+            background: var(--surface-dark);
+            border: 1px solid var(--border-dark);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            max-width: 360px;
+            position: relative;
+        }
+
+        .wechat-modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .wechat-modal-close svg {
+            width: 20px;
+            height: 20px;
+            stroke: var(--text-warm-grey);
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+        }
+
+        .wechat-modal-title {
+            font-family: var(--font-en-display);
+            font-weight: 700;
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .wechat-modal-id {
+            font-family: var(--font-mono);
+            font-size: 14px;
+            color: var(--orange-main);
+            margin-bottom: 24px;
+        }
+
+        .wechat-modal-qr {
+            width: 200px;
+            height: 200px;
+            background: white;
+            border-radius: 12px;
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: #999;
+        }
+
+        .wechat-modal-hint {
+            font-size: 13px;
+            color: var(--text-warm-grey);
+        }
+
         /* Hero parallax text effect */
         .hero-title {
             will-change: transform, opacity;
@@ -1159,6 +1388,8 @@
             .navbar { padding: 0 20px; height: 64px; }
             .nav-links { display: none; }
             .nav-social { display: none; }
+            .hamburger { display: block; }
+            .back-to-top { bottom: 20px; right: 20px; width: 40px; height: 40px; }
             .logo-icon { width: 32px; height: 32px; }
             .logo-text { font-size: 14px; }
             .hero-title { font-size: 52px; }
@@ -1267,7 +1498,25 @@
                 <a href="https://buymeacoffee.com/cyberbayes" title="Buy Me a Coffee" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M20.216 6.415l-.132-.666c-.119-.598-.388-1.163-1.001-1.379-.197-.069-.42-.098-.57-.241-.152-.143-.196-.366-.231-.572-.065-.378-.125-.756-.192-1.133-.057-.325-.102-.69-.25-.987-.195-.4-.597-.634-.996-.788a5.723 5.723 0 00-.626-.194c-1-.263-2.05-.36-3.077-.416a25.834 25.834 0 00-3.7.062c-.915.083-1.88.184-2.75.5-.318.116-.646.256-.888.501-.297.302-.393.77-.177 1.146.154.267.415.456.692.58.36.162.737.284 1.123.366 1.075.238 2.189.331 3.287.37 1.218.05 2.437.01 3.65-.118.299-.033.598-.073.896-.119.352-.054.578-.513.474-.834-.124-.383-.457-.531-.834-.473-.466.074-.96.108-1.382.146-1.177.08-2.358.082-3.536.006a22.228 22.228 0 01-1.157-.107c-.086-.01-.18-.025-.258-.036-.243-.036-.484-.08-.724-.13-.111-.027-.111-.185 0-.212h.005c.277-.06.557-.108.838-.147h.002c.131-.009.263-.032.394-.048a25.076 25.076 0 013.426-.12c.674.019 1.347.067 2.017.144l.228.031c.267.04.533.088.798.145.392.085.895.113 1.07.542.055.137.08.288.111.431l.319 1.484a.237.237 0 01-.199.284h-.003c-.037.006-.075.01-.112.015a36.704 36.704 0 01-4.743.295 37.059 37.059 0 01-4.699-.304c-.14-.017-.293-.042-.417-.06-.326-.048-.649-.108-.973-.161-.393-.065-.768-.032-1.123.161-.29.16-.527.404-.675.701-.154.316-.199.66-.267 1-.069.34-.176.707-.135 1.056.087.753.613 1.365 1.37 1.502a39.69 39.69 0 0011.343.376.483.483 0 01.535.53l-.071.697-1.018 9.907c-.041.41-.047.832-.125 1.237-.122.637-.553 1.028-1.182 1.171-.577.131-1.165.185-1.756.205-.656.023-1.314-.01-1.969-.062a9.756 9.756 0 01-.72-.084 1.005 1.005 0 01-.283-.071c-.159-.076-.289-.243-.282-.427l-.02-.149-.164-1.025a.413.413 0 01.344-.48h.001c.063-.011.126-.016.19-.018a32.66 32.66 0 004.427-.282c.122-.02.242-.045.362-.067a.478.478 0 00.378-.456v-.002l.36-3.508a.395.395 0 00-.361-.432c-.139-.013-.32-.018-.373-.018a35.395 35.395 0 01-6.033-.504c-.136-.024-.243-.156-.226-.293l.168-1.638a.26.26 0 01.288-.232c1.926.199 3.896.288 5.83.088a.474.474 0 00.429-.508l-.16-1.558a.376.376 0 00-.41-.344 33.993 33.993 0 01-6.15-.17.306.306 0 01-.27-.33l.172-1.63a.31.31 0 01.338-.274 34.757 34.757 0 005.863.078.478.478 0 00.445-.498l-.146-1.407a.39.39 0 00-.424-.357c-2.003.098-4.026.068-6.02-.164a.303.303 0 01-.268-.33l.168-1.636a.31.31 0 01.34-.273 35.1 35.1 0 005.585-.086l.152-.018a.291.291 0 00.257-.303l-.1-.958a.271.271 0 00-.3-.247z"/></svg></a>
             <button class="lang-toggle" id="langToggle" onclick="toggleLang()">EN</button>
         </div>
+        <button class="hamburger" onclick="document.getElementById('mobileMenu').classList.add('open')">
+            <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
     </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <button class="mobile-menu-close" onclick="document.getElementById('mobileMenu').classList.remove('open')">
+            <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+        <a href="#about" onclick="document.getElementById('mobileMenu').classList.remove('open')">About</a>
+        <a href="#topics" onclick="document.getElementById('mobileMenu').classList.remove('open')">Topics</a>
+        <a href="#collab" onclick="document.getElementById('mobileMenu').classList.remove('open')">Collab</a>
+        <div class="mobile-menu-social">
+            <a href="https://www.youtube.com/@The-Tech-Bridge" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a>
+            <a href="https://x.com/TechBridgeZ" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg></a>
+            <a href="https://b23.tv/jvOokV7" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M17.813 4.653h.854c1.51.054 2.769.578 3.773 1.574 1.004.995 1.524 2.249 1.56 3.76v7.36c-.036 1.51-.556 2.769-1.56 3.773s-2.262 1.524-3.773 1.56H5.333c-1.51-.036-2.769-.556-3.773-1.56S.036 18.858 0 17.347v-7.36c.036-1.511.556-2.765 1.56-3.76 1.004-.996 2.262-1.52 3.773-1.574h.774l-1.174-1.12a1.234 1.234 0 0 1-.373-.906c0-.356.124-.658.373-.907l.027-.027c.267-.249.573-.373.92-.373.347 0 .653.124.92.373L9.653 4.44c.071.071.134.142.187.213h4.267a.836.836 0 0 1 .16-.213l2.853-2.747c.267-.249.573-.373.92-.373.347 0 .662.151.929.4.267.249.391.551.391.907 0 .355-.124.657-.373.906zM5.333 7.24c-.746.018-1.373.276-1.88.773-.506.498-.769 1.13-.786 1.894v7.52c.017.764.28 1.395.786 1.893.507.498 1.134.756 1.88.773h13.334c.746-.017 1.373-.275 1.88-.773.506-.498.769-1.129.786-1.893v-7.52c-.017-.765-.28-1.396-.786-1.894-.507-.497-1.134-.755-1.88-.773zM8 11.107c.373 0 .684.124.933.373.25.249.383.569.4.96v1.173c-.017.391-.15.711-.4.96-.249.25-.56.374-.933.374s-.684-.125-.933-.374c-.25-.249-.383-.569-.4-.96V12.44c.017-.391.15-.711.4-.96.249-.249.56-.373.933-.373zm8 0c.373 0 .684.124.933.373.25.249.383.569.4.96v1.173c-.017.391-.15.711-.4.96-.249.25-.56.374-.933.374s-.684-.125-.933-.374c-.25-.249-.383-.569-.4-.96V12.44c.017-.391.15-.711.4-.96.249-.249.56-.373.933-.373z"/></svg></a>
+        </div>
+    </div>
 
     <!-- Screen 1: Hero -->
     <section id="hero">
@@ -1359,13 +1608,9 @@
                 <svg viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
                 抖音
             </a>
-            <a href="https://www.youtube.com/@The-Tech-Bridge" target="_blank" rel="noopener" class="social-icon-link">
+            <a href="#" class="social-icon-link">
                 <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>
                 Instagram
-            </a>
-            <a href="https://www.youtube.com/@The-Tech-Bridge" target="_blank" rel="noopener" class="social-icon-link">
-                <svg viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
-                Discord
             </a>
         </div>
     </section>
@@ -1477,6 +1722,20 @@
 
     <div class="section-divider"></div>
 
+    <!-- Brand Story -->
+    <section class="section-about" style="max-width: 700px; padding: 120px 48px;">
+        <span class="section-label reveal">Why "Tech Bridge"?</span>
+        <p class="about-text reveal" style="font-size: 26px; line-height: 2.2;">
+            <span class="highlight-orange">Bridge</span> — 连接两个原本不相通的世界。<br><br>
+            技术与商业。<br>
+            前沿与大众。<br>
+            中国与全球。<br><br>
+            <span class="highlight">这就是我做的事。</span>
+        </p>
+    </section>
+
+    <div class="section-divider"></div>
+
     <!-- Work With Me -->
     <section id="collab" class="section-collab">
         <div class="section-header reveal">
@@ -1486,17 +1745,17 @@
 
         <div class="collab-grid">
             <div class="collab-card reveal">
-                <div class="collab-icon">🎬</div>
+                <div class="collab-icon"><svg viewBox="0 0 24 24"><path d="M15 10l4.553-2.276A1 1 0 0 1 21 8.618v6.764a1 1 0 0 1-1.447.894L15 14M3 6h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z"/></svg></div>
                 <div class="collab-title">品牌合作</div>
                 <div class="collab-desc">内容定制、产品测评、品牌联名，覆盖全平台千万级流量。</div>
             </div>
             <div class="collab-card reveal">
-                <div class="collab-icon">🤖</div>
+                <div class="collab-icon"><svg viewBox="0 0 24 24"><path d="M12 2a4 4 0 0 1 4 4v1h2a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h2V6a4 4 0 0 1 4-4z"/><circle cx="12" cy="14" r="2"/><path d="M8 7V6a4 4 0 0 1 8 0v1"/></svg></div>
                 <div class="collab-title">AI 硬件 OEM</div>
                 <div class="collab-desc">LuGy 智能鼠标等 AI 硬件，支持 OEM（500件起）/ ODM 定制与全球分销。</div>
             </div>
             <div class="collab-card reveal">
-                <div class="collab-icon">🎤</div>
+                <div class="collab-icon"><svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></div>
                 <div class="collab-title">演讲 & 培训</div>
                 <div class="collab-desc">企业 AI 转型培训、行业大会演讲、AI 趋势分享。</div>
             </div>
@@ -1517,6 +1776,9 @@
             <input type="email" class="newsletter-input" placeholder="your@email.com" required>
             <button type="submit" class="newsletter-btn">Subscribe</button>
         </form>
+        <div style="margin-top: 24px;">
+            <a href="javascript:void(0)" onclick="document.getElementById('wechatModal').classList.add('open')" style="font-family: var(--font-mono); font-size: 13px; color: var(--text-warm-grey); transition: color 0.3s;" onmouseenter="this.style.color='var(--orange-main)'" onmouseleave="this.style.color='var(--text-warm-grey)'">或添加微信 →</a>
+        </div>
     </div>
 
     <!-- Footer -->
@@ -1540,9 +1802,27 @@
             <!-- Buy Me a Coffee -->
             <a href="https://buymeacoffee.com/cyberbayes" class="footer-icon-link" title="Buy Me a Coffee" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M20.216 6.415l-.132-.666c-.119-.598-.388-1.163-1.001-1.379-.197-.069-.42-.098-.57-.241-.152-.143-.196-.366-.231-.572-.065-.378-.125-.756-.192-1.133-.057-.325-.102-.69-.25-.987-.195-.4-.597-.634-.996-.788a5.723 5.723 0 00-.626-.194c-1-.263-2.05-.36-3.077-.416a25.834 25.834 0 00-3.7.062c-.915.083-1.88.184-2.75.5-.318.116-.646.256-.888.501-.297.302-.393.77-.177 1.146.154.267.415.456.692.58.36.162.737.284 1.123.366 1.075.238 2.189.331 3.287.37 1.218.05 2.437.01 3.65-.118.299-.033.598-.073.896-.119.352-.054.578-.513.474-.834-.124-.383-.457-.531-.834-.473-.466.074-.96.108-1.382.146-1.177.08-2.358.082-3.536.006a22.228 22.228 0 01-1.157-.107c-.086-.01-.18-.025-.258-.036-.243-.036-.484-.08-.724-.13-.111-.027-.111-.185 0-.212h.005c.277-.06.557-.108.838-.147h.002c.131-.009.263-.032.394-.048a25.076 25.076 0 013.426-.12c.674.019 1.347.067 2.017.144l.228.031c.267.04.533.088.798.145.392.085.895.113 1.07.542.055.137.08.288.111.431l.319 1.484a.237.237 0 01-.199.284h-.003c-.037.006-.075.01-.112.015a36.704 36.704 0 01-4.743.295 37.059 37.059 0 01-4.699-.304c-.14-.017-.293-.042-.417-.06-.326-.048-.649-.108-.973-.161-.393-.065-.768-.032-1.123.161-.29.16-.527.404-.675.701-.154.316-.199.66-.267 1-.069.34-.176.707-.135 1.056.087.753.613 1.365 1.37 1.502a39.69 39.69 0 0011.343.376.483.483 0 01.535.53l-.071.697-1.018 9.907c-.041.41-.047.832-.125 1.237-.122.637-.553 1.028-1.182 1.171-.577.131-1.165.185-1.756.205-.656.023-1.314-.01-1.969-.062a9.756 9.756 0 01-.72-.084 1.005 1.005 0 01-.283-.071c-.159-.076-.289-.243-.282-.427l-.02-.149-.164-1.025a.413.413 0 01.344-.48h.001c.063-.011.126-.016.19-.018a32.66 32.66 0 004.427-.282c.122-.02.242-.045.362-.067a.478.478 0 00.378-.456v-.002l.36-3.508a.395.395 0 00-.361-.432c-.139-.013-.32-.018-.373-.018a35.395 35.395 0 01-6.033-.504c-.136-.024-.243-.156-.226-.293l.168-1.638a.26.26 0 01.288-.232c1.926.199 3.896.288 5.83.088a.474.474 0 00.429-.508l-.16-1.558a.376.376 0 00-.41-.344 33.993 33.993 0 01-6.15-.17.306.306 0 01-.27-.33l.172-1.63a.31.31 0 01.338-.274 34.757 34.757 0 005.863.078.478.478 0 00.445-.498l-.146-1.407a.39.39 0 00-.424-.357c-2.003.098-4.026.068-6.02-.164a.303.303 0 01-.268-.33l.168-1.636a.31.31 0 01.34-.273 35.1 35.1 0 005.585-.086l.152-.018a.291.291 0 00.257-.303l-.1-.958a.271.271 0 00-.3-.247z"/></svg></a>
         </div>
-        <div class="footer-slogan">Bridge the Gap.</div>
-        <div class="footer-copy">&copy; 2026 Tech Bridge. All rights reserved.</div>
+        <div class="footer-slogan">Dare Greatly.</div>
+        <div class="footer-copy">&copy; 2026 Tech Bridge. All rights reserved.<br>Designed & Built with passion.</div>
     </footer>
+
+    <!-- Back to Top -->
+    <div class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+        <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
+    </div>
+
+    <!-- WeChat Modal -->
+    <div class="wechat-modal" id="wechatModal" onclick="if(event.target===this)this.classList.remove('open')">
+        <div class="wechat-modal-content">
+            <button class="wechat-modal-close" onclick="document.getElementById('wechatModal').classList.remove('open')">
+                <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+            <div class="wechat-modal-title">添加微信</div>
+            <div class="wechat-modal-id">QiaoBit</div>
+            <div class="wechat-modal-qr" style="background:none;"><img src="wechat-qr.png" alt="微信二维码" style="width:200px;border-radius:12px;"></div>
+            <div class="wechat-modal-hint">扫码或搜索微信号添加</div>
+        </div>
+    </div>
 
     <script>
         // Scroll Reveal
@@ -1655,7 +1935,20 @@
             });
         })();
 
-        // === 5. Scroll Progress Bar ===
+        // === 5. Back to Top ===
+        (function() {
+            const btn = document.getElementById('backToTop');
+            if (!btn) return;
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > window.innerHeight) {
+                    btn.classList.add('show');
+                } else {
+                    btn.classList.remove('show');
+                }
+            });
+        })();
+
+        // === 6. Scroll Progress Bar ===
         (function() {
             const bar = document.getElementById('scrollProgress');
             if (!bar) return;
