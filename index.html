@@ -3571,47 +3571,9 @@
                 return true;
             }
 
-            let jarvisIframe = null;
-
             trigger.addEventListener('click', () => {
-                if (arRunning) {
-                    // Turn off — remove iframe
-                    arRunning = false;
-                    if (jarvisIframe) {
-                        jarvisIframe.style.opacity = '0';
-                        setTimeout(() => {
-                            if (jarvisIframe && jarvisIframe.parentNode) {
-                                jarvisIframe.parentNode.removeChild(jarvisIframe);
-                            }
-                            jarvisIframe = null;
-                        }, 500);
-                    }
-                    trigger.classList.remove('active');
-                    trigger.querySelector('span').textContent = '开启 Jarvis 交互';
-                    setStatus('JARVIS OFFLINE');
-                    return;
-                }
-
-                // Turn on — create fullscreen iframe overlay
-                arRunning = true;
-                trigger.classList.add('active');
-                trigger.querySelector('span').textContent = '关闭 Jarvis 交互';
-
-                jarvisIframe = document.createElement('iframe');
-                jarvisIframe.src = 'jarvis-hud.html';
-                jarvisIframe.allow = 'camera *;microphone *';
-                jarvisIframe.setAttribute('allowusermedia', '');
-                jarvisIframe.style.cssText = 'position:fixed;inset:0;width:100vw;height:100vh;border:none;z-index:9998;opacity:0;transition:opacity 0.5s;';
-                document.body.appendChild(jarvisIframe);
-
-                // Fade in
-                requestAnimationFrame(() => {
-                    requestAnimationFrame(() => {
-                        jarvisIframe.style.opacity = '1';
-                    });
-                });
-
-                setStatus('JARVIS SYSTEM ONLINE');
+                // Direct navigation — ensures camera works on mobile (iOS Safari blocks iframe getUserMedia)
+                window.location.href = 'jarvis-hud.html';
             });
         })();
     </script>

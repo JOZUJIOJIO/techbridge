@@ -276,6 +276,18 @@
 <div id="vignette"></div>
 <div id="hand-cursor"></div>
 
+<!-- Back button -->
+<button id="back-btn" onclick="window.location.href='index.html'" style="
+    position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%);
+    z-index: 10000; padding: 10px 24px;
+    font-family: 'Segoe UI', sans-serif; font-size: 11px; letter-spacing: 2px;
+    color: var(--arc-blue); background: rgba(0,8,20,0.6);
+    border: 1px solid var(--arc-blue); border-radius: 100px;
+    cursor: pointer; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 0 15px rgba(100,180,255,0.15);
+    transition: all 0.3s;
+" onmouseenter="this.style.background='var(--arc-blue)';this.style.color='#000'" onmouseleave="this.style.background='rgba(0,8,20,0.6)';this.style.color='var(--arc-blue)'">← EXIT JARVIS</button>
+
 <!-- Boot screen replaced by auto-boot -->
 <div id="boot-screen" style="position:fixed;inset:0;background:#000;z-index:9999;display:flex;justify-content:center;align-items:center;transition:opacity 1s;">
     <div style="font-size:12px;color:var(--arc-blue);letter-spacing:3px;">INITIALIZING JARVIS...</div>
