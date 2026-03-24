@@ -616,50 +616,53 @@
             gap: 28px;
         }
 
-        .featured-card {
-            aspect-ratio: 16/9;
+        .video-card {
             border-radius: 16px;
-            border: 1px solid var(--border-dark);
             overflow: hidden;
-            position: relative;
+            border: 1px solid var(--border-dark);
+            background: var(--surface-dark);
             transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            cursor: pointer;
         }
 
-        .featured-card:hover {
-            transform: translateY(-8px) scale(1.02);
+        .video-card:hover {
             border-color: var(--orange-main);
+            transform: translateY(-6px);
             box-shadow: 0 24px 64px rgba(233, 93, 33, 0.12);
         }
 
-        .featured-content {
-            height: 100%;
-            padding: 28px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+        .video-card iframe {
+            width: 100%;
+            aspect-ratio: 16/9;
+            display: block;
+            border: none;
         }
 
-        .featured-tag {
+        .video-info {
+            padding: 20px 24px;
+        }
+
+        .video-tag {
             font-family: var(--font-mono);
             font-size: 10px;
             text-transform: uppercase;
             letter-spacing: 1.5px;
             color: var(--orange-main);
+            margin-bottom: 8px;
         }
 
-        .featured-title {
-            font-family: var(--font-en-display);
-            font-weight: 800;
-            font-size: 22px;
-            line-height: 1.2;
-            letter-spacing: -0.5px;
+        .video-title {
+            font-family: var(--font-cn-display);
+            font-weight: 700;
+            font-size: 16px;
+            line-height: 1.4;
+            color: var(--text-warm-white);
         }
 
-        .featured-meta {
+        .video-source {
             font-family: var(--font-mono);
             font-size: 11px;
             color: var(--text-warm-grey);
+            margin-top: 8px;
         }
 
         /* ========== SCREEN 4: TOPICS ========== */
@@ -855,7 +858,9 @@
             .section-header { margin-bottom: 48px; }
             .section-title { font-size: 32px; }
             .section-label { font-size: 10px; margin-bottom: 32px; }
-            .featured-grid { grid-template-columns: 1fr; gap: 16px; }
+            .featured-grid { grid-template-columns: 1fr; gap: 20px; }
+            .video-info { padding: 16px 20px; }
+            .video-title { font-size: 15px; }
 
             .section-topics { padding: 80px 20px; }
             .topic-name { font-size: 26px; }
@@ -1010,41 +1015,38 @@
 
     <div class="section-divider"></div>
 
-    <!-- Screen 3: Featured Work -->
+    <!-- Screen 3: Tech Frontier -->
     <section id="featured" class="section-featured">
         <div class="section-header reveal">
-            <span class="section-label">02 — Featured Work</span>
-            <h2 class="section-title">Selected.</h2>
+            <span class="section-label">02 — Tech Frontier</span>
+            <h2 class="section-title">科技前沿.</h2>
         </div>
 
         <div class="featured-grid">
-            <a href="#" class="featured-card reveal reveal-delay-1" style="background: linear-gradient(135deg, #0a0a0a, #1a1008);">
-                <div class="featured-content">
-                    <div>
-                        <div class="featured-tag">人工智能</div>
-                        <div class="featured-title" style="margin-top: 12px;">AI Agent<br>终极解析</div>
-                    </div>
-                    <div class="featured-meta">即将上线</div>
+            <div class="video-card reveal reveal-delay-1">
+                <iframe src="https://www.youtube.com/embed/Btf4mN37OsU?rel=0&modestbranding=1" title="Apple Vision Pro" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+                <div class="video-info">
+                    <div class="video-tag">空间计算</div>
+                    <div class="video-title">Apple Vision Pro — 空间计算的未来</div>
+                    <div class="video-source">Apple</div>
                 </div>
-            </a>
-            <a href="#" class="featured-card reveal reveal-delay-2" style="background: linear-gradient(135deg, #0a0a0a, #081a1a);">
-                <div class="featured-content">
-                    <div>
-                        <div class="featured-tag">新能源汽车</div>
-                        <div class="featured-title" style="margin-top: 12px;">智能驾驶<br>新格局</div>
-                    </div>
-                    <div class="featured-meta">即将上线</div>
+            </div>
+            <div class="video-card reveal reveal-delay-2">
+                <iframe src="https://www.youtube.com/embed/GzX1qOIO1bE?rel=0&modestbranding=1" title="Unitree G1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+                <div class="video-info">
+                    <div class="video-tag">人形机器人</div>
+                    <div class="video-title">宇树 G1 — 人形机器人新纪元</div>
+                    <div class="video-source">Unitree Robotics</div>
                 </div>
-            </a>
-            <a href="#" class="featured-card reveal reveal-delay-3" style="background: linear-gradient(135deg, #0a0a0a, #120a08);">
-                <div class="featured-content">
-                    <div>
-                        <div class="featured-tag">科技数码</div>
-                        <div class="featured-title" style="margin-top: 12px;">年度最佳<br>科技产品</div>
-                    </div>
-                    <div class="featured-meta">即将上线</div>
+            </div>
+            <div class="video-card reveal reveal-delay-3">
+                <iframe src="https://www.youtube.com/embed/c7RBK-xSAS0?rel=0&modestbranding=1" title="NIO Blue Sky Coming" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+                <div class="video-info">
+                    <div class="video-tag">新能源汽车</div>
+                    <div class="video-title">蔚来 — Blue Sky Coming</div>
+                    <div class="video-source">NIO</div>
                 </div>
-            </a>
+            </div>
         </div>
     </section>
 
