@@ -196,6 +196,77 @@
 
         @keyframes spin { 100% { transform: translate(-50%, -50%) rotate(360deg); } }
         @keyframes pulseBar { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; box-shadow: 0 0 15px var(--arc-glow); } }
+
+        /* ========== MOBILE PORTRAIT LAYOUT ========== */
+        @media (max-width: 768px), (orientation: portrait) {
+            .top-bar {
+                top: 15px;
+                gap: 15px;
+            }
+            .hud-tag {
+                font-size: 8px;
+                letter-spacing: 1.5px;
+            }
+
+            .left-panel {
+                left: 10px;
+                top: auto;
+                bottom: 180px;
+                transform: none;
+                width: 160px;
+                gap: 8px;
+            }
+            .label-text { font-size: 7px; }
+            .box-container { padding: 6px; }
+            #hex-dump { height: 20px; font-size: 7px; }
+
+            .right-panel {
+                right: auto;
+                left: 50%;
+                top: 12%;
+                transform: translateX(-50%);
+                width: 200px;
+                height: 200px;
+            }
+            .right-panel.fullscreen {
+                width: 100vw;
+                height: 100vh;
+                top: 0;
+                left: 0;
+                transform: none;
+            }
+            #radar-housing {
+                box-shadow: 0 0 15px rgba(60, 140, 220, 0.2);
+            }
+
+            .bottom-console {
+                bottom: 15px;
+                left: 10px;
+                width: calc(100% - 20px);
+                transform: none;
+            }
+            #log-feed {
+                font-size: 8px;
+                height: 60px;
+            }
+
+            #hand-cursor {
+                width: 30px;
+                height: 30px;
+            }
+
+            /* Weather widget - more compact */
+            .weather-val { font-size: 14px; }
+            .weather-sub { font-size: 8px; }
+        }
+
+        /* Extra small screens */
+        @media (max-width: 380px) {
+            .left-panel { width: 130px; bottom: 150px; }
+            .right-panel { width: 160px; height: 160px; top: 10%; }
+            .bottom-console { bottom: 10px; }
+            #log-feed { height: 45px; }
+        }
     </style>
 </head>
 <body>
@@ -680,7 +751,7 @@
 
     async function startCamera() {
         videoElement = document.getElementById('cam-feed');
-        const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 1280, height: 720 } });
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 720 } } });
         videoElement.srcObject = stream;
         return new Promise(resolve => videoElement.onloadedmetadata = () => {
             videoElement.play();

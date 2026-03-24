@@ -3599,7 +3599,8 @@
 
                 jarvisIframe = document.createElement('iframe');
                 jarvisIframe.src = 'jarvis-hud.html';
-                jarvisIframe.allow = 'camera;microphone';
+                jarvisIframe.allow = 'camera *;microphone *';
+                jarvisIframe.setAttribute('allowusermedia', '');
                 jarvisIframe.style.cssText = 'position:fixed;inset:0;width:100vw;height:100vh;border:none;z-index:9998;opacity:0;transition:opacity 0.5s;';
                 document.body.appendChild(jarvisIframe);
 
