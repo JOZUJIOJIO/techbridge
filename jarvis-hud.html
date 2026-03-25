@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>J.A.R.V.I.S. Mk. XXII - FROST PROTOCOL</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
     
@@ -36,8 +36,8 @@
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             object-fit: cover; transform: scaleX(-1);
             z-index: 1; opacity: 1;
-            /* Camera filter: Cool blue-white tint */
-            filter: contrast(1.2) brightness(0.55) saturate(0.4) hue-rotate(190deg);
+            /* Camera filter: Cinematic movie look */
+            filter: contrast(1.35) brightness(0.5) saturate(0.65) sepia(0.2);
         }
 
         /* HAND CANVAS */
@@ -197,11 +197,54 @@
         @keyframes spin { 100% { transform: translate(-50%, -50%) rotate(360deg); } }
         @keyframes pulseBar { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; box-shadow: 0 0 15px var(--arc-glow); } }
 
+        /* ========== WECHAT OVERLAY ========== */
+        #wechat-overlay {
+            position: fixed; inset: 0; z-index: 99999;
+            background: rgba(0, 0, 0, 0.92);
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            padding: 40px; text-align: center;
+            font-family: var(--font-main);
+        }
+        #wechat-overlay .wechat-icon {
+            font-size: 48px; margin-bottom: 24px;
+        }
+        #wechat-overlay .wechat-title {
+            font-size: 18px; color: #fff; font-weight: bold;
+            letter-spacing: 2px; margin-bottom: 16px;
+        }
+        #wechat-overlay .wechat-desc {
+            font-size: 13px; color: rgba(255,255,255,0.6);
+            line-height: 1.8; margin-bottom: 30px; max-width: 300px;
+        }
+        #wechat-overlay .wechat-arrow {
+            position: absolute; top: 16px; right: 24px;
+            font-size: 32px; color: var(--arc-blue);
+            animation: bounceArrow 1.2s ease-in-out infinite;
+        }
+        #wechat-overlay .wechat-btn {
+            padding: 14px 36px; font-size: 13px; letter-spacing: 2px;
+            color: var(--arc-blue); background: transparent;
+            border: 1px solid var(--arc-blue); border-radius: 100px;
+            cursor: pointer; transition: all 0.3s;
+        }
+        #wechat-overlay .wechat-btn:active {
+            background: var(--arc-blue); color: #000;
+        }
+        @keyframes bounceArrow {
+            0%, 100% { transform: translateY(0); opacity: 0.6; }
+            50% { transform: translateY(-8px); opacity: 1; }
+        }
+
         /* ========== MOBILE PORTRAIT LAYOUT ========== */
         @media (max-width: 768px), (orientation: portrait) {
+            body {
+                height: 100dvh;
+            }
+
             .top-bar {
-                top: 15px;
-                gap: 15px;
+                top: max(15px, env(safe-area-inset-top, 0px));
+                gap: 12px;
             }
             .hud-tag {
                 font-size: 8px;
@@ -211,7 +254,7 @@
             .left-panel {
                 left: 10px;
                 top: auto;
-                bottom: 180px;
+                bottom: 22dvh;
                 transform: none;
                 width: 160px;
                 gap: 8px;
@@ -223,14 +266,14 @@
             .right-panel {
                 right: auto;
                 left: 50%;
-                top: 12%;
+                top: 8dvh;
                 transform: translateX(-50%);
-                width: 200px;
-                height: 200px;
+                width: 180px;
+                height: 180px;
             }
             .right-panel.fullscreen {
                 width: 100vw;
-                height: 100vh;
+                height: 100dvh;
                 top: 0;
                 left: 0;
                 transform: none;
@@ -240,14 +283,14 @@
             }
 
             .bottom-console {
-                bottom: 15px;
+                bottom: max(15px, env(safe-area-inset-bottom, 0px));
                 left: 10px;
                 width: calc(100% - 20px);
                 transform: none;
             }
             #log-feed {
                 font-size: 8px;
-                height: 60px;
+                height: 55px;
             }
 
             #hand-cursor {
@@ -255,17 +298,20 @@
                 height: 30px;
             }
 
-            /* Weather widget - more compact */
+            #back-btn {
+                bottom: max(70px, calc(env(safe-area-inset-bottom, 0px) + 60px)) !important;
+            }
+
             .weather-val { font-size: 14px; }
             .weather-sub { font-size: 8px; }
         }
 
         /* Extra small screens */
         @media (max-width: 380px) {
-            .left-panel { width: 130px; bottom: 150px; }
-            .right-panel { width: 160px; height: 160px; top: 10%; }
-            .bottom-console { bottom: 10px; }
-            #log-feed { height: 45px; }
+            .left-panel { width: 130px; bottom: 20dvh; }
+            .right-panel { width: 150px; height: 150px; top: 7dvh; }
+            .bottom-console { bottom: max(10px, env(safe-area-inset-bottom, 0px)); }
+            #log-feed { height: 40px; }
         }
     </style>
 </head>
@@ -287,6 +333,19 @@
     box-shadow: 0 0 15px rgba(100,180,255,0.15);
     transition: all 0.3s;
 " onmouseenter="this.style.background='var(--arc-blue)';this.style.color='#000'" onmouseleave="this.style.background='rgba(0,8,20,0.6)';this.style.color='var(--arc-blue)'">← EXIT JARVIS</button>
+
+<!-- WeChat guide overlay (hidden by default) -->
+<div id="wechat-overlay" style="display:none;">
+    <div class="wechat-arrow">↗</div>
+    <div class="wechat-icon">🔒</div>
+    <div class="wechat-title">摄像头权限受限</div>
+    <div class="wechat-desc">
+        微信浏览器不支持摄像头调用<br>
+        点击右上角 <strong>⋯</strong> → <strong>在浏览器中打开</strong><br>
+        即可体验完整 AR 效果
+    </div>
+    <button class="wechat-btn" id="wechat-skip-btn">跳过，进入纯 HUD 模式</button>
+</div>
 
 <!-- Boot screen replaced by auto-boot -->
 <div id="boot-screen" style="position:fixed;inset:0;background:#000;z-index:9999;display:flex;justify-content:center;align-items:center;transition:opacity 1s;">
@@ -358,6 +417,11 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
 <script>
+    // --- ENVIRONMENT DETECTION ---
+    const isWeChat = /MicroMessenger/i.test(navigator.userAgent);
+    const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+    let cameraSkipped = false;
+
     // --- CONFIG ---
     const STATE = {
         booted: false,
@@ -398,6 +462,21 @@
     async function systemBoot() {
         if(STATE.booted) return;
 
+        // WeChat detection: show guide overlay
+        if (isWeChat) {
+            const overlay = document.getElementById('wechat-overlay');
+            overlay.style.display = 'flex';
+
+            // Wait for user to click "skip" button
+            await new Promise(resolve => {
+                document.getElementById('wechat-skip-btn').addEventListener('click', () => {
+                    overlay.style.display = 'none';
+                    cameraSkipped = true;
+                    resolve();
+                });
+            });
+        }
+
         const bootLog = document.querySelector('#boot-screen div');
 
         // Helper: timeout wrapper
@@ -408,24 +487,42 @@
             ]);
         }
 
-        // 1. Camera (10s timeout)
-        try {
-            if(bootLog) bootLog.innerText = "ACCESSING OPTICAL SENSORS...";
-            await withTimeout(startCamera(), 10000);
-        } catch(e) {
-            console.warn('Camera failed:', e);
-            if(bootLog) bootLog.innerText = "CAMERA UNAVAILABLE — CONTINUING...";
-            await new Promise(r => setTimeout(r, 800));
+        // 1. Camera (skip in WeChat, 10s timeout otherwise)
+        if (cameraSkipped) {
+            if(bootLog) bootLog.innerText = "HUD MODE — CAMERA BYPASSED";
+            // Apply dark cinematic background instead of camera feed
+            const camFeed = document.getElementById('cam-feed');
+            camFeed.style.background = 'radial-gradient(ellipse at center, #0a1628 0%, #000 100%)';
+            camFeed.style.filter = 'none';
+            await new Promise(r => setTimeout(r, 600));
+        } else {
+            try {
+                if(bootLog) bootLog.innerText = "ACCESSING OPTICAL SENSORS...";
+                await withTimeout(startCamera(), 10000);
+            } catch(e) {
+                console.warn('Camera failed:', e);
+                cameraSkipped = true;
+                if(bootLog) bootLog.innerText = "CAMERA UNAVAILABLE — HUD MODE ACTIVE";
+                const camFeed = document.getElementById('cam-feed');
+                camFeed.style.background = 'radial-gradient(ellipse at center, #0a1628 0%, #000 100%)';
+                camFeed.style.filter = 'none';
+                await new Promise(r => setTimeout(r, 800));
+            }
         }
 
-        // 2. Hand tracking (15s timeout)
-        try {
-            if(bootLog) bootLog.innerText = "LOADING NEURAL NETWORK...";
-            await withTimeout(initHands(), 15000);
-        } catch(e) {
-            console.warn('Hand tracking failed:', e);
-            if(bootLog) bootLog.innerText = "HAND TRACKING UNAVAILABLE — CONTINUING...";
-            await new Promise(r => setTimeout(r, 800));
+        // 2. Hand tracking (skip if no camera, 15s timeout otherwise)
+        if (!cameraSkipped) {
+            try {
+                if(bootLog) bootLog.innerText = "LOADING NEURAL NETWORK...";
+                await withTimeout(initHands(), 15000);
+            } catch(e) {
+                console.warn('Hand tracking failed:', e);
+                if(bootLog) bootLog.innerText = "HAND TRACKING UNAVAILABLE — CONTINUING...";
+                await new Promise(r => setTimeout(r, 800));
+            }
+        } else {
+            if(bootLog) bootLog.innerText = "LOADING INTERFACE...";
+            await new Promise(r => setTimeout(r, 400));
         }
 
         // 3. Map & Voice & Utils
@@ -446,8 +543,9 @@
             const mapLayer = document.getElementById('map-layer');
             if(mapLayer) mapLayer.classList.add('active');
 
-            speak("System online. Frost protocol initiated.");
-            sysLog("TRY: 'DETAILED IMAGE' OR 'CHECK WEATHER'", "SYS");
+            const modeLabel = cameraSkipped ? "HUD mode active. Camera bypassed." : "System online. Frost protocol initiated.";
+            speak(modeLabel);
+            sysLog(cameraSkipped ? "RUNNING IN HUD-ONLY MODE" : "TRY: 'DETAILED IMAGE' OR 'CHECK WEATHER'", "SYS");
 
             setTimeout(() => { if(STATE.map) STATE.map.invalidateSize(); }, 800);
         }, 1000);
@@ -879,7 +977,26 @@
         }
     }
 
-    // Auto-boot when loaded in iframe
+    // --- ORIENTATION & RESIZE HANDLER ---
+    function handleOrientationChange() {
+        // Resize canvas
+        if (canvasElement) {
+            canvasElement.width = window.innerWidth;
+            canvasElement.height = window.innerHeight;
+        }
+        // Refresh map tiles after orientation settles
+        setTimeout(() => {
+            if (STATE.map) STATE.map.invalidateSize();
+        }, 500);
+    }
+
+    window.addEventListener('orientationchange', () => {
+        // Delay to let the viewport settle after rotation
+        setTimeout(handleOrientationChange, 300);
+    });
+    window.addEventListener('resize', handleOrientationChange);
+
+    // Auto-boot when page loads
     window.addEventListener('load', () => {
         setTimeout(systemBoot, 300);
     });
