@@ -338,6 +338,33 @@
             margin-bottom: 48px;
         }
 
+        /* Intro video in About */
+        .intro-video-wrapper {
+            margin-bottom: 56px;
+            max-width: 640px;
+            margin-left: auto;
+            margin-right: auto;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border-dark);
+            position: relative;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.3);
+            transition: all 0.4s;
+        }
+
+        .intro-video-wrapper:hover {
+            border-color: var(--orange-main);
+            box-shadow: 0 16px 60px rgba(233,93,33,0.15);
+        }
+
+        .intro-video-wrapper video {
+            width: 100%;
+            display: block;
+            aspect-ratio: 16/9;
+            object-fit: cover;
+            background: #000;
+        }
+
         /* Stats bar */
         .stats-bar {
             display: flex;
@@ -2092,7 +2119,8 @@
             .portrait-ring { width: 116px; height: 116px; }
             .cursor-glow { display: none; }
             .lang-toggle { display: none; }
-            .portrait-wrapper { margin-bottom: 36px; }
+            .portrait-wrapper { margin-bottom: 28px; }
+            .intro-video-wrapper { margin-bottom: 36px; border-radius: 12px; }
             .stats-bar { gap: 28px; padding: 24px 0; margin-bottom: 40px; }
             .stat-number { font-size: 24px; }
             .stat-label { font-size: 9px; letter-spacing: 1px; }
@@ -2278,6 +2306,11 @@
             <div class="portrait-ring">
                 <img src="portrait.jpg" alt="桥比特" class="portrait">
             </div>
+        </div>
+        <div class="intro-video-wrapper reveal">
+            <video controls playsinline preload="metadata">
+                <source src="intro-video.mp4" type="video/mp4">
+            </video>
         </div>
         <div class="stats-bar reveal">
             <div class="stat-item">
