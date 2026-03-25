@@ -758,6 +758,104 @@
             line-height: 1.7;
         }
 
+        /* Product Showcase */
+        .product-showcase {
+            margin-top: 64px;
+        }
+
+        .product-showcase-label {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--text-warm-grey);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .product-card {
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border-dark);
+            background: var(--surface-dark);
+            transition: all 0.4s;
+        }
+
+        .product-card:hover {
+            border-color: var(--orange-main);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(233,93,33,0.1);
+        }
+
+        .product-card .product-video-cover {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16/9;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .product-card .product-video-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .product-card:hover .product-video-cover img {
+            transform: scale(1.05);
+        }
+
+        .product-card .product-play {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 48px;
+            height: 48px;
+            background: rgba(233,93,33,0.85);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            box-shadow: 0 4px 16px rgba(233,93,33,0.3);
+        }
+
+        .product-card:hover .product-play {
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+
+        .product-card .product-play svg {
+            width: 18px;
+            height: 18px;
+            fill: white;
+            margin-left: 2px;
+        }
+
+        .product-card .product-info {
+            padding: 16px 20px;
+        }
+
+        .product-card .product-name {
+            font-family: var(--font-en-display);
+            font-weight: 700;
+            font-size: 15px;
+            margin-bottom: 4px;
+        }
+
+        .product-card .product-desc {
+            font-family: var(--font-cn-body);
+            font-size: 12px;
+            color: var(--text-warm-grey);
+        }
+
         .collab-cta {
             margin-top: 48px;
             text-align: center;
@@ -2152,6 +2250,8 @@
             .timeline-title { font-size: 18px; }
             .section-collab { padding: 80px 20px; }
             .collab-grid { grid-template-columns: 1fr; gap: 16px; }
+            .product-grid { grid-template-columns: 1fr; gap: 16px; }
+            .product-showcase { margin-top: 40px; }
             .newsletter { padding: 60px 20px; }
             .newsletter-title { font-size: 22px; }
             .newsletter-form { flex-direction: column; }
@@ -2509,8 +2609,45 @@
             </div>
             <div class="collab-card reveal">
                 <div class="collab-icon"><svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></div>
-                <div class="collab-title">演讲 & 培训</div>
-                <div class="collab-desc">企业 AI 转型培训、行业大会演讲、AI 趋势分享。</div>
+                <div class="collab-title">企培与咨询</div>
+                <div class="collab-desc">企业 AI 转型培训、战略咨询、行业大会演讲。</div>
+            </div>
+        </div>
+
+        <!-- Product Showcase -->
+        <div class="product-showcase reveal">
+            <div class="product-showcase-label">Our Products</div>
+            <div class="product-grid">
+                <div class="product-card">
+                    <div class="product-video-cover" data-video="product-mouse.mp4">
+                        <img src="poster-mouse.jpg" alt="LuGy 智能鼠标" loading="lazy">
+                        <div class="product-play"><svg viewBox="0 0 24 24"><polygon points="8,5 19,12 8,19"/></svg></div>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-name">LuGy 智能鼠标</div>
+                        <div class="product-desc">AI 智能硬件，支持 OEM/ODM</div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-video-cover" data-video="product-badge.mp4">
+                        <img src="poster-badge.jpg" alt="智能吧唧" loading="lazy">
+                        <div class="product-play"><svg viewBox="0 0 24 24"><polygon points="8,5 19,12 8,19"/></svg></div>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-name">智能吧唧</div>
+                        <div class="product-desc">创意科技周边</div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-video-cover" data-video="product-case.mp4">
+                        <img src="poster-case.jpg" alt="智能手机壳" loading="lazy">
+                        <div class="product-play"><svg viewBox="0 0 24 24"><polygon points="8,5 19,12 8,19"/></svg></div>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-name">智能手机壳</div>
+                        <div class="product-desc">科技感保护壳</div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -3930,6 +4067,20 @@
                 iframe.allow = 'accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture';
                 iframe.allowFullscreen = true;
                 cover.replaceWith(iframe);
+            });
+        });
+
+        // === FEATURE: Product Video Cover → Click to Play ===
+        document.querySelectorAll('.product-video-cover').forEach(cover => {
+            cover.addEventListener('click', () => {
+                const src = cover.dataset.video;
+                const video = document.createElement('video');
+                video.src = src;
+                video.controls = true;
+                video.autoplay = true;
+                video.playsInline = true;
+                video.style.cssText = 'width:100%;aspect-ratio:16/9;display:block;object-fit:cover;background:#000;';
+                cover.replaceWith(video);
             });
         });
 
