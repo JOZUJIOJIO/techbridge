@@ -985,6 +985,196 @@
             border: none;
         }
 
+        /* Video cover card (lazy load replacement) */
+        .video-cover {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16/9;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .video-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .video-cover:hover img {
+            transform: scale(1.05);
+        }
+
+        .video-cover .play-btn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 64px;
+            height: 64px;
+            background: rgba(233,93,33,0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            box-shadow: 0 4px 24px rgba(233,93,33,0.4);
+        }
+
+        .video-cover:hover .play-btn {
+            transform: translate(-50%, -50%) scale(1.1);
+            background: var(--orange-main);
+            box-shadow: 0 8px 40px rgba(233,93,33,0.5);
+        }
+
+        .video-cover .play-btn svg {
+            width: 24px;
+            height: 24px;
+            fill: white;
+            margin-left: 3px;
+        }
+
+        .video-cover .view-badge {
+            position: absolute;
+            bottom: 12px;
+            left: 12px;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            letter-spacing: 0.5px;
+            color: #fff;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            padding: 4px 10px;
+            border-radius: 100px;
+        }
+
+        /* Cmd+K Command Palette */
+        .cmd-palette-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            z-index: 20000;
+            display: none;
+            align-items: flex-start;
+            justify-content: center;
+            padding-top: 20vh;
+        }
+
+        .cmd-palette-overlay.open {
+            display: flex;
+        }
+
+        .cmd-palette {
+            width: 520px;
+            max-width: 90vw;
+            background: var(--surface-dark);
+            border: 1px solid var(--border-dark);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 24px 80px rgba(0,0,0,0.5);
+            animation: paletteIn 0.2s ease-out;
+        }
+
+        @keyframes paletteIn {
+            from { opacity: 0; transform: scale(0.95) translateY(-10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .cmd-palette-input {
+            width: 100%;
+            padding: 18px 20px;
+            font-family: var(--font-mono);
+            font-size: 15px;
+            color: var(--text-warm-white);
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--border-dark);
+            outline: none;
+        }
+
+        .cmd-palette-input::placeholder {
+            color: var(--text-warm-grey);
+        }
+
+        .cmd-palette-list {
+            max-height: 320px;
+            overflow-y: auto;
+            padding: 8px;
+        }
+
+        .cmd-palette-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 14px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.15s;
+            font-family: var(--font-cn-body);
+            font-size: 14px;
+            color: var(--text-sand);
+        }
+
+        .cmd-palette-item:hover,
+        .cmd-palette-item.active {
+            background: rgba(233,93,33,0.1);
+            color: var(--text-warm-white);
+        }
+
+        .cmd-palette-item .cmd-icon {
+            width: 20px;
+            text-align: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .cmd-palette-item .cmd-shortcut {
+            margin-left: auto;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--text-warm-grey);
+            opacity: 0.5;
+        }
+
+        .cmd-palette-hint {
+            padding: 10px 16px;
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--text-warm-grey);
+            opacity: 0.4;
+            text-align: center;
+            border-top: 1px solid var(--border-dark);
+        }
+
+        /* Typewriter cursor */
+        .typewriter-cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1em;
+            background: var(--text-warm-grey);
+            margin-left: 4px;
+            animation: blink 1s step-end infinite;
+            vertical-align: middle;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+
+        /* Konami easter egg */
+        .konami-active {
+            animation: konamiFlash 0.6s ease;
+        }
+
+        @keyframes konamiFlash {
+            0% { filter: brightness(1); }
+            50% { filter: brightness(2) hue-rotate(30deg); }
+            100% { filter: brightness(1); }
+        }
+
         .topic-video-source {
             padding: 12px 16px;
             background: var(--surface-dark);
@@ -1953,6 +2143,15 @@
     <div class="cursor-glow" id="cursorGlow"></div>
     <div class="scroll-progress" id="scrollProgress"></div>
 
+    <!-- Cmd+K Command Palette -->
+    <div class="cmd-palette-overlay" id="cmdPalette">
+        <div class="cmd-palette">
+            <input class="cmd-palette-input" id="cmdInput" placeholder="输入命令或搜索..." autocomplete="off">
+            <div class="cmd-palette-list" id="cmdList"></div>
+            <div class="cmd-palette-hint">ESC 关闭 · ↑↓ 导航 · Enter 执行</div>
+        </div>
+    </div>
+
     <!-- Navigation -->
     <nav class="navbar">
         <a href="#hero" class="nav-logo">
@@ -2013,7 +2212,7 @@
                 <span class="text-orange">BRI</span><span class="text-green">DGE</span>
             </h1>
 
-            <div class="hero-subtitle">连接科技与人的桥</div>
+            <div class="hero-subtitle" id="typewriterTarget">连接科技与人的桥<span class="typewriter-cursor"></span></div>
             <div class="hero-subtitle-en">Bridging AI & Humanity</div>
 
             <div class="hero-bar"></div>
@@ -2154,7 +2353,11 @@
                     <div class="topic-desc">AI 大模型、Agent、人形机器人、产品趋势与深度解析。从 GPT 到具身智能，我关注每一次让机器更接近人类的突破。</div>
                 </div>
                 <div class="topic-video">
-                    <iframe src="//player.bilibili.com/player.html?bvid=BV1t1421q7Kp&page=1&high_quality=1&danmaku=0&autoplay=0" title="Unitree G1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+                    <div class="video-cover" data-bvid="BV1t1421q7Kp">
+                        <img src="https://i0.hdslb.com/bfs/archive/d7db8c92c777aae15a6f47f71fcf1ab1c797e994.jpg" alt="Unitree G1" loading="lazy">
+                        <div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="8,5 19,12 8,19"/></svg></div>
+                        <div class="view-badge">195 万播放</div>
+                    </div>
                     <div class="topic-video-source">Unitree G1 — 人形机器人新纪元</div>
                 </div>
             </div>
@@ -2166,7 +2369,11 @@
                     <div class="topic-desc">消费电子、空间计算、硬件新品、行业格局变化。每一代划时代的产品背后，都有值得被讲述的故事。</div>
                 </div>
                 <div class="topic-video">
-                    <iframe src="//player.bilibili.com/player.html?bvid=BV1EJ4m1t7YS&page=1&high_quality=1&danmaku=0&autoplay=0" title="Vision Pro 30小时体验" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+                    <div class="video-cover" data-bvid="BV1EJ4m1t7YS">
+                        <img src="https://i1.hdslb.com/bfs/archive/a7f2eae97f5084aa0adda15aba830d8c289620d9.jpg" alt="Vision Pro 30h" loading="lazy">
+                        <div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="8,5 19,12 8,19"/></svg></div>
+                        <div class="view-badge">544 万播放</div>
+                    </div>
                     <div class="topic-video-source">连续佩戴 Vision Pro 30 小时 — 影视飓风</div>
                 </div>
             </div>
@@ -2178,7 +2385,11 @@
                     <div class="topic-desc">智能驾驶、电动化浪潮、车企竞争与技术拆解。这是一场关于出行方式的革命，我在现场。</div>
                 </div>
                 <div class="topic-video">
-                    <iframe src="//player.bilibili.com/player.html?bvid=BV1cWpTz8Egt&page=1&high_quality=1&danmaku=0&autoplay=0" title="蔚来ET9旋钮" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+                    <div class="video-cover" data-bvid="BV1cWpTz8Egt">
+                        <img src="https://i0.hdslb.com/bfs/archive/dba5c9077cffc322b11a728aa3fa538520f6d2d2.jpg" alt="蔚来ET9" loading="lazy">
+                        <div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="8,5 19,12 8,19"/></svg></div>
+                        <div class="view-badge">362 万播放</div>
+                    </div>
                     <div class="topic-video-source">这个旋钮，为什么卖 15 万？ — 影视飓风</div>
                 </div>
             </div>
@@ -3628,6 +3839,183 @@
             trigger.addEventListener('click', () => {
                 // Direct navigation — ensures camera works on mobile (iOS Safari blocks iframe getUserMedia)
                 window.location.href = 'jarvis-hud.html';
+            });
+        })();
+
+        // === FEATURE: Typewriter Identity Rotation ===
+        (function() {
+            const el = document.getElementById('typewriterTarget');
+            if (!el) return;
+            const phrases = [
+                '连接科技与人的桥',
+                '硅基物语创始人',
+                '爱奥创 CEO',
+                '科技内容创作者',
+                'AI 硬件出海实践者'
+            ];
+            let phraseIdx = 0;
+            let charIdx = 0;
+            let deleting = false;
+            const cursor = el.querySelector('.typewriter-cursor');
+
+            function tick() {
+                const current = phrases[phraseIdx];
+                if (!deleting) {
+                    charIdx++;
+                    if (charIdx > current.length) {
+                        setTimeout(() => { deleting = true; tick(); }, 2500);
+                        return;
+                    }
+                } else {
+                    charIdx--;
+                    if (charIdx < 0) {
+                        charIdx = 0;
+                        deleting = false;
+                        phraseIdx = (phraseIdx + 1) % phrases.length;
+                    }
+                }
+                el.textContent = current.substring(0, charIdx);
+                el.appendChild(cursor);
+                setTimeout(tick, deleting ? 40 : 80);
+            }
+
+            // Start after initial fade-in animation completes
+            setTimeout(() => {
+                deleting = true;
+                charIdx = phrases[0].length;
+                tick();
+            }, 3000);
+        })();
+
+        // === FEATURE: Video Cover → Click to Play ===
+        document.querySelectorAll('.video-cover').forEach(cover => {
+            cover.addEventListener('click', () => {
+                const bvid = cover.dataset.bvid;
+                const iframe = document.createElement('iframe');
+                iframe.src = `//player.bilibili.com/player.html?bvid=${bvid}&page=1&high_quality=1&danmaku=0&autoplay=1`;
+                iframe.style.cssText = 'width:100%;aspect-ratio:16/9;display:block;border:none;';
+                iframe.allow = 'accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture';
+                iframe.allowFullscreen = true;
+                cover.replaceWith(iframe);
+            });
+        });
+
+        // === FEATURE: Cmd+K Command Palette ===
+        (function() {
+            const overlay = document.getElementById('cmdPalette');
+            const input = document.getElementById('cmdInput');
+            const list = document.getElementById('cmdList');
+
+            const commands = [
+                { icon: '🏠', label: '首页', action: () => { window.scrollTo({top:0,behavior:'smooth'}); } },
+                { icon: '👤', label: '关于我', action: () => document.getElementById('about').scrollIntoView({behavior:'smooth'}) },
+                { icon: '📡', label: '内容领域', action: () => document.getElementById('topics').scrollIntoView({behavior:'smooth'}) },
+                { icon: '🤝', label: '合作', action: () => document.getElementById('collab').scrollIntoView({behavior:'smooth'}) },
+                { icon: '🎯', label: '开启 Jarvis 交互', action: () => { window.location.href = 'jarvis-hud.html'; } },
+                { icon: '▶️', label: 'YouTube 频道', shortcut: '↗', action: () => window.open('https://www.youtube.com/@The-Tech-Bridge','_blank') },
+                { icon: '📺', label: 'Bilibili', shortcut: '↗', action: () => window.open('https://b23.tv/jvOokV7','_blank') },
+                { icon: '𝕏', label: 'X / Twitter', shortcut: '↗', action: () => window.open('https://x.com/TechBridgeZ','_blank') },
+                { icon: '🎵', label: 'TikTok / 抖音', shortcut: '↗', action: () => window.open('https://www.tiktok.com/@techbridgez','_blank') },
+                { icon: '💬', label: '添加微信', action: () => { const m = document.querySelector('.wechat-modal'); if(m) m.classList.add('open'); } },
+                { icon: '☕', label: 'Buy Me a Coffee', shortcut: '↗', action: () => window.open('https://buymeacoffee.com/cyberbayes','_blank') },
+            ];
+
+            let activeIdx = 0;
+            let filtered = [...commands];
+
+            function render() {
+                list.innerHTML = filtered.map((cmd, i) => `
+                    <div class="cmd-palette-item ${i === activeIdx ? 'active' : ''}" data-idx="${i}">
+                        <span class="cmd-icon">${cmd.icon}</span>
+                        <span>${cmd.label}</span>
+                        ${cmd.shortcut ? `<span class="cmd-shortcut">${cmd.shortcut}</span>` : ''}
+                    </div>
+                `).join('');
+
+                list.querySelectorAll('.cmd-palette-item').forEach(el => {
+                    el.addEventListener('click', () => {
+                        const idx = parseInt(el.dataset.idx);
+                        close();
+                        filtered[idx].action();
+                    });
+                    el.addEventListener('mouseenter', () => {
+                        activeIdx = parseInt(el.dataset.idx);
+                        render();
+                    });
+                });
+            }
+
+            function open() {
+                overlay.classList.add('open');
+                input.value = '';
+                filtered = [...commands];
+                activeIdx = 0;
+                render();
+                setTimeout(() => input.focus(), 50);
+            }
+
+            function close() {
+                overlay.classList.remove('open');
+            }
+
+            // Cmd+K / Ctrl+K
+            document.addEventListener('keydown', e => {
+                if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+                    e.preventDefault();
+                    overlay.classList.contains('open') ? close() : open();
+                }
+                if (!overlay.classList.contains('open')) return;
+                if (e.key === 'Escape') close();
+                if (e.key === 'ArrowDown') { e.preventDefault(); activeIdx = (activeIdx + 1) % filtered.length; render(); }
+                if (e.key === 'ArrowUp') { e.preventDefault(); activeIdx = (activeIdx - 1 + filtered.length) % filtered.length; render(); }
+                if (e.key === 'Enter' && filtered.length) { close(); filtered[activeIdx].action(); }
+            });
+
+            overlay.addEventListener('click', e => { if (e.target === overlay) close(); });
+
+            input.addEventListener('input', () => {
+                const q = input.value.toLowerCase();
+                filtered = commands.filter(c => c.label.toLowerCase().includes(q));
+                activeIdx = 0;
+                render();
+            });
+        })();
+
+        // === FEATURE: Konami Code Easter Egg ===
+        (function() {
+            const code = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+            let pos = 0;
+            document.addEventListener('keydown', e => {
+                if (e.key === code[pos]) {
+                    pos++;
+                    if (pos === code.length) {
+                        pos = 0;
+                        // Trigger celebration
+                        document.body.classList.add('konami-active');
+                        setTimeout(() => document.body.classList.remove('konami-active'), 600);
+                        // Spawn particles
+                        for (let i = 0; i < 60; i++) {
+                            const p = document.createElement('div');
+                            const x = Math.random() * 100;
+                            const y = Math.random() * 100;
+                            const size = 4 + Math.random() * 8;
+                            const hue = Math.random() * 60 + 10; // orange-ish
+                            const dur = 1 + Math.random() * 1.5;
+                            p.style.cssText = `position:fixed;left:${x}vw;top:${y}vh;width:${size}px;height:${size}px;border-radius:50%;background:hsl(${hue},90%,60%);z-index:99999;pointer-events:none;animation:konamiParticle ${dur}s ease-out forwards;`;
+                            document.body.appendChild(p);
+                            setTimeout(() => p.remove(), dur * 1000);
+                        }
+                        // Add particle animation if not exists
+                        if (!document.getElementById('konamiStyle')) {
+                            const s = document.createElement('style');
+                            s.id = 'konamiStyle';
+                            s.textContent = `@keyframes konamiParticle { 0%{opacity:1;transform:scale(1)} 100%{opacity:0;transform:scale(0) translateY(-200px)} }`;
+                            document.head.appendChild(s);
+                        }
+                    }
+                } else {
+                    pos = 0;
+                }
             });
         })();
     </script>
