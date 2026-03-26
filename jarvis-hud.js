@@ -90,6 +90,11 @@ window.jarvisAR = window.jarvisAR || {
         time += 0.006;
         ctx.clearRect(0, 0, w, h);
 
+        // DEBUG: unconditional marker — if you see this, JS is loaded
+        ctx.font = 'bold 16px monospace';
+        ctx.fillStyle = '#ff0000';
+        ctx.fillText('HUD JS LOADED | AR=' + (window.jarvisAR ? window.jarvisAR.active : 'N/A'), 20, 30);
+
         const ar = window.jarvisAR;
         let offX = 0, offY = 0;
         if (ar && ar.active) {
