@@ -5,7 +5,8 @@ window.jarvisAR = window.jarvisAR || {
     smoothFace: { x: 0, y: 0, z: 0 }, smoothHand: { x: 0, y: 0 },
     fistness: 0,       // 0 = open palm, 1 = tight fist (smoothed)
     chargeLevel: 0,    // energy charge 0→1 (builds while fist held)
-    explosion: 0       // 0 = none, >0 = exploding (counts down)
+    explosion: 0,      // 0 = none, >0 = exploding (counts down)
+    gazeNav: { activeIdx: -1, dwellTime: 0, triggered: false, cooldown: 0 }
 };
 (function() {
     const canvas = document.getElementById('heroCanvas');
@@ -89,11 +90,6 @@ window.jarvisAR = window.jarvisAR || {
     function animate() {
         time += 0.006;
         ctx.clearRect(0, 0, w, h);
-
-        // DEBUG: unconditional marker — if you see this, JS is loaded
-        ctx.font = 'bold 16px monospace';
-        ctx.fillStyle = '#ff0000';
-        ctx.fillText('HUD JS LOADED | AR=' + (window.jarvisAR ? window.jarvisAR.active : 'N/A'), 20, 30);
 
         const ar = window.jarvisAR;
         let offX = 0, offY = 0;
@@ -389,15 +385,6 @@ window.jarvisAR = window.jarvisAR || {
         const B = 'rgba(170,220,255,'; // light blue
         const RED = 'rgba(255,51,0,'; // alert red
         if (ar && ar.active) {
-            // DEBUG overlay — always visible in AR mode
-            ctx.font = '14px "JetBrains Mono",monospace';
-            ctx.fillStyle = '#ffcc00';
-            ctx.fillText('HAND: ' + (ar.hand.visible ? 'DETECTED' : 'none'), 20, 110);
-            ctx.fillText('FISTNESS: ' + ar.fistness.toFixed(2), 20, 128);
-            ctx.fillText('CHARGE: ' + ar.chargeLevel.toFixed(2), 20, 146);
-            ctx.fillText('CLAW: ' + (ar.hand.claw ? 'YES' : 'no') + '  FIST: ' + (ar.hand.fist ? 'YES' : 'no') + '  SPREAD: ' + (ar.hand.spread ? 'YES' : 'no'), 20, 164);
-            ctx.fillText('PALM: ' + (ar.hand.palmSize || 0).toFixed(3), 20, 182);
-
             const fx = cx + ar.smoothFace.x * w * 0.08;
             const fy = cy + ar.smoothFace.y * h * 0.06;
 
@@ -446,11 +433,11 @@ window.jarvisAR = window.jarvisAR || {
             ctx.stroke();
 
             // Gaze dot
-            const gazeX = sx + ar.smoothFace.x * 15;
-            const gazeY = sy + ar.smoothFace.y * 10;
-            glow(gazeX, gazeY, 10, A, 0.5);
+            const fGzX = sx + ar.smoothFace.x * 15;
+            const fGzY = sy + ar.smoothFace.y * 10;
+            glow(fGzX, fGzY, 10, A, 0.5);
             ctx.fillStyle = A + '0.9)';
-            ctx.beginPath(); ctx.arc(gazeX, gazeY, 3, 0, PI2); ctx.fill();
+            ctx.beginPath(); ctx.arc(fGzX, fGzY, 3, 0, PI2); ctx.fill();
             ctx.shadowBlur = 0;
 
             // Scan line
@@ -686,6 +673,162 @@ window.jarvisAR = window.jarvisAR || {
                 }
                 } // end showBall
             }
+
+            // ====================================================
+            // ========== GAZE NAVIGATION — Eye-controlled HUD =====
+            // ====================================================
+            const gaze = ar.gazeNav;
+            if (gaze.cooldown > 0) gaze.cooldown -= 0.016;
+
+            // Navigation targets — positioned around screen edges
+            const navTargets = [
+                { label: 'ABOUT',  section: '#about',  angle: -0.4,  dist: 0.38 },
+                { label: 'TOPICS', section: '#topics', angle: 0,     dist: 0.40 },
+                { label: 'COLLAB', section: '#collab', angle: 0.4,   dist: 0.38 },
+            ];
+
+            // Gaze point — map face direction to screen position
+            // ar.smoothFace.x: -1 (looking right) to 1 (looking left)
+            // ar.smoothFace.y: -1 (looking down) to 1 (looking up)
+            const gzX = cx - ar.smoothFace.x * w * 0.4;
+            const gzY = cy - ar.smoothFace.y * h * 0.35;
+
+            // Draw gaze cursor trail
+            ctx.fillStyle = A + '0.15)';
+            ctx.beginPath(); ctx.arc(gzX, gzY, 30, 0, PI2); ctx.fill();
+            glow(gzX, gzY, 15, A, 0.3);
+            ctx.fillStyle = A + '0.6)';
+            ctx.beginPath(); ctx.arc(gzX, gzY, 4, 0, PI2); ctx.fill();
+            ctx.shadowBlur = 0;
+
+            // Render each nav target
+            let hoveredIdx = -1;
+            navTargets.forEach((nav, i) => {
+                // Position: arc layout at bottom of screen
+                const nx = cx + nav.angle * w * 0.7;
+                const ny = h * nav.dist + h * 0.55;
+                const targetR = 50;
+
+                // Check gaze proximity
+                const dx = gzX - nx, dy = gzY - ny;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                const isHovered = dist < targetR * 1.8;
+                if (isHovered && gaze.cooldown <= 0) hoveredIdx = i;
+
+                // Dwell progress for this target
+                const isActive = (gaze.activeIdx === i);
+                const progress = isActive ? Math.min(gaze.dwellTime / 2.0, 1) : 0; // 2 sec dwell
+
+                // --- Hexagonal frame ---
+                const hexR = targetR + (isHovered ? 8 : 0) + Math.sin(time * 2 + i) * 2;
+                const baseAlpha = isHovered ? 0.7 : 0.25;
+
+                // Outer hex
+                ctx.strokeStyle = (isHovered ? A : T) + baseAlpha + ')';
+                ctx.lineWidth = isHovered ? 2 : 1;
+                ctx.beginPath();
+                for (let v = 0; v <= 6; v++) {
+                    const a = (v / 6) * PI2 - PI / 6;
+                    const hx2 = nx + Math.cos(a) * hexR;
+                    const hy2 = ny + Math.sin(a) * hexR;
+                    v === 0 ? ctx.moveTo(hx2, hy2) : ctx.lineTo(hx2, hy2);
+                }
+                ctx.stroke();
+
+                // Progress arc (dwell timer visualization)
+                if (progress > 0) {
+                    ctx.strokeStyle = 'rgba(255,200,60,' + (0.8 * progress) + ')';
+                    ctx.lineWidth = 3;
+                    ctx.lineCap = 'round';
+                    ctx.beginPath();
+                    ctx.arc(nx, ny, hexR + 6, -PI / 2, -PI / 2 + progress * PI2);
+                    ctx.stroke();
+
+                    // Charging glow
+                    const chGrd = ctx.createRadialGradient(nx, ny, 0, nx, ny, hexR);
+                    chGrd.addColorStop(0, 'rgba(255,200,60,' + (0.1 * progress) + ')');
+                    chGrd.addColorStop(1, 'transparent');
+                    ctx.fillStyle = chGrd;
+                    ctx.beginPath(); ctx.arc(nx, ny, hexR, 0, PI2); ctx.fill();
+                }
+
+                // Inner fill on hover
+                if (isHovered) {
+                    const hGrd = ctx.createRadialGradient(nx, ny, 0, nx, ny, hexR);
+                    hGrd.addColorStop(0, A + '0.08)');
+                    hGrd.addColorStop(1, 'transparent');
+                    ctx.fillStyle = hGrd;
+                    ctx.beginPath(); ctx.arc(nx, ny, hexR, 0, PI2); ctx.fill();
+                }
+
+                // Scan line decoration
+                ctx.strokeStyle = (isHovered ? A : T) + (baseAlpha * 0.4) + ')';
+                ctx.lineWidth = 0.5;
+                for (let sl = -2; sl <= 2; sl++) {
+                    const sly = ny + sl * 8;
+                    ctx.beginPath();
+                    ctx.moveTo(nx - hexR * 0.6, sly);
+                    ctx.lineTo(nx + hexR * 0.6, sly);
+                    ctx.stroke();
+                }
+
+                // Label
+                ctx.font = '12px "JetBrains Mono",monospace';
+                ctx.fillStyle = (isHovered ? '#ffffff' : A) + ')';
+                ctx.textAlign = 'center';
+                ctx.fillText(nav.label, nx, ny - 4);
+
+                // Sub-label
+                ctx.font = '9px "JetBrains Mono",monospace';
+                ctx.fillStyle = (isHovered ? 'rgba(255,200,60,' : T) + (baseAlpha * 0.8) + ')';
+                ctx.fillText(isHovered ? (progress > 0 ? 'LOCKING...' : 'DETECTED') : 'STANDBY', nx, ny + 12);
+                ctx.textAlign = 'left'; // reset
+
+                // Connection line from gaze cursor to hovered target
+                if (isHovered) {
+                    ctx.setLineDash([4, 8]);
+                    ctx.strokeStyle = A + '0.2)';
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.moveTo(gzX, gzY);
+                    ctx.lineTo(nx, ny);
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+                }
+            });
+
+            // Dwell logic — accumulate time on same target
+            if (hoveredIdx >= 0) {
+                if (gaze.activeIdx === hoveredIdx) {
+                    gaze.dwellTime += 0.016; // ~1 frame at 60fps
+                    // Trigger at 2 seconds
+                    if (gaze.dwellTime >= 2.0 && !gaze.triggered) {
+                        gaze.triggered = true;
+                        gaze.cooldown = 3.0; // prevent re-trigger for 3s
+                        const target = navTargets[hoveredIdx];
+                        // Flash effect
+                        ctx.fillStyle = 'rgba(100,180,255,0.15)';
+                        ctx.fillRect(0, 0, w, h);
+                        // Navigate
+                        setTimeout(() => {
+                            document.querySelector(target.section)?.scrollIntoView({ behavior: 'smooth' });
+                        }, 300);
+                    }
+                } else {
+                    gaze.activeIdx = hoveredIdx;
+                    gaze.dwellTime = 0;
+                    gaze.triggered = false;
+                }
+            } else {
+                gaze.activeIdx = -1;
+                gaze.dwellTime = 0;
+                gaze.triggered = false;
+            }
+
+            // Gaze nav status label
+            ctx.font = '9px "JetBrains Mono",monospace';
+            ctx.fillStyle = T + '0.5)';
+            ctx.fillText('GAZE.NAV: ACTIVE', w - 140, h - 20);
 
         }
 
