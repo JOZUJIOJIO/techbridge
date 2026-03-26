@@ -1,9 +1,11 @@
 // ========== JARVIS HUD SYSTEM ==========
 window.jarvisAR = window.jarvisAR || {
     active: false, face: { x: 0, y: 0, z: 0 },
-    hand: { x: 0, y: 0, visible: false, spread: false },
+    hand: { x: 0, y: 0, visible: false, spread: false, palmSize: 0 },
     smoothFace: { x: 0, y: 0, z: 0 }, smoothHand: { x: 0, y: 0 },
-    explosion: 0 // 0 = none, >0 = exploding (counts down)
+    fistness: 0,       // 0 = open palm, 1 = tight fist (smoothed)
+    chargeLevel: 0,    // energy charge 0→1 (builds while fist held)
+    explosion: 0       // 0 = none, >0 = exploding (counts down)
 };
 (function() {
     const canvas = document.getElementById('heroCanvas');
@@ -382,6 +384,15 @@ window.jarvisAR = window.jarvisAR || {
         const B = 'rgba(170,220,255,'; // light blue
         const RED = 'rgba(255,51,0,'; // alert red
         if (ar && ar.active) {
+            // DEBUG overlay — always visible in AR mode
+            ctx.font = '14px "JetBrains Mono",monospace';
+            ctx.fillStyle = '#ffcc00';
+            ctx.fillText('HAND: ' + (ar.hand.visible ? 'DETECTED' : 'none'), 20, 110);
+            ctx.fillText('FISTNESS: ' + ar.fistness.toFixed(2), 20, 128);
+            ctx.fillText('CHARGE: ' + ar.chargeLevel.toFixed(2), 20, 146);
+            ctx.fillText('CLAW: ' + (ar.hand.claw ? 'YES' : 'no') + '  FIST: ' + (ar.hand.fist ? 'YES' : 'no') + '  SPREAD: ' + (ar.hand.spread ? 'YES' : 'no'), 20, 164);
+            ctx.fillText('PALM: ' + (ar.hand.palmSize || 0).toFixed(3), 20, 182);
+
             const fx = cx + ar.smoothFace.x * w * 0.08;
             const fy = cy + ar.smoothFace.y * h * 0.06;
 
@@ -499,9 +510,10 @@ window.jarvisAR = window.jarvisAR || {
                     });
                 }
 
-                // Explosion trigger
-                if (ar.hand.spread && ar.explosion <= 0) {
+                // Explosion trigger — fist (squeeze) releases the charged energy
+                if (ar.hand.fist && ar.chargeLevel > 0.15 && ar.explosion <= 0) {
                     ar.explosion = 1.0;
+                    ar.chargeLevel = 0;
                 }
 
                 const isExploding = ar.explosion > 0;
@@ -544,70 +556,130 @@ window.jarvisAR = window.jarvisAR || {
                     }
                 }
 
-                // Energy ball (amber) — 2X size
-                const ba = isExploding ? Math.max(0, ar.explosion) : 1;
+                // ====== KAMEHAMEHA ENERGY BALL ======
+                const isClaw = ar.hand.claw;
+                const fist = ar.fistness;
 
-                // Outer glow
-                const oGrd = ctx.createRadialGradient(hx, hy, 0, hx, hy, 180);
-                oGrd.addColorStop(0, A + (0.2 * pulse * ba) + ')');
-                oGrd.addColorStop(0.3, A + (0.08 * pulse * ba) + ')');
+                // Charge builds while in claw pose
+                if (isClaw && !isExploding) {
+                    ar.chargeLevel = Math.min(1, ar.chargeLevel + 0.01);
+                } else if (!isExploding && !ar.hand.fist) {
+                    ar.chargeLevel = Math.max(0, ar.chargeLevel - 0.03);
+                }
+                const charge = ar.chargeLevel;
+                const ba = isExploding ? Math.max(0, ar.explosion) : 1;
+                const showBall = (isClaw || ar.hand.fist || isExploding) && (charge > 0.02 || isExploding);
+                const intensity = showBall ? (0.4 + charge * 0.6) * ba : 0;
+
+                // Ball radius — claw = compact charging ball
+                const palmScale = Math.max(0.06, ar.hand.palmSize) / 0.12;
+                const baseR = 18 + charge * 30;
+                const ballR = baseR * palmScale;
+                const coreR = ballR * (0.35 + charge * 0.35) + Math.sin(time * 6) * 3;
+
+                if (showBall) {
+                // === Outer energy field (wide diffuse glow) ===
+                const fieldR = ballR * 4 + charge * 80;
+                const oGrd = ctx.createRadialGradient(hx, hy, 0, hx, hy, fieldR);
+                oGrd.addColorStop(0, A + (0.15 * intensity * pulse) + ')');
+                oGrd.addColorStop(0.2, A + (0.06 * intensity) + ')');
                 oGrd.addColorStop(1, 'transparent');
                 ctx.fillStyle = oGrd;
-                ctx.beginPath(); ctx.arc(hx, hy, 180, 0, PI2); ctx.fill();
+                ctx.beginPath(); ctx.arc(hx, hy, fieldR, 0, PI2); ctx.fill();
 
-                // Core sphere
-                const coreR = 36 + Math.sin(time * 5) * 6;
-                const cGrd = ctx.createRadialGradient(hx, hy, 0, hx, hy, coreR);
-                cGrd.addColorStop(0, W + (0.9 * pulse * ba) + ')');
-                cGrd.addColorStop(0.3, A + (0.6 * pulse * ba) + ')');
-                cGrd.addColorStop(1, A + '0.0)');
-                glow(hx, hy, 50, A, 0.6 * pulse * ba);
+                // === Plasma core sphere ===
+                const cGrd = ctx.createRadialGradient(hx, hy, 0, hx, hy, coreR * 1.5);
+                cGrd.addColorStop(0, W + (0.95 * intensity * pulse) + ')');
+                cGrd.addColorStop(0.25, A + (0.7 * intensity * pulse) + ')');
+                cGrd.addColorStop(0.6, 'rgba(80,160,255,' + (0.3 * intensity) + ')');
+                cGrd.addColorStop(1, 'transparent');
+                glow(hx, hy, 40 + charge * 30, A, 0.5 * intensity);
                 ctx.fillStyle = cGrd;
-                ctx.beginPath(); ctx.arc(hx, hy, coreR, 0, PI2); ctx.fill();
+                ctx.beginPath(); ctx.arc(hx, hy, coreR * 1.5, 0, PI2); ctx.fill();
                 ctx.shadowBlur = 0;
 
-                // White center
-                glow(hx, hy, 25, W, 0.5 * ba);
+                // === Inner white-hot center ===
+                const innerR = coreR * 0.5 + Math.sin(time * 8) * 2 + charge * 4;
+                glow(hx, hy, 20 + charge * 15, W, 0.6 * ba);
                 ctx.fillStyle = W + (0.95 * pulse * ba) + ')';
-                ctx.beginPath(); ctx.arc(hx, hy, 12 + Math.sin(time * 7) * 3, 0, PI2); ctx.fill();
+                ctx.beginPath(); ctx.arc(hx, hy, innerR, 0, PI2); ctx.fill();
                 ctx.shadowBlur = 0;
 
-                // Orbiting arcs — amber
-                for (let ring = 0; ring < 4; ring++) {
-                    const rr = 55 + ring * 30 + Math.sin(time * 3 + ring) * 8;
-                    const speed = (ring % 2 === 0 ? 1 : -1) * (1.8 + ring * 0.3);
-                    ctx.strokeStyle = A + (0.45 * ba - ring * 0.08) + ')';
-                    ctx.lineWidth = 3 - ring * 0.4;
+                // === Electric arcs from fingertips to ball center ===
+                if (ar.hand.landmarks && fist > 0.2) {
+                    const lm = ar.hand.landmarks;
+                    const fpx = (i) => (1 - lm[i].x) * w;
+                    const fpy = (i) => lm[i].y * h;
+                    const arcAlpha = fist * 0.6 * ba;
+                    [4, 8, 12, 16, 20].forEach((tip, ti) => {
+                        const tx = fpx(tip), ty = fpy(tip);
+                        // Lightning bolt — 3 segment jagged line
+                        ctx.strokeStyle = A + arcAlpha + ')';
+                        ctx.lineWidth = 1.5 + charge;
+                        ctx.lineCap = 'round';
+                        ctx.beginPath();
+                        ctx.moveTo(tx, ty);
+                        const dx = hx - tx, dy = hy - ty;
+                        for (let seg = 1; seg <= 3; seg++) {
+                            const t = seg / 4;
+                            const jitter = (1 - t) * 15 * (Math.sin(time * 12 + ti * 3 + seg * 7) );
+                            ctx.lineTo(tx + dx * t + jitter, ty + dy * t + jitter * 0.7);
+                        }
+                        ctx.lineTo(hx, hy);
+                        ctx.stroke();
+                        // Bright dot at fingertip
+                        if (fist > 0.5) {
+                            glow(tx, ty, 6, A, 0.3 * fist);
+                            ctx.fillStyle = W + (0.7 * fist * ba) + ')';
+                            ctx.beginPath(); ctx.arc(tx, ty, 2, 0, PI2); ctx.fill();
+                            ctx.shadowBlur = 0;
+                        }
+                    });
+                }
+
+                // === Orbiting plasma rings ===
+                const ringCount = 3 + Math.floor(charge * 3); // more rings when charged
+                for (let ring = 0; ring < ringCount; ring++) {
+                    const rr = coreR * 1.8 + ring * (12 + charge * 8) + Math.sin(time * 3 + ring) * 4;
+                    const speed = (ring % 2 === 0 ? 1 : -1) * (2.5 + ring * 0.4 + charge * 2);
+                    const ringA = (0.4 * intensity - ring * 0.05);
+                    if (ringA <= 0) continue;
+                    ctx.strokeStyle = (ring % 2 === 0 ? A : 'rgba(80,160,255,') + ringA + ')';
+                    ctx.lineWidth = 2.5 - ring * 0.3;
                     ctx.lineCap = 'round';
                     for (let seg = 0; seg < 3; seg++) {
                         const sa = time * speed + (seg / 3) * PI2;
-                        ctx.beginPath(); ctx.arc(hx, hy, rr, sa, sa + 0.5); ctx.stroke();
+                        const arcLen = 0.4 + charge * 0.3;
+                        ctx.beginPath(); ctx.arc(hx, hy, rr, sa, sa + arcLen); ctx.stroke();
                     }
                 }
 
-                // Spiraling particles — amber
-                for (let i = 0; i < 20; i++) {
-                    const pAng = (i / 20) * PI2 + time * 0.8;
-                    const pLife = ((time * 1.5 + i * 0.5) % 1);
-                    const pDist = 200 * (1 - pLife);
-                    const ppx = hx + Math.cos(pAng + pLife * 2) * pDist;
-                    const ppy = hy + Math.sin(pAng + pLife * 2) * pDist;
-                    const pa = pLife * 0.7 * ba;
-                    const ps = 3.5 - pLife * 2.5;
-                    if (ps > 0.3) {
-                        ctx.fillStyle = (i % 3 === 0 ? W : A) + pa + ')';
+                // === Inward-spiraling particles (gathering energy) ===
+                const pCount = 15 + Math.floor(charge * 20);
+                for (let i = 0; i < pCount; i++) {
+                    const pLife = ((time * 1.2 + i * 0.3) % 1);
+                    const pDist = (1 - pLife) * (ballR * 5 + charge * 100);
+                    const pAng = (i / pCount) * PI2 + time * 0.6 + pLife * 3;
+                    const ppx = hx + Math.cos(pAng) * pDist;
+                    const ppy = hy + Math.sin(pAng) * pDist;
+                    const pa = pLife * 0.6 * intensity;
+                    const ps = (1 + charge * 2) * pLife;
+                    if (ps > 0.2 && pa > 0.02) {
+                        ctx.fillStyle = (i % 4 === 0 ? W : (i % 2 === 0 ? A : 'rgba(80,160,255,')) + pa + ')';
                         ctx.beginPath(); ctx.arc(ppx, ppy, ps, 0, PI2); ctx.fill();
                     }
                 }
 
-                // Shockwaves
-                for (let sw = 0; sw < 3; sw++) {
-                    const swP = ((time * 0.7 + sw * 0.33) % 1);
-                    const swR = 30 + swP * 140;
-                    ctx.strokeStyle = A + ((1 - swP) * 0.2 * ba) + ')';
-                    ctx.lineWidth = 2 * (1 - swP);
+                // === Pulsing shockwaves (more intense when charged) ===
+                const swCount = 2 + Math.floor(charge * 2);
+                for (let sw = 0; sw < swCount; sw++) {
+                    const swP = ((time * (0.6 + charge * 0.4) + sw * (1 / swCount)) % 1);
+                    const swR = coreR + swP * (ballR * 3 + charge * 60);
+                    ctx.strokeStyle = A + ((1 - swP) * 0.15 * ba) + ')';
+                    ctx.lineWidth = (2 + charge) * (1 - swP);
                     ctx.beginPath(); ctx.arc(hx, hy, swR, 0, PI2); ctx.stroke();
                 }
+                } // end showBall
             }
 
         }
@@ -1021,6 +1093,19 @@ window.jarvisAR = window.jarvisAR || {
                         avgDist /= 5;
                         ar.hand.spread = avgDist > 0.18; // open palm threshold
                         ar.hand.landmarks = hand; // save all 21 landmarks for skeleton
+                        // Palm size — distance between wrist(0) and middle finger base(9)
+                        ar.hand.palmSize = Math.sqrt((hand[0].x - hand[9].x) ** 2 + (hand[0].y - hand[9].y) ** 2);
+
+                        // Gesture detection — three zones:
+                        //   avgDist > 0.18  → open palm (no ball)
+                        //   0.10 < avgDist <= 0.18 → claw/cupped (charging ball)
+                        //   avgDist <= 0.10  → tight fist (release explosion)
+                        ar.hand.claw = avgDist > 0.10 && avgDist <= 0.18;
+                        ar.hand.fist = avgDist <= 0.10;
+
+                        // Fistness for visual intensity (0=open, 1=tight)
+                        const rawFist = Math.max(0, Math.min(1, 1 - (avgDist - 0.08) / 0.12));
+                        ar.fistness += (rawFist - ar.fistness) * 0.15;
 
                         // Draw hand skeleton on separate canvas
                         const hc = document.getElementById('arHandCanvas');
