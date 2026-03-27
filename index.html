@@ -25,10 +25,34 @@
     <meta name="twitter:description" content="桥比特 | 科技数码 · 人工智能 · 新能源汽车">
     <meta name="twitter:image" content="https://qiaobit.com/og-image.png">
 
+    <link rel="canonical" href="https://qiaobit.com/">
+    <meta name="theme-color" content="#1A1A18">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@300;400;700&family=Noto+Sans+SC:wght@300;400;700;900&family=Noto+Serif+SC:wght@400;700;900&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="jarvis-hud.css">
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "桥比特",
+        "alternateName": "Qiaobit",
+        "url": "https://qiaobit.com",
+        "image": "https://qiaobit.com/og-image.png",
+        "jobTitle": "科技内容创作者",
+        "description": "科技数码 · 人工智能 · 新能源汽车 — 把最前沿的技术，翻译成每个人都能懂的语言。",
+        "sameAs": [
+            "https://www.youtube.com/@The-Tech-Bridge",
+            "https://x.com/TechBridgeZ",
+            "https://www.tiktok.com/@techbridgez",
+            "https://b23.tv/jvOokV7"
+        ]
+    }
+    </script>
 </head>
 <body>
 
@@ -71,37 +95,36 @@
             <a href="#collab" class="nav-link">Collab</a>
             <div class="nav-social">
                 <!-- YouTube -->
-                <a href="https://www.youtube.com/@The-Tech-Bridge" title="YouTube" aria-label="YouTube" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><use href="#icon-youtube"/></svg></a>
+                <a href="https://www.youtube.com/@The-Tech-Bridge" title="YouTube" aria-label="YouTube" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24"><use href="#icon-youtube"/></svg></a>
                 <!-- X/Twitter -->
-                <a href="https://x.com/TechBridgeZ" title="X" aria-label="X" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><use href="#icon-x"/></svg></a>
-                <!-- Instagram -->
-                <a href="#" title="Instagram" aria-label="Instagram" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><use href="#icon-instagram"/></svg></a>
+                <a href="https://x.com/TechBridgeZ" title="X" aria-label="X" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24"><use href="#icon-x"/></svg></a>
                 <!-- TikTok -->
-                <a href="https://www.tiktok.com/@techbridgez" title="TikTok" aria-label="TikTok" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><use href="#icon-tiktok"/></svg></a>
+                <a href="https://www.tiktok.com/@techbridgez" title="TikTok" aria-label="TikTok" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24"><use href="#icon-tiktok"/></svg></a>
                 <!-- Bilibili -->
-                <a href="https://b23.tv/jvOokV7" title="Bilibili" aria-label="Bilibili" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><use href="#icon-bilibili"/></svg></a>
+                <a href="https://b23.tv/jvOokV7" title="Bilibili" aria-label="Bilibili" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24"><use href="#icon-bilibili"/></svg></a>
             </div>
             <!-- Buy Me a Coffee -->
-                <a href="https://buymeacoffee.com/cyberbayes" title="Buy Me a Coffee" aria-label="Buy Me a Coffee" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><use href="#icon-bmcoffee"/></svg></a>
-            <button class="lang-toggle" id="langToggle" onclick="toggleLang()">EN</button>
+                <a href="https://buymeacoffee.com/cyberbayes" title="Buy Me a Coffee" aria-label="Buy Me a Coffee" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24"><use href="#icon-bmcoffee"/></svg></a>
+            <button class="lang-toggle" id="langToggle">EN</button>
         </div>
-        <button class="hamburger" onclick="document.getElementById('mobileMenu').classList.add('open')">
+        <button class="hamburger" id="hamburgerBtn">
             <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
         </button>
     </nav>
 
     <!-- Mobile Menu -->
     <div class="mobile-menu" id="mobileMenu">
-        <button class="mobile-menu-close" onclick="document.getElementById('mobileMenu').classList.remove('open')">
+        <button class="mobile-menu-close" id="mobileMenuClose">
             <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
-        <a href="#about" onclick="document.getElementById('mobileMenu').classList.remove('open')">About</a>
-        <a href="#topics" onclick="document.getElementById('mobileMenu').classList.remove('open')">Topics</a>
-        <a href="#collab" onclick="document.getElementById('mobileMenu').classList.remove('open')">Collab</a>
+        <a href="#about" class="mobile-menu-link">About</a>
+        <a href="#topics" class="mobile-menu-link">Topics</a>
+        <a href="#collab" class="mobile-menu-link">Collab</a>
+        <button class="mobile-lang-toggle" id="mobileLangToggle">EN / 中</button>
         <div class="mobile-menu-social">
-            <a href="https://www.youtube.com/@The-Tech-Bridge" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><use href="#icon-youtube"/></svg></a>
-            <a href="https://x.com/TechBridgeZ" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><use href="#icon-x"/></svg></a>
-            <a href="https://b23.tv/jvOokV7" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><use href="#icon-bilibili"/></svg></a>
+            <a href="https://www.youtube.com/@The-Tech-Bridge" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24"><use href="#icon-youtube"/></svg></a>
+            <a href="https://x.com/TechBridgeZ" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24"><use href="#icon-x"/></svg></a>
+            <a href="https://b23.tv/jvOokV7" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24"><use href="#icon-bilibili"/></svg></a>
         </div>
     </div>
 
@@ -135,7 +158,9 @@
         </button>
         <div class="ar-status" id="arStatus"></div>
         <!-- Camera feed (fullscreen background when active) -->
-        <video id="arVideo" autoplay playsinline muted></video>
+        <video id="arVideo" autoplay playsinline muted>
+            <track kind="captions" label="中文" srclang="zh" default>
+        </video>
         <div class="ar-video-overlay" id="arVideoOverlay"></div>
         <div class="ar-radar"></div>
 
@@ -187,6 +212,7 @@
         <div class="intro-video-wrapper reveal">
             <video controls playsinline preload="metadata">
                 <source src="intro-video.mp4" type="video/mp4">
+                <track kind="captions" label="中文" srclang="zh" default>
             </video>
         </div>
         <div class="stats-bar reveal">
@@ -221,7 +247,7 @@
             <span class="belief-cn">「所有的伟大，源于一个勇敢的开始。」</span>
             <span class="belief-en">Dare Greatly.</span>
         </div>
-        <a href="https://www.youtube.com/@The-Tech-Bridge" target="_blank" rel="noopener" class="cta-button reveal">
+        <a href="https://www.youtube.com/@The-Tech-Bridge" target="_blank" rel="noopener noreferrer" class="cta-button reveal">
             Subscribe on YouTube →
         </a>
     </section>
@@ -230,15 +256,15 @@
     <div class="seen-in reveal">
         <div class="seen-in-label">As Seen In</div>
         <div class="seen-in-list">
-            <a href="http://finance.youth.cn/finance_gdxw/202303/t20230324_14408657.htm" target="_blank" rel="noopener"><span>中国青年报</span></a>
+            <a href="https://finance.youth.cn/finance_gdxw/202303/t20230324_14408657.htm" target="_blank" rel="noopener noreferrer"><span>中国青年报</span></a>
             <span class="seen-in-dot"></span>
-            <a href="https://mp.weixin.qq.com/s/vLTNpyqTPXa6OlOpQbfyfQ" target="_blank" rel="noopener"><span>每人 Auto</span></a>
+            <a href="https://mp.weixin.qq.com/s/vLTNpyqTPXa6OlOpQbfyfQ" target="_blank" rel="noopener noreferrer"><span>每人 Auto</span></a>
             <span class="seen-in-dot"></span>
-            <a href="https://mp.weixin.qq.com/s/dfn91P50LYvBa1tWsrhd2A" target="_blank" rel="noopener"><span>码客人生</span></a>
+            <a href="https://mp.weixin.qq.com/s/dfn91P50LYvBa1tWsrhd2A" target="_blank" rel="noopener noreferrer"><span>码客人生</span></a>
             <span class="seen-in-dot"></span>
             <span>北京车展 SEEDS</span>
             <span class="seen-in-dot"></span>
-            <a href="https://app.nio.com/app/radio/share/?item_type=1&item_id=76987&container_id=707&wv=lg" target="_blank" rel="noopener"><span>NIO Radio</span></a>
+            <a href="https://app.nio.com/app/radio/share/?item_type=1&item_id=76987&container_id=707&wv=lg" target="_blank" rel="noopener noreferrer"><span>NIO Radio</span></a>
             <span class="seen-in-dot"></span>
             <span>PEC AI 创新者大会</span>
             <span class="seen-in-dot"></span>
@@ -352,10 +378,10 @@
     <div class="section-divider"></div>
 
     <!-- Brand Story -->
-    <section class="section-about" style="max-width: 700px; padding: 80px 48px;">
+    <section class="section-about section-brand-story">
         <span class="section-label reveal">Why "Tech Bridge"?</span>
-        <div class="reveal" style="width: 48px; height: 2px; background: var(--grad-orange-green); margin: 0 auto 40px; border-radius: 1px;"></div>
-        <p class="about-text reveal" style="font-size: 26px; line-height: 2.2;">
+        <div class="brand-story-divider reveal"></div>
+        <p class="about-text brand-story-text reveal">
             <span class="highlight-orange">Bridge</span> — 连接两个原本不相通的世界。<br><br>
             技术与商业。<br>
             前沿与大众。<br>
@@ -439,12 +465,12 @@
     <div class="newsletter reveal">
         <div class="newsletter-title">Stay in the Loop</div>
         <div class="newsletter-desc">订阅桥比特的科技前沿通讯，每周精选 AI、数码、新能源汽车领域最值得关注的事。</div>
-        <form class="newsletter-form" onsubmit="event.preventDefault(); this.querySelector('.newsletter-btn').textContent='已订阅 ✓'; this.querySelector('.newsletter-btn').style.background='var(--green-main)';">
+        <form class="newsletter-form" id="newsletterForm">
             <input type="email" class="newsletter-input" placeholder="your@email.com" required>
             <button type="submit" class="newsletter-btn">Subscribe</button>
         </form>
-        <div style="margin-top: 24px;">
-            <a href="javascript:void(0)" onclick="document.getElementById('wechatModal').classList.add('open')" style="font-family: var(--font-mono); font-size: 13px; color: var(--text-warm-grey); transition: color 0.3s;" onmouseenter="this.style.color='var(--orange-main)'" onmouseleave="this.style.color='var(--text-warm-grey)'">或添加微信 →</a>
+        <div class="wechat-link-wrapper">
+            <a href="#" id="openWechatLink" class="wechat-link">或添加微信 →</a>
         </div>
     </div>
 
@@ -453,39 +479,35 @@
         <div class="footer-brand">TECH BRIDGE</div>
         <div class="footer-links">
             <!-- YouTube -->
-            <a href="https://www.youtube.com/@The-Tech-Bridge" class="footer-icon-link" title="YouTube" aria-label="YouTube" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><use href="#icon-youtube"/></svg></a>
+            <a href="https://www.youtube.com/@The-Tech-Bridge" class="footer-icon-link" title="YouTube" aria-label="YouTube" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24"><use href="#icon-youtube"/></svg></a>
             <!-- Bilibili -->
-            <a href="https://b23.tv/jvOokV7" class="footer-icon-link" title="Bilibili" aria-label="Bilibili" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><use href="#icon-bilibili"/></svg></a>
+            <a href="https://b23.tv/jvOokV7" class="footer-icon-link" title="Bilibili" aria-label="Bilibili" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24"><use href="#icon-bilibili"/></svg></a>
             <!-- X -->
-            <a href="https://x.com/TechBridgeZ" class="footer-icon-link" title="X" aria-label="X" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><use href="#icon-x"/></svg></a>
+            <a href="https://x.com/TechBridgeZ" class="footer-icon-link" title="X" aria-label="X" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24"><use href="#icon-x"/></svg></a>
             <!-- TikTok/抖音 -->
-            <a href="https://www.tiktok.com/@techbridgez" class="footer-icon-link" title="抖音" aria-label="抖音" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><use href="#icon-tiktok"/></svg></a>
-            <!-- Instagram -->
-            <a href="#" class="footer-icon-link" title="Instagram" aria-label="Instagram"><svg viewBox="0 0 24 24"><use href="#icon-instagram"/></svg></a>
-            <!-- Discord -->
-            <a href="#" class="footer-icon-link" title="Discord" aria-label="Discord"><svg viewBox="0 0 24 24"><use href="#icon-discord"/></svg></a>
+            <a href="https://www.tiktok.com/@techbridgez" class="footer-icon-link" title="抖音" aria-label="抖音" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24"><use href="#icon-tiktok"/></svg></a>
             <!-- Email -->
             <a href="mailto:tczhengqiao88@gmail.com" class="footer-icon-link" title="Email" aria-label="Email"><svg viewBox="0 0 24 24"><use href="#icon-email"/></svg></a>
             <!-- Buy Me a Coffee -->
-            <a href="https://buymeacoffee.com/cyberbayes" class="footer-icon-link" title="Buy Me a Coffee" aria-label="Buy Me a Coffee" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><use href="#icon-bmcoffee"/></svg></a>
+            <a href="https://buymeacoffee.com/cyberbayes" class="footer-icon-link" title="Buy Me a Coffee" aria-label="Buy Me a Coffee" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24"><use href="#icon-bmcoffee"/></svg></a>
         </div>
         <div class="footer-slogan">Dare Greatly.</div>
         <div class="footer-copy">&copy; 2026 Tech Bridge. All rights reserved.<br>Designed & Built with passion.</div>
     </footer>
 
     <!-- Back to Top -->
-    <div class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+    <button class="back-to-top" id="backToTop" aria-label="回到顶部">
         <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
-    </div>
+    </button>
 
     <!-- WeChat Modal -->
-    <div class="wechat-modal" id="wechatModal" onclick="if(event.target===this)this.classList.remove('open')">
+    <div class="wechat-modal" id="wechatModal">
         <div class="wechat-modal-content">
-            <button class="wechat-modal-close" onclick="document.getElementById('wechatModal').classList.remove('open')">
+            <button class="wechat-modal-close" id="wechatModalClose">
                 <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
             <div class="wechat-modal-title">添加微信</div>
-            <div class="wechat-modal-qr" style="background:none;"><img src="wechat-qr.png" alt="微信二维码" style="width:200px;border-radius:12px;"></div>
+            <div class="wechat-modal-qr"><img src="wechat-qr.png" alt="微信二维码" class="wechat-qr-img"></div>
             <div class="wechat-modal-hint">扫码添加好友</div>
         </div>
     </div>

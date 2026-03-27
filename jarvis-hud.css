@@ -1,0 +1,348 @@
+/* ========== AR / JARVIS HUD STYLES ========== */
+/* Extracted from style.css — loaded separately for modularity */
+
+/* AR Tracking trigger */
+.ar-trigger {
+    position: absolute;
+    bottom: 100px;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    width: fit-content;
+    z-index: var(--z-hero-content);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: var(--text-warm-grey);
+    background: rgba(30,30,27,0.6);
+    border: 1px solid var(--border-dark);
+    border-radius: 100px;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: all 0.4s;
+    animation: fadeInUp 1s ease-out 0.6s forwards;
+    opacity: 0;
+}
+
+.ar-trigger:hover {
+    border-color: var(--orange-main);
+    color: var(--text-warm-white);
+    box-shadow: 0 0 20px rgba(233,93,33,0.15);
+}
+
+.ar-trigger.active {
+    position: fixed;
+    bottom: 30px;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    z-index: var(--z-cursor);
+    border-color: #66bbff;
+    color: #88ccff;
+    box-shadow: 0 0 20px rgba(100,180,255,0.3);
+    background: rgba(0,8,20,0.7);
+}
+
+.ar-trigger.active svg {
+    stroke: var(--green-light);
+}
+
+.ar-trigger.hidden {
+    opacity: 0 !important;
+    pointer-events: none;
+}
+
+.ar-status {
+    position: absolute;
+    bottom: 68px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: var(--z-hero-content);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--green-light);
+    letter-spacing: 1px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.ar-status.show {
+    opacity: 0.7;
+}
+
+/* AR Camera background */
+#arVideo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+    opacity: 0;
+    transform: scaleX(-1); /* mirror selfie */
+    transition: opacity 1s ease;
+    pointer-events: none;
+}
+
+#hero.ar-active #arVideo {
+    opacity: 1;
+    filter: contrast(1.2) brightness(0.55) saturate(0.5) hue-rotate(190deg);
+}
+
+/* Amber vignette overlay on camera feed */
+.ar-video-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background:
+        radial-gradient(circle at center, transparent 35%, rgba(0, 5, 20, 0.6) 100%);
+    box-shadow: inset 0 0 120px rgba(0,5,30,0.7);
+    opacity: 0;
+    transition: opacity 1s ease;
+    pointer-events: none;
+}
+
+#hero.ar-active .ar-video-overlay {
+    opacity: 1;
+}
+
+/* AR Radar sweep overlay */
+.ar-radar {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 280px; height: 280px;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    border: 1px solid rgba(100,180,255,0.25);
+    z-index: var(--z-hero-content);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.8s;
+}
+
+.ar-radar::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg, transparent 0%, transparent 70%, rgba(100,180,255,0.15) 100%);
+    animation: radarSpin 4s linear infinite;
+}
+
+.ar-radar::after {
+    content: '';
+    position: absolute;
+    inset: 8px;
+    border-radius: 50%;
+    border: 1px solid rgba(100,180,255,0.12);
+}
+
+@keyframes radarSpin {
+    100% { transform: rotate(360deg); }
+}
+
+#hero.ar-active .ar-radar { opacity: 1; }
+
+/* AR 3D Perspective Panels */
+.ar-panel-left, .ar-panel-right {
+    position: absolute;
+    top: 12%;
+    width: 200px;
+    z-index: 4;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.8s;
+    font-family: var(--font-mono);
+    color: #88ccff;
+}
+
+.ar-panel-left {
+    left: 30px;
+    transform: perspective(600px) rotateY(12deg);
+}
+
+.ar-panel-right {
+    right: 30px;
+    transform: perspective(600px) rotateY(-12deg);
+}
+
+#hero.ar-active .ar-panel-left,
+#hero.ar-active .ar-panel-right { opacity: 1; }
+
+.ar-panel-title {
+    font-size: 11px;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid rgba(100,180,255,0.2);
+    text-shadow: 0 0 10px rgba(100,180,255,0.5);
+}
+
+.ar-bar {
+    height: 4px;
+    background: rgba(100,180,255,0.15);
+    border-radius: 2px;
+    margin: 6px 0;
+    overflow: hidden;
+}
+
+.ar-bar-fill {
+    height: 100%;
+    background: #88ccff;
+    border-radius: 2px;
+    box-shadow: 0 0 8px rgba(100,180,255,0.4);
+    animation: pulseBar 2s ease-in-out infinite;
+}
+
+@keyframes pulseBar {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; box-shadow: 0 0 15px rgba(100,180,255,0.6); }
+}
+
+.ar-stat {
+    font-size: 9px;
+    color: rgba(100,180,255,0.5);
+    letter-spacing: 1px;
+    margin: 4px 0;
+}
+
+.ar-hex {
+    font-size: 8px;
+    color: rgba(100,180,255,0.25);
+    line-height: 1.5;
+    max-height: 80px;
+    overflow: hidden;
+}
+
+/* Hide hero content + glow when camera is active */
+#hero.ar-active .hero-glow-1,
+#hero.ar-active .hero-content,
+#hero.ar-active .scroll-hint {
+    opacity: 0 !important;
+    transition: opacity 0.6s ease;
+    pointer-events: none;
+}
+
+/* Guidance tips — centered in viewport */
+.ar-guide {
+    position: absolute;
+    top: 55%;
+    left: 0;
+    right: 0;
+    text-align: center;
+    z-index: 5;
+    pointer-events: none;
+}
+
+.ar-guide-tip {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 1.5px;
+    color: var(--orange-glow);
+    padding: 12px 28px;
+    background: rgba(10,10,8,0.6);
+    border: 1px solid rgba(233,93,33,0.3);
+    border-radius: 100px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 0 30px rgba(233,93,33,0.08);
+    opacity: 0;
+    transform: translateY(10px);
+    animation: guideFadeIn 0.6s ease forwards;
+}
+
+@keyframes guideFadeIn {
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.ar-guide-tip.fade-out {
+    animation: guideFadeOut 0.5s ease forwards;
+}
+
+@keyframes guideFadeOut {
+    to { opacity: 0; transform: translateY(-10px); }
+}
+
+/* AR Hand Canvas — separate mirrored canvas for hand skeleton */
+#arHandCanvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: var(--z-hero-content);
+    transform: scaleX(-1);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.5s;
+}
+#hero.ar-active #arHandCanvas { opacity: 1; }
+
+/* AR Hand Cursor */
+#arHandCursor {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    border: 2px solid #88ccff;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: var(--z-ar-cursor);
+    display: none;
+    box-shadow: 0 0 20px rgba(100,180,255,0.4);
+    transition: width 0.1s, height 0.1s;
+}
+#arHandCursor::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 4px;
+    height: 4px;
+    background: #fff;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* AR Bottom Console */
+.ar-console {
+    position: absolute;
+    bottom: 40px;
+    left: 50px;
+    width: 320px;
+    z-index: 4;
+    transform: perspective(600px) rotateX(15deg);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.8s;
+    font-family: var(--font-mono);
+}
+#hero.ar-active .ar-console { opacity: 1; }
+
+.ar-console-title {
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    color: #88ccff;
+    border-bottom: 1px solid rgba(100,180,255,0.2);
+    padding-bottom: 4px;
+    margin-bottom: 6px;
+}
+
+.ar-console-log {
+    font-size: 9px;
+    color: rgba(100,180,255,0.5);
+    line-height: 1.6;
+    height: 90px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column-reverse;
+    text-shadow: 0 0 3px rgba(100,180,255,0.3);
+}
+
+.ar-console-log .msg-sys { color: #88ccff; }
+.ar-console-log .msg-data { color: rgba(100,180,255,0.7); }

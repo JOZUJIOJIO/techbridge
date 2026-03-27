@@ -44,120 +44,231 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
     if (statsBar) counterObserver.observe(statsBar);
 })();
 
-// === 2. Cursor Glow ===
+// === 2. Cursor Glow (A4: pauses on mobile / when inactive) ===
 (function() {
     const glow = document.getElementById('cursorGlow');
     if (!glow) return;
+    // Skip RAF loop entirely on touch devices
+    if (window.matchMedia('(pointer: coarse)').matches) return;
+
     let mouseX = -500, mouseY = -500;
     let glowX = -500, glowY = -500;
-
-    document.addEventListener('mousemove', (e) => {
-        mouseX = e.clientX;
-        mouseY = e.clientY;
-        if (!glow.classList.contains('active')) glow.classList.add('active');
-    });
-
-    document.addEventListener('mouseleave', () => {
-        glow.classList.remove('active');
-    });
+    let isActive = false;
+    let rafId = null;
 
     function animateGlow() {
         glowX += (mouseX - glowX) * 0.15;
         glowY += (mouseY - glowY) * 0.15;
         glow.style.left = glowX + 'px';
         glow.style.top = glowY + 'px';
-        requestAnimationFrame(animateGlow);
+        rafId = requestAnimationFrame(animateGlow);
     }
-    animateGlow();
+
+    function startGlow() {
+        if (!isActive) {
+            isActive = true;
+            glow.classList.add('active');
+            rafId = requestAnimationFrame(animateGlow);
+        }
+    }
+
+    function stopGlow() {
+        isActive = false;
+        glow.classList.remove('active');
+        if (rafId) {
+            cancelAnimationFrame(rafId);
+            rafId = null;
+        }
+    }
+
+    document.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        startGlow();
+    });
+
+    document.addEventListener('mouseleave', stopGlow);
 })();
 
-// === 3. Language Toggle ===
-function toggleLang() {
-    const btn = document.getElementById('langToggle');
-    const isZh = btn.textContent === 'EN';
-    const newLang = isZh ? 'en' : 'zh';
-    const hideLang = isZh ? 'zh' : 'en';
-
-    btn.textContent = isZh ? '中' : 'EN';
-
-    document.querySelectorAll('[data-lang]').forEach(el => {
-        el.style.display = el.getAttribute('data-lang') === newLang ? '' : 'none';
-    });
-}
-
-// === 4. Back to Top ===
+// === 3. Language Toggle (A2: scoped, not global; C4: persists to localStorage) ===
 (function() {
-    const btn = document.getElementById('backToTop');
+    function setLang(lang) {
+        var btn = document.getElementById('langToggle');
+        if (btn) btn.textContent = lang === 'en' ? '中' : 'EN';
+        document.documentElement.lang = lang === 'en' ? 'en' : 'zh-CN';
+        document.querySelectorAll('[data-lang]').forEach(function(el) {
+            el.style.display = el.getAttribute('data-lang') === lang ? '' : 'none';
+        });
+        try { localStorage.setItem('tb-lang', lang); } catch(e) {}
+    }
+
+    function toggleLang() {
+        var btn = document.getElementById('langToggle');
+        var isZh = btn && btn.textContent === 'EN';
+        setLang(isZh ? 'en' : 'zh');
+    }
+
+    // Restore saved language preference
+    try {
+        var saved = localStorage.getItem('tb-lang');
+        if (saved === 'en') setLang('en');
+    } catch(e) {}
+
+    // Bind lang toggle buttons (desktop + mobile)
+    var langBtn = document.getElementById('langToggle');
+    if (langBtn) langBtn.addEventListener('click', toggleLang);
+    var mobileLangBtn = document.getElementById('mobileLangToggle');
+    if (mobileLangBtn) mobileLangBtn.addEventListener('click', toggleLang);
+
+    // Expose for command palette
+    window._toggleLang = toggleLang;
+})();
+
+// === 4. Back to Top (A3: passive) ===
+(function() {
+    var btn = document.getElementById('backToTop');
     if (!btn) return;
-    window.addEventListener('scroll', () => {
+    btn.addEventListener('click', function() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+    window.addEventListener('scroll', function() {
         if (window.scrollY > window.innerHeight) {
             btn.classList.add('show');
         } else {
             btn.classList.remove('show');
         }
+    }, { passive: true });
+})();
+
+// === 5. Mobile Menu (A1: moved from inline onclick) ===
+(function() {
+    var menu = document.getElementById('mobileMenu');
+    if (!menu) return;
+
+    var openBtn = document.getElementById('hamburgerBtn');
+    var closeBtn = document.getElementById('mobileMenuClose');
+
+    if (openBtn) openBtn.addEventListener('click', function() { menu.classList.add('open'); });
+    if (closeBtn) closeBtn.addEventListener('click', function() { menu.classList.remove('open'); });
+
+    menu.querySelectorAll('.mobile-menu-link').forEach(function(link) {
+        link.addEventListener('click', function() { menu.classList.remove('open'); });
     });
 })();
 
-// === 6. Scroll Progress Bar ===
+// === 6. Newsletter Form (A1: moved from inline onsubmit) ===
 (function() {
-    const bar = document.getElementById('scrollProgress');
+    var form = document.getElementById('newsletterForm');
+    if (!form) return;
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        var btn = form.querySelector('.newsletter-btn');
+        var input = form.querySelector('.newsletter-input');
+        if (btn) {
+            btn.textContent = '即将上线 ✦';
+            btn.style.background = 'var(--green-main)';
+            btn.disabled = true;
+        }
+        if (input) {
+            input.disabled = true;
+            input.value = '';
+            input.placeholder = '通讯功能即将上线，敬请期待';
+        }
+    });
+})();
+
+// === 6b. WeChat Modal (A1: moved from inline onclick) ===
+(function() {
+    var modal = document.getElementById('wechatModal');
+    if (!modal) return;
+
+    var openLink = document.getElementById('openWechatLink');
+    var closeBtn = document.getElementById('wechatModalClose');
+
+    if (openLink) {
+        openLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            modal.classList.add('open');
+        });
+    }
+    if (closeBtn) {
+        closeBtn.addEventListener('click', function() { modal.classList.remove('open'); });
+    }
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) modal.classList.remove('open');
+    });
+})();
+
+// === 7. Scroll Progress Bar (A3: passive) ===
+(function() {
+    var bar = document.getElementById('scrollProgress');
     if (!bar) return;
-    window.addEventListener('scroll', () => {
-        const scrollTop = window.scrollY;
-        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-        const progress = (scrollTop / docHeight) * 100;
+    window.addEventListener('scroll', function() {
+        var scrollTop = window.scrollY;
+        var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        var progress = (scrollTop / docHeight) * 100;
         bar.style.width = progress + '%';
-    });
+    }, { passive: true });
 })();
 
-// Parallax scroll effects
+// === 8. Parallax scroll effects (A3: passive) ===
 (function() {
-    const hero = document.getElementById('hero');
-    const heroTitle = hero.querySelector('.hero-title');
-    const heroSubEn = hero.querySelector('.hero-subtitle-en');
-    const heroSub = hero.querySelector('.hero-subtitle');
-    const heroBar = hero.querySelector('.hero-bar');
-    const navbar = document.querySelector('.navbar');
+    var hero = document.getElementById('hero');
+    if (!hero) return;
+    var heroTitle = hero.querySelector('.hero-title');
+    var heroSubEn = hero.querySelector('.hero-subtitle-en');
+    var heroSub = hero.querySelector('.hero-subtitle');
+    var heroBar = hero.querySelector('.hero-bar');
+    var navbar = document.querySelector('.navbar');
 
-    let ticking = false;
+    var ticking = false;
 
     window.addEventListener('scroll', function() {
         if (!ticking) {
             requestAnimationFrame(function() {
-                const scrollY = window.scrollY;
-                const vh = window.innerHeight;
+                var scrollY = window.scrollY;
+                var vh = window.innerHeight;
 
                 // Hero parallax — title moves slower, fades out
                 if (scrollY < vh) {
-                    const progress = scrollY / vh;
-                    const titleY = scrollY * 0.35;
-                    const fade = 1 - progress * 1.5;
+                    var progress = scrollY / vh;
+                    var titleY = scrollY * 0.35;
+                    var fade = 1 - progress * 1.5;
 
-                    heroTitle.style.transform = `translateY(${titleY}px)`;
-                    heroTitle.style.opacity = Math.max(fade, 0);
-
-                    heroSubEn.style.transform = `translateY(${scrollY * 0.25}px)`;
-                    heroSubEn.style.opacity = Math.max(fade, 0);
-
-                    heroSub.style.transform = `translateY(${scrollY * 0.2}px)`;
-                    heroSub.style.opacity = Math.max(fade, 0);
-
-                    heroBar.style.transform = `translateY(${scrollY * 0.15}px)`;
-                    heroBar.style.opacity = Math.max(fade, 0);
+                    if (heroTitle) {
+                        heroTitle.style.transform = 'translateY(' + titleY + 'px)';
+                        heroTitle.style.opacity = Math.max(fade, 0);
+                    }
+                    if (heroSubEn) {
+                        heroSubEn.style.transform = 'translateY(' + scrollY * 0.25 + 'px)';
+                        heroSubEn.style.opacity = Math.max(fade, 0);
+                    }
+                    if (heroSub) {
+                        heroSub.style.transform = 'translateY(' + scrollY * 0.2 + 'px)';
+                        heroSub.style.opacity = Math.max(fade, 0);
+                    }
+                    if (heroBar) {
+                        heroBar.style.transform = 'translateY(' + scrollY * 0.15 + 'px)';
+                        heroBar.style.opacity = Math.max(fade, 0);
+                    }
                 }
 
                 // Navbar solidify on scroll
-                if (scrollY > 100) {
-                    navbar.style.background = 'rgba(26, 26, 24, 0.95)';
-                    navbar.style.borderBottomColor = 'rgba(255,255,255,0.06)';
-                } else {
-                    navbar.style.background = 'rgba(26, 26, 24, 0.6)';
-                    navbar.style.borderBottomColor = 'rgba(255,255,255,0.04)';
+                if (navbar) {
+                    if (scrollY > 100) {
+                        navbar.style.background = 'rgba(26, 26, 24, 0.95)';
+                        navbar.style.borderBottomColor = 'rgba(255,255,255,0.06)';
+                    } else {
+                        navbar.style.background = 'rgba(26, 26, 24, 0.6)';
+                        navbar.style.borderBottomColor = 'rgba(255,255,255,0.04)';
+                    }
                 }
 
                 ticking = false;
             });
             ticking = true;
         }
-    });
+    }, { passive: true });
 })();
+
+// Command Palette is handled by jarvis-hud.js

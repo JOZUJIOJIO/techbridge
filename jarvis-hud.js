@@ -21,6 +21,8 @@ window.jarvisAR = window.jarvisAR || {
         w = canvas.width = hero.offsetWidth;
         h = canvas.height = hero.offsetHeight;
         cx = w / 2; cy = h / 2;
+        const hc = document.getElementById('arHandCanvas');
+        if (hc) { hc.width = w; hc.height = h; }
     }
 
     // ---- Drawing helpers ----
@@ -412,38 +414,38 @@ window.jarvisAR = window.jarvisAR || {
 
             // Face targeting — amber circle reticle
             ctx.strokeStyle = A + '0.5)'; ctx.lineWidth = 1.5;
-            ctx.beginPath(); ctx.arc(sx, sy, 55, 0, PI2); ctx.stroke();
+            ctx.beginPath(); ctx.arc(fx, fy, 55, 0, PI2); ctx.stroke();
             ctx.strokeStyle = A + '0.25)'; ctx.lineWidth = 0.8;
-            ctx.beginPath(); ctx.arc(sx, sy, 40, 0, PI2); ctx.stroke();
+            ctx.beginPath(); ctx.arc(fx, fy, 40, 0, PI2); ctx.stroke();
 
             // Rotating target arcs — amber
             ctx.strokeStyle = A + '0.6)'; ctx.lineWidth = 2; ctx.lineCap = 'round';
             for (let i = 0; i < 4; i++) {
                 const ta = time * 2 + (i / 4) * PI2;
-                ctx.beginPath(); ctx.arc(sx, sy, 48, ta, ta + 0.35); ctx.stroke();
+                ctx.beginPath(); ctx.arc(fx, fy, 48, ta, ta + 0.35); ctx.stroke();
             }
 
             // Crosshair
             ctx.strokeStyle = A + '0.4)'; ctx.lineWidth = 0.8;
             ctx.beginPath();
-            ctx.moveTo(sx - 20, sy); ctx.lineTo(sx - 8, sy);
-            ctx.moveTo(sx + 8, sy); ctx.lineTo(sx + 20, sy);
-            ctx.moveTo(sx, sy - 20); ctx.lineTo(sx, sy - 8);
-            ctx.moveTo(sx, sy + 8); ctx.lineTo(sx, sy + 20);
+            ctx.moveTo(fx - 20, fy); ctx.lineTo(fx - 8, fy);
+            ctx.moveTo(fx + 8, fy); ctx.lineTo(fx + 20, fy);
+            ctx.moveTo(fx, fy - 20); ctx.lineTo(fx, fy - 8);
+            ctx.moveTo(fx, fy + 8); ctx.lineTo(fx, fy + 20);
             ctx.stroke();
 
             // Gaze dot
-            const fGzX = sx + ar.smoothFace.x * 15;
-            const fGzY = sy + ar.smoothFace.y * 10;
+            const fGzX = fx + ar.smoothFace.x * 15;
+            const fGzY = fy + ar.smoothFace.y * 10;
             glow(fGzX, fGzY, 10, A, 0.5);
             ctx.fillStyle = A + '0.9)';
             ctx.beginPath(); ctx.arc(fGzX, fGzY, 3, 0, PI2); ctx.fill();
             ctx.shadowBlur = 0;
 
             // Scan line
-            const scanLY = sy + Math.sin(time * 1.8) * 50;
+            const scanLY = fy + Math.sin(time * 1.8) * 50;
             ctx.strokeStyle = A + '0.3)'; ctx.lineWidth = 0.8;
-            ctx.beginPath(); ctx.moveTo(sx - 60, scanLY); ctx.lineTo(sx + 60, scanLY); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(fx - 60, scanLY); ctx.lineTo(fx + 60, scanLY); ctx.stroke();
 
             // Face zone brackets
             const bk = 70, bkL = 20;
@@ -908,7 +910,7 @@ window.jarvisAR = window.jarvisAR || {
     splitText(title);
 })();
 
-// === P2. Magnetic Buttons ===
+// === P2. Magnetic Buttons (combines with CSS hover lift) ===
 (function() {
     const magnets = document.querySelectorAll('.cta-button, .newsletter-btn, .footer-icon-link');
 
@@ -918,7 +920,8 @@ window.jarvisAR = window.jarvisAR || {
             const x = e.clientX - rect.left - rect.width / 2;
             const y = e.clientY - rect.top - rect.height / 2;
             const strength = el.classList.contains('footer-icon-link') ? 0.35 : 0.2;
-            el.style.transform = `translate(${x * strength}px, ${y * strength}px)`;
+            const liftY = el.classList.contains('footer-icon-link') ? 0 : -2;
+            el.style.transform = `translate(${x * strength}px, ${y * strength + liftY}px)`;
         });
 
         el.addEventListener('mouseleave', () => {
@@ -1430,6 +1433,7 @@ document.querySelectorAll('.product-video-cover').forEach(cover => {
         { icon: '📺', label: 'Bilibili', shortcut: '↗', action: () => window.open('https://b23.tv/jvOokV7','_blank') },
         { icon: '𝕏', label: 'X / Twitter', shortcut: '↗', action: () => window.open('https://x.com/TechBridgeZ','_blank') },
         { icon: '🎵', label: 'TikTok / 抖音', shortcut: '↗', action: () => window.open('https://www.tiktok.com/@techbridgez','_blank') },
+        { icon: '🌐', label: '切换语言 / Toggle Language', action: () => { if (window._toggleLang) window._toggleLang(); } },
         { icon: '💬', label: '添加微信', action: () => { const m = document.querySelector('.wechat-modal'); if(m) m.classList.add('open'); } },
         { icon: '☕', label: 'Buy Me a Coffee', shortcut: '↗', action: () => window.open('https://buymeacoffee.com/cyberbayes','_blank') },
     ];
