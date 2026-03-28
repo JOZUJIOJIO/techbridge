@@ -135,6 +135,40 @@
         <div class="hero-overlay"></div>
 
         <div class="hero-content">
+            <!-- Cyber Helmet Icon — Iron Man style -->
+            <svg class="hero-helmet-icon" viewBox="0 0 200 230" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <filter id="hGlow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+                </defs>
+                <!-- Helmet shell — smooth egg/oval shape -->
+                <path d="M100 8 C55 8 22 45 22 95 L22 120 C22 155 40 180 60 198 C72 208 86 216 100 218 C114 216 128 208 140 198 C160 180 178 155 178 120 L178 95 C178 45 145 8 100 8Z" stroke="rgba(233,93,33,0.5)" stroke-width="1.8" fill="rgba(233,93,33,0.02)"/>
+                <!-- Faceplate split line — separates top from jaw -->
+                <path d="M28 110 C40 105 65 98 100 96 C135 98 160 105 172 110" stroke="rgba(233,93,33,0.35)" stroke-width="1.2"/>
+                <!-- Jaw piece bottom contour -->
+                <path d="M40 130 C45 160 65 190 100 200 C135 190 155 160 160 130" stroke="rgba(233,93,33,0.3)" stroke-width="1"/>
+                <!-- T-shape face opening: eyes + nose bridge -->
+                <!-- Left eye — narrow slit, outer edge higher -->
+                <path d="M34 96 L58 84 L88 88 L88 96 L55 104 L34 100Z" stroke="rgba(233,93,33,0.9)" stroke-width="1.5" fill="rgba(233,93,33,0.06)" stroke-linejoin="round" filter="url(#hGlow)"/>
+                <!-- Right eye — mirror -->
+                <path d="M166 96 L142 84 L112 88 L112 96 L145 104 L166 100Z" stroke="rgba(233,93,33,0.9)" stroke-width="1.5" fill="rgba(233,93,33,0.06)" stroke-linejoin="round" filter="url(#hGlow)"/>
+                <!-- Eye glow -->
+                <path d="M40 97 L60 87 L85 90 L85 95 L58 102 L40 99Z" fill="rgba(233,93,33,0.3)"/>
+                <path d="M160 97 L140 87 L115 90 L115 95 L142 102 L160 99Z" fill="rgba(233,93,33,0.3)"/>
+                <!-- Nose bridge — connects eyes vertically -->
+                <path d="M94 96 L100 130 L106 96" stroke="rgba(233,93,33,0.3)" stroke-width="1" fill="none"/>
+                <!-- Forehead center line -->
+                <line x1="100" y1="20" x2="100" y2="75" stroke="rgba(233,93,33,0.15)" stroke-width="0.8"/>
+                <!-- Brow line — subtle -->
+                <path d="M40 82 L70 74 L100 72 L130 74 L160 82" stroke="rgba(233,93,33,0.3)" stroke-width="1" stroke-linecap="round"/>
+                <!-- Temple circles -->
+                <circle cx="30" cy="100" r="4" stroke="rgba(233,93,33,0.35)" stroke-width="1" fill="rgba(233,93,33,0.06)"/>
+                <circle cx="170" cy="100" r="4" stroke="rgba(233,93,33,0.35)" stroke-width="1" fill="rgba(233,93,33,0.06)"/>
+                <!-- Chin detail -->
+                <path d="M80 175 L100 185 L120 175" stroke="rgba(233,93,33,0.2)" stroke-width="0.8" stroke-linecap="round"/>
+                <!-- Jaw side lines -->
+                <path d="M35 115 L40 155 L55 178" stroke="rgba(233,93,33,0.2)" stroke-width="0.8"/>
+                <path d="M165 115 L160 155 L145 178" stroke="rgba(233,93,33,0.2)" stroke-width="0.8"/>
+            </svg>
             <h1 class="hero-title">
                 TECH<br>
                 <span class="text-orange">BRI</span><span class="text-green">DGE</span>
@@ -422,33 +456,23 @@
             <div class="product-showcase-label">Our Products</div>
             <div class="product-grid">
                 <div class="product-card">
-                    <div class="product-video-cover" data-video="product-mouse.mp4">
-                        <img src="poster-mouse.jpg" alt="LuGy 智能鼠标" loading="lazy">
+                    <div class="product-video-cover" data-video="product-case.mp4">
+                        <img src="poster-case.jpg" alt="AI 手机壳" loading="lazy">
                         <div class="product-play"><svg viewBox="0 0 24 24"><polygon points="8,5 19,12 8,19"/></svg></div>
                     </div>
                     <div class="product-info">
-                        <div class="product-name">LuGy 智能鼠标</div>
-                        <div class="product-desc">AI 智能硬件，支持 OEM/ODM</div>
+                        <div class="product-name">AI 手机壳</div>
+                        <div class="product-desc">科技感保护壳</div>
                     </div>
                 </div>
                 <div class="product-card">
                     <div class="product-video-cover" data-video="product-badge.mp4">
-                        <img src="poster-badge.jpg" alt="智能吧唧" loading="lazy">
+                        <img src="poster-badge.jpg" alt="泡泡吧唧" loading="lazy">
                         <div class="product-play"><svg viewBox="0 0 24 24"><polygon points="8,5 19,12 8,19"/></svg></div>
                     </div>
                     <div class="product-info">
-                        <div class="product-name">智能吧唧</div>
+                        <div class="product-name">泡泡吧唧</div>
                         <div class="product-desc">创意科技周边</div>
-                    </div>
-                </div>
-                <div class="product-card">
-                    <div class="product-video-cover" data-video="product-case.mp4">
-                        <img src="poster-case.jpg" alt="智能手机壳" loading="lazy">
-                        <div class="product-play"><svg viewBox="0 0 24 24"><polygon points="8,5 19,12 8,19"/></svg></div>
-                    </div>
-                    <div class="product-info">
-                        <div class="product-name">智能手机壳</div>
-                        <div class="product-desc">科技感保护壳</div>
                     </div>
                 </div>
             </div>
