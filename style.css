@@ -1872,19 +1872,28 @@ footer::before {
 }
 
 /* ========== WECHAT LINK (extracted from inline styles) ========== */
-.wechat-link-wrapper {
-    margin-top: 24px;
+.connect-actions {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
 }
 
-.wechat-link {
-    font-family: var(--font-mono);
-    font-size: 13px;
-    color: var(--text-warm-grey);
-    transition: color 0.3s;
+.connect-btn {
+    margin-top: 0;
+    margin-bottom: 0;
 }
 
-.wechat-link:hover {
-    color: var(--orange-main);
+.connect-btn-outline {
+    background: transparent;
+    border: 1px solid var(--border-dark);
+    color: var(--text-sand);
+}
+
+.connect-btn-outline:hover {
+    background: rgba(255,255,255,0.05);
+    border-color: var(--text-warm-grey);
+    color: var(--text-warm-white);
 }
 
 .wechat-qr-img {

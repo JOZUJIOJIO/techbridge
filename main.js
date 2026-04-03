@@ -156,24 +156,31 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
     });
 })();
 
-// === 6. Newsletter Form (A1: moved from inline onsubmit) ===
+// === 6. Video Cover Click Handlers ===
 (function() {
-    var form = document.getElementById('newsletterForm');
-    if (!form) return;
-    form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        var btn = form.querySelector('.newsletter-btn');
-        var input = form.querySelector('.newsletter-input');
-        if (btn) {
-            btn.textContent = '即将上线 ✦';
-            btn.style.background = 'var(--green-main)';
-            btn.disabled = true;
-        }
-        if (input) {
-            input.disabled = true;
-            input.value = '';
-            input.placeholder = '通讯功能即将上线，敬请期待';
-        }
+    // Topic videos → open Bilibili
+    document.querySelectorAll('.video-cover[data-bvid]').forEach(function(cover) {
+        cover.addEventListener('click', function() {
+            var bvid = cover.getAttribute('data-bvid');
+            if (bvid) window.open('https://www.bilibili.com/video/' + bvid, '_blank');
+        });
+    });
+
+    // Product videos → play mp4 inline
+    document.querySelectorAll('.product-video-cover[data-video]').forEach(function(cover) {
+        cover.addEventListener('click', function() {
+            var src = cover.getAttribute('data-video');
+            if (!src || cover.classList.contains('playing')) return;
+            cover.classList.add('playing');
+            var video = document.createElement('video');
+            video.src = src;
+            video.controls = true;
+            video.autoplay = true;
+            video.playsInline = true;
+            video.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:2;background:#000;';
+            cover.style.position = 'relative';
+            cover.appendChild(video);
+        });
     });
 })();
 
