@@ -158,11 +158,17 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
 
 // === 6. Video Cover Click Handlers ===
 (function() {
-    // Topic videos → open Bilibili
-    document.querySelectorAll('.video-cover[data-bvid]').forEach(function(cover) {
+    // Topic videos → embed Bilibili player inline (no danmaku)
+    document.querySelectorAll('[data-bvid]').forEach(function(cover) {
         cover.addEventListener('click', function() {
             var bvid = cover.getAttribute('data-bvid');
-            if (bvid) window.open('https://www.bilibili.com/video/' + bvid, '_blank');
+            if (!bvid || cover.classList.contains('playing')) return;
+            cover.classList.add('playing');
+            var iframe = document.createElement('iframe');
+            iframe.src = 'https://player.bilibili.com/player.html?bvid=' + bvid + '&autoplay=1&danmaku=0&high_quality=1';
+            iframe.setAttribute('allowfullscreen', 'true');
+            iframe.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;border:none;z-index:2;';
+            cover.appendChild(iframe);
         });
     });
 
