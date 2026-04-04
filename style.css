@@ -2219,6 +2219,23 @@ footer::before {
     line-height: 2.2;
 }
 
+.brand-promo-video {
+    margin-top: 48px;
+    width: 100%;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 40px rgba(233, 93, 33, 0.15);
+}
+
+.brand-promo-video video {
+    width: 100%;
+    display: block;
+    border-radius: 16px;
+}
+
 /* ========== WECHAT LINK (extracted from inline styles) ========== */
 .connect-actions {
     display: flex;
