@@ -284,4 +284,21 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
     }, { passive: true });
 })();
 
+// === 9. Hero background video — play 3 times then fade out ===
+(function() {
+    var video = document.getElementById('heroBgVideo');
+    if (!video) return;
+    var playCount = 0;
+    var maxPlays = 3;
+
+    video.addEventListener('ended', function() {
+        playCount++;
+        if (playCount < maxPlays) {
+            video.play();
+        } else {
+            video.classList.add('fade-out');
+        }
+    });
+})();
+
 // Command Palette is handled by jarvis-hud.js

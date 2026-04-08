@@ -186,6 +186,11 @@ a { text-decoration: none; color: inherit; }
     z-index: 0;
     animation: heroBreathe 12s ease-in-out infinite;
     filter: brightness(0.45) saturate(0.8);
+    transition: opacity 1.5s ease;
+}
+
+.hero-bg-video.fade-out {
+    opacity: 0;
 }
 
 @keyframes heroBreathe {
