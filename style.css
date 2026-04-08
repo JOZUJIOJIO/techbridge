@@ -224,15 +224,6 @@ a { text-decoration: none; color: inherit; }
         );
 }
 
-/* 头盔边框细线 — 微妙的 HUD 感 */
-.hero-visor::before {
-    content: '';
-    position: absolute;
-    inset: 3% 5%;
-    border: 1px solid rgba(233, 93, 33, 0.08);
-    border-radius: 45% 45% 42% 42%;
-    pointer-events: none;
-}
 
 /* Jarvis HUD Canvas — must be above video + overlay */
 .hero-canvas {
