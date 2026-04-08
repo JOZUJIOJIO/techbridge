@@ -176,6 +176,59 @@ a { text-decoration: none; color: inherit; }
     background-color: #0a0a0a;
 }
 
+/* Hero background video — breathing sway */
+.hero-bg-video {
+    position: absolute;
+    inset: -5%;
+    width: 110%;
+    height: 110%;
+    object-fit: cover;
+    z-index: 0;
+    animation: heroBreathe 12s ease-in-out infinite;
+    filter: brightness(0.45) saturate(0.8);
+}
+
+@keyframes heroBreathe {
+    0%   { transform: scale(1.00) translate(0, 0); }
+    20%  { transform: scale(1.03) translate(-0.5%, 0.3%); }
+    45%  { transform: scale(1.01) translate(0.4%, -0.5%); }
+    70%  { transform: scale(1.04) translate(-0.3%, 0.2%); }
+    100% { transform: scale(1.00) translate(0, 0); }
+}
+
+/* Helmet visor vignette overlay */
+.hero-visor {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background:
+        /* 头盔上下边缘重暗角 */
+        linear-gradient(to bottom,
+            rgba(0,0,0,0.7) 0%,
+            transparent 18%,
+            transparent 82%,
+            rgba(0,0,0,0.7) 100%
+        ),
+        /* 左右边缘弧形暗角 — 模拟头盔开口 */
+        radial-gradient(
+            ellipse 90% 75% at 50% 50%,
+            transparent 55%,
+            rgba(0,0,0,0.5) 75%,
+            rgba(0,0,0,0.85) 100%
+        );
+}
+
+/* 头盔边框细线 — 微妙的 HUD 感 */
+.hero-visor::before {
+    content: '';
+    position: absolute;
+    inset: 3% 5%;
+    border: 1px solid rgba(233, 93, 33, 0.08);
+    border-radius: 45% 45% 42% 42%;
+    pointer-events: none;
+}
+
 /* Jarvis HUD Canvas — must be above video + overlay */
 .hero-canvas {
     position: absolute;
