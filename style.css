@@ -294,26 +294,26 @@ a { text-decoration: none; color: inherit; }
 .text-green { color: var(--green-main); }
 
 .hero-subtitle {
-    margin-top: 40px;
+    margin-top: 20px;
     font-family: var(--font-cn-display);
-    font-size: 20px;
+    font-size: 22px;
     font-weight: 400;
-    color: var(--text-warm-grey);
+    color: var(--text-sand);
     letter-spacing: 0.1em;
-    animation: fadeInUp 1s ease-out 0.2s forwards;
+    animation: fadeInUp 1s ease-out 0.25s forwards;
     opacity: 0;
 }
 
 .hero-subtitle-en {
+    margin-top: 40px;
     font-family: var(--font-en-display);
-    font-size: 15px;
+    font-size: 13px;
     font-weight: 400;
     color: var(--text-warm-grey);
-    letter-spacing: 0.15em;
+    letter-spacing: 0.25em;
     text-transform: uppercase;
-    margin-bottom: 12px;
-    animation: fadeInUp 1s ease-out 0.15s forwards;
     opacity: 0;
+    animation: fadeInUp 1s ease-out 0.15s forwards;
 }
 
 .hero-bar {
@@ -569,6 +569,7 @@ a { text-decoration: none; color: inherit; }
 .highlights-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: 1fr;
     gap: 12px;
 }
 
@@ -578,6 +579,18 @@ a { text-decoration: none; color: inherit; }
     overflow: hidden;
     aspect-ratio: 3/2;
     cursor: pointer;
+}
+
+/* Magazine-style: first two items span 2 columns for visual hierarchy */
+.highlight-item:nth-child(1) {
+    grid-column: span 2;
+    grid-row: span 2;
+    aspect-ratio: auto;
+}
+
+.highlight-item:nth-child(2) {
+    grid-column: span 2;
+    aspect-ratio: 2/1;
 }
 
 .highlight-item img {
@@ -2349,12 +2362,12 @@ footer::before {
 .brand-promo-video {
     margin-top: 48px;
     width: 100%;
-    max-width: 400px;
+    max-width: 620px;
     margin-left: auto;
     margin-right: auto;
     border-radius: 16px;
     overflow: hidden;
-    box-shadow: 0 8px 40px rgba(233, 93, 33, 0.15);
+    box-shadow: 0 12px 48px rgba(233, 93, 33, 0.18), 0 0 80px rgba(0, 140, 140, 0.08);
 }
 
 .brand-promo-video video {
@@ -2466,6 +2479,8 @@ footer::before {
     .section-highlights { padding: 48px 20px 0; }
     .highlights-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
     .highlight-item { border-radius: 8px; }
+    .highlight-item:nth-child(1) { grid-column: span 1; grid-row: span 1; aspect-ratio: 3/2; }
+    .highlight-item:nth-child(2) { grid-column: span 1; aspect-ratio: 3/2; }
     .highlight-caption { opacity: 1; transform: translateY(0); font-size: 10px; padding: 20px 10px 10px; }
     .seen-in { padding: 48px 20px; }
     .seen-in-list { font-size: 13px; }
