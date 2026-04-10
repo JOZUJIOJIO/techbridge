@@ -2090,10 +2090,7 @@ footer::before {
 /* 4. Topic video 3D tilt */
 .topic-video {
     transform-style: preserve-3d;
-    perspective: 800px;
-}
-
-.topic-video:hover {
+    transition: transform 0.15s ease-out;
     transform: perspective(800px) rotateY(var(--rx, 0deg)) rotateX(var(--ry, 0deg));
 }
 
@@ -2202,19 +2199,21 @@ footer::before {
 
 /* 10. Section divider pulse on scroll-in */
 .section-divider {
-    transition: opacity 0.6s;
-    opacity: 0.5;
+    transition: opacity 0.6s, height 0.6s;
+    opacity: 0.4;
+    height: 1px;
 }
 
 .section-divider.visible {
     opacity: 1;
-    animation: dividerGlow 1.5s ease forwards;
+    height: 2px;
+    animation: dividerGlow 1.8s ease forwards;
 }
 
 @keyframes dividerGlow {
-    0% { box-shadow: none; }
-    50% { box-shadow: 0 0 20px rgba(233,93,33,0.3); }
-    100% { box-shadow: none; }
+    0% { background: linear-gradient(90deg, transparent, var(--border-dark), rgba(233,93,33,0.3), var(--border-dark), transparent); filter: none; }
+    40% { background: linear-gradient(90deg, transparent, rgba(233,93,33,0.4), rgba(0,140,140,0.5), rgba(233,93,33,0.4), transparent); filter: drop-shadow(0 0 6px rgba(233,93,33,0.4)); }
+    100% { background: linear-gradient(90deg, transparent, var(--border-dark), rgba(233,93,33,0.3), var(--border-dark), transparent); filter: none; }
 }
 
 /* 11. Timeline dot pulse animation */

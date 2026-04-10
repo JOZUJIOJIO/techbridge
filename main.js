@@ -172,6 +172,23 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
         });
     });
 
+    // Latest videos → play mp4 inline from cover
+    document.querySelectorAll('.latest-cover-wrap[data-video]').forEach(function(cover) {
+        cover.addEventListener('click', function() {
+            var src = cover.getAttribute('data-video');
+            if (!src || cover.classList.contains('playing')) return;
+            cover.classList.add('playing');
+            var video = document.createElement('video');
+            video.src = src;
+            video.controls = true;
+            video.autoplay = true;
+            video.playsInline = true;
+            video.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:2;background:#000;';
+            cover.style.position = 'relative';
+            cover.appendChild(video);
+        });
+    });
+
     // Product videos → play mp4 inline
     document.querySelectorAll('.product-video-cover[data-video]').forEach(function(cover) {
         cover.addEventListener('click', function() {
@@ -298,6 +315,23 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
         } else {
             video.classList.add('fade-out');
         }
+    });
+})();
+
+// === 10. Topic video 3D tilt on mousemove ===
+(function() {
+    document.querySelectorAll('.topic-video').forEach(function(card) {
+        card.addEventListener('mousemove', function(e) {
+            var rect = card.getBoundingClientRect();
+            var x = (e.clientX - rect.left) / rect.width - 0.5;
+            var y = (e.clientY - rect.top) / rect.height - 0.5;
+            card.style.setProperty('--rx', (x * 6) + 'deg');
+            card.style.setProperty('--ry', (-y * 6) + 'deg');
+        });
+        card.addEventListener('mouseleave', function() {
+            card.style.setProperty('--rx', '0deg');
+            card.style.setProperty('--ry', '0deg');
+        });
     });
 })();
 
