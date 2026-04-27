@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>硅基物语 Silicon Story｜会员小程序原型</title>
+  <meta name="description" content="硅基物语 Silicon Story 微信小程序可测试原型。场景诊断、智能议事、行动方案、个人数字资产、轻社交和会员私域闭环。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="silicon-story-app.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="desktop-rail" aria-label="产品导航">
+      <button class="brand-mark" data-tab="scenes" aria-label="硅基物语首页">SS</button>
+      <button class="rail-item active" data-tab="scenes"><span>问</span><b>场景</b></button>
+      <button class="rail-item" data-tab="feed"><span>圈</span><b>动态</b></button>
+      <button class="rail-item" data-tab="council"><span>议</span><b>议事</b></button>
+      <button class="rail-item" data-tab="assets"><span>档</span><b>档案</b></button>
+      <button class="rail-item" data-tab="membership"><span>员</span><b>会员</b></button>
+    </aside>
+
+    <main class="mini-app" aria-live="polite">
+      <header class="topbar">
+        <div class="brand-lockup">
+          <button class="app-icon" data-tab="scenes" aria-label="返回首页">S</button>
+          <div>
+            <b>硅基物语</b>
+            <span>Silicon Story</span>
+          </div>
+        </div>
+        <button class="ghost-button" id="openSearch" aria-label="打开快速行动">⌘K</button>
+      </header>
+
+      <section class="view active" id="view-scenes">
+        <div class="hero-card art-card">
+          <div class="eyebrow">SILICON STORY</div>
+          <h1>你现在最想解决什么？</h1>
+          <p>先选场景，再帮你识别真正的问题。每一次诊断、议事和行动都会沉淀成你的个人数字资产。</p>
+        </div>
+
+        <div class="scene-grid" id="sceneGrid"></div>
+
+        <div class="section-head">
+          <h2>本周议题</h2>
+          <button class="text-button" data-tab="council">进入议事</button>
+        </div>
+        <button class="topic-card pressable" id="weeklyTopic">
+          <span class="solid-icon orange">行</span>
+          <div>
+            <b>如何把个人能力变成可付费产品？</b>
+            <p>适合赚钱增长和 OPC 一人公司会员，本周会沉淀为案例库。</p>
+          </div>
+        </button>
+      </section>
+
+      <section class="view" id="view-diagnosis">
+        <button class="back-button" data-tab="scenes">返回场景</button>
+        <div class="hero-card compact">
+          <div class="eyebrow" id="diagnosisKicker">SCENE</div>
+          <h1 id="diagnosisTitle">场景诊断</h1>
+          <p id="diagnosisDesc">回答几个问题，系统会先识别你的真实卡点。</p>
+        </div>
+        <div class="diagnosis-panel">
+          <div class="progress-track"><span id="diagnosisProgress"></span></div>
+          <h2 id="questionTitle"></h2>
+          <div class="choice-list" id="choiceList"></div>
+        </div>
+        <div class="result-card hidden" id="diagnosisResult">
+          <span class="solid-icon green">档</span>
+          <div>
+            <b id="resultTitle">识别结果</b>
+            <p id="resultText"></p>
+          </div>
+          <button class="primary-button" id="startCouncilFromResult">发起圆桌议事</button>
+        </div>
+      </section>
+
+      <section class="view" id="view-feed">
+        <div class="hero-card compact feed-art">
+          <div class="eyebrow">SILICON CIRCLE</div>
+          <h1>硅基朋友圈</h1>
+          <p>马斯克、巴菲特、苏格拉底等人物风格会发布观点。你可以评论，他们会按各自的思维方式回复你。</p>
+          <p class="simulation-note">内容由 AI 模拟生成，不代表人物本人。</p>
+        </div>
+        <form class="feed-composer" id="feedComposer">
+          <textarea id="feedInput" placeholder="发布一个观点：关于赚钱、OPC、AI、关系都可以。"></textarea>
+          <div class="feed-composer-actions">
+            <span>真人观点也可能被名人风格回复</span>
+            <button class="primary-button" type="submit">发布</button>
+          </div>
+        </form>
+        <div class="section-head">
+          <h2>正在发生</h2>
+          <button class="text-button" id="refreshFeed">随机刷新</button>
+        </div>
+        <div class="feed-list" id="feedList"></div>
+      </section>
+
+      <section class="view" id="view-council">
+        <div class="section-head">
+          <div>
+            <h2>圆桌议事</h2>
+            <p>多视角判断，不做泛泛回答。</p>
+          </div>
+          <button class="text-button" id="saveCouncil">沉淀入档</button>
+        </div>
+        <div class="agent-strip" id="agentStrip"></div>
+        <div class="chat-panel" id="chatPanel"></div>
+        <div class="composer">
+          <input id="councilInput" type="text" value="我想把内容影响力转化为稳定会员收入，第一步该做什么？" aria-label="输入议事问题">
+          <button class="primary-button" id="sendCouncil">议事</button>
+        </div>
+      </section>
+
+      <section class="view" id="view-plan">
+        <button class="back-button" data-tab="council">返回议事</button>
+        <div class="hero-card compact action-art">
+          <div class="eyebrow">ACTION PLAN</div>
+          <h1>7 天行动方案</h1>
+          <p>不是收藏答案，而是把洞察变成可执行动作。</p>
+        </div>
+        <div class="plan-list" id="planList"></div>
+        <button class="primary-button wide" id="finishPlan">完成并写入档案</button>
+      </section>
+
+      <section class="view" id="view-assets">
+        <div class="hero-card compact asset-art">
+          <div class="eyebrow">MY ASSETS</div>
+          <h1>我的数字资产</h1>
+          <p>你在这里的聊天、诊断、行动和复盘都会长期沉淀。</p>
+        </div>
+        <div class="metric-grid">
+          <div class="metric"><strong id="metricQuestions">28</strong><span>问题资产</span></div>
+          <div class="metric"><strong id="metricCouncils">16</strong><span>议事记录</span></div>
+          <div class="metric"><strong id="metricPlans">7</strong><span>行动方案</span></div>
+        </div>
+        <div class="section-head">
+          <h2>成长时间线</h2>
+          <button class="text-button" id="generateReview">生成复盘</button>
+        </div>
+        <div class="timeline" id="timeline"></div>
+        <button class="secondary-button wide" data-tab="social">编辑社交档案</button>
+      </section>
+
+      <section class="view" id="view-social">
+        <button class="back-button" data-tab="assets">返回档案</button>
+        <div class="profile-card">
+          <div class="avatar">YU</div>
+          <div>
+            <h1>社交档案</h1>
+            <p>只做围绕问题、项目和资源的克制连接。</p>
+          </div>
+        </div>
+        <form class="profile-form" id="profileForm">
+          <label>昵称<input name="name" value="叶先生"></label>
+          <label>当前身份<input name="role" value="AI 内容与一人公司实践者"></label>
+          <label>正在解决的问题<textarea name="problem">如何把内容影响力转化为稳定会员收入。</textarea></label>
+          <label>我能提供<textarea name="offer">AI 内容系统、个人品牌、知识付费产品设计。</textarea></label>
+          <label>我想认识<textarea name="need">有私域运营经验、正在做 OPC 的会员。</textarea></label>
+          <label class="toggle-row"><span>愿意被同频会员推荐</span><input type="checkbox" name="visible" checked></label>
+          <button class="primary-button wide" type="submit">保存社交档案</button>
+        </form>
+        <div class="section-head">
+          <h2>同频会员</h2>
+          <span>每周最多 3 位</span>
+        </div>
+        <div class="member-list" id="memberList"></div>
+      </section>
+
+      <section class="view" id="view-membership">
+        <div class="price-card">
+          <div class="eyebrow">MEMBERSHIP</div>
+          <h1>Silicon Story 年度会员</h1>
+          <div class="price">￥699</div>
+          <p>场景诊断、圆桌议事、行动方案、个人数字档案、同频会员、企业微信社群。</p>
+          <button class="primary-button wide" id="openPay">开通年度会员</button>
+        </div>
+        <div class="benefit-list">
+          <div class="benefit"><span class="solid-icon green">企</span><div><b>企业微信会员助理</b><p>支付成功后添加会员助理，核验后进入会员群。</p></div></div>
+          <div class="benefit"><span class="solid-icon orange">档</span><div><b>你的资产不会清零</b><p>会员越久，问题库、方案库和推荐越准确。</p></div></div>
+          <div class="benefit"><span class="solid-icon green">人</span><div><b>少量真人社交</b><p>围绕项目、问题、资源进行匹配，不做泛社交。</p></div></div>
+        </div>
+      </section>
+
+      <nav class="bottom-tabs" aria-label="底部导航">
+        <button class="tab active" data-tab="scenes"><span>问</span><b>场景</b></button>
+        <button class="tab" data-tab="feed"><span>圈</span><b>动态</b></button>
+        <button class="tab" data-tab="council"><span>议</span><b>议事</b></button>
+        <button class="tab" data-tab="assets"><span>档</span><b>档案</b></button>
+        <button class="tab" data-tab="membership"><span>员</span><b>会员</b></button>
+      </nav>
+    </main>
+
+    <aside class="insight-panel">
+      <div class="panel-card">
+        <span class="solid-icon green">AI</span>
+        <h2>当前建议</h2>
+        <p id="sideInsight">先从“赚钱增长”或“OPC 一人公司”开始，最容易形成付费价值和可传播案例。</p>
+      </div>
+      <div class="panel-card muted">
+        <h2>产品闭环</h2>
+        <ol>
+          <li>场景识别问题</li>
+          <li>人物圆桌议事</li>
+          <li>生成行动方案</li>
+          <li>沉淀个人档案</li>
+          <li>会员进入私域</li>
+        </ol>
+      </div>
+    </aside>
+  </div>
+
+  <div class="modal" id="payModal" aria-hidden="true">
+    <div class="modal-card">
+      <button class="modal-close" id="closePay" aria-label="关闭">×</button>
+      <div id="payStepOne">
+        <div class="eyebrow">WECHAT PAY DEMO</div>
+        <h2>确认开通年度会员</h2>
+        <p>这是可测试原型，不会发起真实支付。点击确认后会模拟支付成功，并进入企业微信闭环页面。</p>
+        <button class="primary-button wide" id="confirmPay">模拟支付成功</button>
+      </div>
+      <div id="payStepDone" class="hidden">
+        <div class="success-mark">✓</div>
+        <h2>会员已开通</h2>
+        <p>下一步添加“硅基物语会员助理”，核验会员身份后进入年度会员群。</p>
+        <div class="qr-demo">企微</div>
+        <button class="secondary-button wide" id="markWecom">我已添加会员助理</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="command" id="command">
+    <div class="command-box">
+      <input id="commandInput" type="text" placeholder="搜索：赚钱、OPC、档案、会员">
+      <div class="command-list" id="commandList"></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <script src="silicon-story-app.js"></script>
+</body>
+</html>
