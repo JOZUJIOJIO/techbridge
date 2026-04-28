@@ -2312,6 +2312,10 @@ footer::before {
     cursor: pointer;
 }
 
+.project-card:not(a) {
+    cursor: default;
+}
+
 .project-card:hover {
     border-color: var(--orange-main);
     transform: translateY(-4px);
