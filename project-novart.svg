@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" role="img" aria-label="">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#191714"/>
+      <stop offset=".44" stop-color="#2d2420"/>
+      <stop offset="1" stop-color="#102a2a"/>
+    </linearGradient>
+    <linearGradient id="paint" x1=".15" y1=".1" x2=".9" y2=".8">
+      <stop offset="0" stop-color="#ff8f4c"/>
+      <stop offset=".38" stop-color="#e95d21"/>
+      <stop offset=".7" stop-color="#20b2aa"/>
+      <stop offset="1" stop-color="#fffcf8"/>
+    </linearGradient>
+    <filter id="soft"><feGaussianBlur stdDeviation="18"/></filter>
+  </defs>
+  <rect width="1200" height="720" fill="url(#bg)"/>
+  <g filter="url(#soft)" opacity=".65">
+    <circle cx="295" cy="235" r="180" fill="#e95d21"/>
+    <circle cx="806" cy="240" r="240" fill="#008c8c"/>
+  </g>
+  <g transform="translate(130 86)">
+    <rect x="130" y="96" width="610" height="388" rx="32" fill="#fffcf8" opacity=".08" stroke="#fffcf8" stroke-opacity=".18"/>
+    <rect x="172" y="142" width="526" height="296" rx="20" fill="#111" opacity=".35"/>
+    <path d="M198 380 C292 210 365 355 442 244 C526 123 598 272 674 188 L674 438 L198 438 Z" fill="url(#paint)" opacity=".86"/>
+    <circle cx="312" cy="212" r="46" fill="#ff8f4c"/>
+    <circle cx="584" cy="318" r="30" fill="#20b2aa"/>
+  </g>
+  <g opacity=".4" stroke="#fffcf8" stroke-width="1.4">
+    <path d="M858 138 h160"/><path d="M858 188 h96"/><path d="M858 238 h206"/>
+    <path d="M790 502 h250"/><path d="M790 552 h150"/>
+  </g>
+  <g opacity=".55" fill="none" stroke="url(#paint)" stroke-width="12" stroke-linecap="round">
+    <path d="M824 450 C908 394 940 496 1034 430"/>
+    <path d="M854 492 C930 444 958 536 1048 484" opacity=".64"/>
+  </g>
+</svg>
