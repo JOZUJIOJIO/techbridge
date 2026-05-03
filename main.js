@@ -212,15 +212,15 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
     var modal = document.getElementById('wechatModal');
     if (!modal) return;
 
-    var openLink = document.getElementById('openWechatLink');
+    var openLinks = document.querySelectorAll('#openWechatLink, .open-wechat-link');
     var closeBtn = document.getElementById('wechatModalClose');
 
-    if (openLink) {
+    openLinks.forEach(function(openLink) {
         openLink.addEventListener('click', function(e) {
             e.preventDefault();
             modal.classList.add('open');
         });
-    }
+    });
     if (closeBtn) {
         closeBtn.addEventListener('click', function() { modal.classList.remove('open'); });
     }

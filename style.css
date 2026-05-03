@@ -330,6 +330,48 @@ a { text-decoration: none; color: inherit; }
     opacity: 0;
 }
 
+.hero-actions {
+    display: flex;
+    gap: 14px;
+    margin-top: 28px;
+    justify-content: center;
+    flex-wrap: wrap;
+    animation: fadeInUp 1s ease-out 0.45s forwards;
+    opacity: 0;
+}
+
+.hero-action {
+    min-width: 148px;
+    min-height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    padding: 0 18px;
+    color: var(--text-warm-white);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    transition: transform 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+    backdrop-filter: blur(12px);
+}
+
+.hero-action:hover {
+    transform: translateY(-2px);
+}
+
+.hero-action-primary {
+    background: rgba(233, 93, 33, 0.82);
+    border: 1px solid rgba(255, 143, 76, 0.5);
+    box-shadow: 0 12px 32px rgba(233, 93, 33, 0.22);
+}
+
+.hero-action-secondary {
+    background: rgba(255, 252, 248, 0.08);
+    border: 1px solid rgba(255, 252, 248, 0.18);
+}
+
 .scroll-hint {
     position: absolute;
     bottom: 40px;
@@ -2324,6 +2366,25 @@ footer::before {
     cursor: pointer;
 }
 
+.project-card-featured {
+    grid-column: 1 / -1;
+    min-height: 340px;
+}
+
+.project-card-featured .project-card-content {
+    min-height: 340px;
+    max-width: 640px;
+}
+
+.project-card-featured .project-name {
+    font-size: 28px;
+}
+
+.project-card-featured .project-desc {
+    max-width: 560px;
+    font-size: 15px;
+}
+
 .project-card::before {
     content: "";
     position: absolute;
@@ -2407,7 +2468,6 @@ footer::before {
 
 .project-tag {
     display: inline-block;
-    align-self: flex-start;
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.08em;
@@ -2417,6 +2477,109 @@ footer::before {
     backdrop-filter: blur(10px);
     padding: 4px 10px;
     border-radius: 6px;
+}
+
+.project-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.project-status,
+.project-action {
+    display: inline-flex;
+    align-items: center;
+    min-height: 25px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    backdrop-filter: blur(10px);
+}
+
+.status-live {
+    color: var(--green-light);
+    background: rgba(0, 140, 140, 0.18);
+}
+
+.status-beta {
+    color: var(--orange-light);
+    background: rgba(233, 93, 33, 0.18);
+}
+
+.status-planned {
+    color: var(--text-sand);
+    background: rgba(255, 252, 248, 0.1);
+}
+
+.project-action {
+    color: var(--text-warm-white);
+    background: rgba(255, 252, 248, 0.1);
+}
+
+.project-cta {
+    margin-top: 22px;
+    border: 1px solid rgba(255, 252, 248, 0.08);
+    border-radius: 16px;
+    padding: 24px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    background:
+        linear-gradient(135deg, rgba(233, 93, 33, 0.13), rgba(0, 140, 140, 0.1)),
+        rgba(255, 252, 248, 0.035);
+}
+
+.project-cta-title {
+    font-family: 'Syne', 'Noto Sans SC', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-warm-white);
+}
+
+.project-cta-desc {
+    max-width: 640px;
+    margin-top: 8px;
+    color: var(--text-sand);
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+.project-cta-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.project-cta-btn {
+    min-width: 116px;
+    min-height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    padding: 0 16px;
+    background: var(--orange-main);
+    color: var(--text-warm-white);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 700;
+    transition: transform 0.25s ease, background 0.25s ease;
+}
+
+.project-cta-btn:hover {
+    transform: translateY(-2px);
+    background: var(--orange-light);
+}
+
+.project-cta-btn-outline {
+    background: rgba(255, 252, 248, 0.08);
+    border: 1px solid rgba(255, 252, 248, 0.14);
 }
 
 @media (max-width: 768px) {
@@ -2434,8 +2597,24 @@ footer::before {
     .project-card-content {
         min-height: 240px;
     }
+    .project-card-featured,
+    .project-card-featured .project-card-content {
+        min-height: 280px;
+    }
+    .project-card-featured .project-name {
+        font-size: 24px;
+    }
     .project-card-content {
         padding: 28px 24px 24px;
+    }
+    .project-cta {
+        padding: 22px 20px;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .project-cta-actions {
+        width: 100%;
+        justify-content: flex-start;
     }
 }
 
