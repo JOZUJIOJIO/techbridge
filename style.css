@@ -2381,6 +2381,24 @@ footer::before {
     font-size: 15px;
 }
 
+.project-card-wide {
+    grid-column: 1 / -1;
+    min-height: 300px;
+}
+
+.project-card-wide .project-card-content {
+    min-height: 300px;
+    max-width: 620px;
+}
+
+.project-card-wide .project-name {
+    font-size: 24px;
+}
+
+.project-card-wide .project-desc {
+    max-width: 560px;
+}
+
 .project-card::before {
     content: "";
     position: absolute;
@@ -2594,6 +2612,8 @@ footer::before {
         min-height: 240px;
     }
     .project-card-featured,
+    .project-card-wide,
+    .project-card-wide .project-card-content,
     .project-card-featured .project-card-content {
         min-height: 280px;
     }
