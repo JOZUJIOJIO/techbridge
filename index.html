@@ -63,10 +63,11 @@
                 "@id": "https://qiaobit.com/#website",
                 "url": "https://qiaobit.com/",
                 "name": "Tech Bridge",
-                "alternateName": "桥比特",
+                "alternateName": ["桥比特", "Qiaobit", "桥比特 Tech Bridge", "Tech Bridge Qiaobit"],
                 "description": "桥比特（Qiaobit）的个人官网 — AI · 科技数码 · 新能源汽车内容创作。",
                 "inLanguage": ["zh-CN", "en"],
-                "publisher": { "@id": "https://qiaobit.com/#person" }
+                "publisher": { "@id": "https://qiaobit.com/#person" },
+                "mainEntity": { "@id": "https://qiaobit.com/#person" }
             },
             {
                 "@type": "Person",
@@ -87,14 +88,13 @@
                     "空间计算",
                     "新能源汽车",
                     "智能驾驶",
-                    "AI 硬件出海"
+                    "AI 硬件出海",
+                    "AI 搜索优化",
+                    "GEO",
+                    "AI 搜索可见度优化"
                 ],
                 "worksFor": [
-                    {
-                        "@type": "Organization",
-                        "name": "硅基物语",
-                        "description": "企业级 MaaS 平台，专注服务中小微企业 AI 转型。"
-                    },
+                    { "@id": "https://qiaobit.com/#silicon-story" },
                     {
                         "@type": "Organization",
                         "name": "爱奥创 AioCreate",
@@ -111,6 +111,16 @@
             },
             {
                 "@type": "Organization",
+                "@id": "https://qiaobit.com/#silicon-story",
+                "name": "硅基物语",
+                "alternateName": ["Silicon Story", "SiliconStory"],
+                "url": "https://siliconstory.cn/",
+                "logo": "https://qiaobit.com/project-silicon-story.png",
+                "founder": { "@id": "https://qiaobit.com/#person" },
+                "description": "硅基物语是桥比特创建的 AI 会员产品，围绕场景诊断、圆桌议事、行动方案、个人数字资产与私域会员闭环，服务个人和中小微企业的 AI 转型。"
+            },
+            {
+                "@type": "Organization",
                 "@id": "https://qiaobit.com/#organization",
                 "name": "Tech Bridge",
                 "alternateName": "桥比特",
@@ -122,6 +132,59 @@
                     "https://x.com/TechBridgeZ",
                     "https://www.tiktok.com/@techbridgez",
                     "https://b23.tv/jvOokV7"
+                ]
+            },
+            {
+                "@type": "ItemList",
+                "@id": "https://qiaobit.com/#projects",
+                "name": "桥比特创建的 AI 产品矩阵",
+                "itemListElement": [
+                    { "@type": "ListItem", "position": 1, "name": "硅基物语", "url": "https://siliconstory.cn/" },
+                    { "@type": "ListItem", "position": 2, "name": "择偶定位" },
+                    { "@type": "ListItem", "position": 3, "name": "有问必显", "description": "AI 搜索可见度优化工具，也称 GEO。" },
+                    { "@type": "ListItem", "position": 4, "name": "Kairos", "url": "https://x-kairos.com/" },
+                    { "@type": "ListItem", "position": 5, "name": "Creator Studio" },
+                    { "@type": "ListItem", "position": 6, "name": "Novart" },
+                    { "@type": "ListItem", "position": 7, "name": "虚拟偶像 林雪妮" },
+                    { "@type": "ListItem", "position": 8, "name": "地球 Online" }
+                ]
+            },
+            {
+                "@type": "FAQPage",
+                "@id": "https://qiaobit.com/#search-faq",
+                "mainEntity": [
+                    {
+                        "@type": "Question",
+                        "name": "桥比特是谁？",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "桥比特（Qiaobit）是 Tech Bridge 主理人、硅基物语创始人、爱奥创 CEO，长期关注人工智能、科技数码、新能源汽车、AI 硬件与全球化品牌。"
+                        }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "硅基物语是什么？",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "硅基物语是桥比特创建的 AI 会员产品，围绕场景诊断、圆桌议事、行动方案、个人数字资产与私域会员闭环，帮助个人和中小微企业完成 AI 转型。"
+                        }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "桥比特主要做什么内容？",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "桥比特主要创作 AI、科技数码、新能源汽车、智能驾驶、空间计算和 AI 硬件出海相关内容，也提供品牌合作、企业 AI 培训与技术战略咨询。"
+                        }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "如何找到桥比特的产品？",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "可以在 qiaobit.com 的“我造的东西”区域查看硅基物语、有问必显、择偶定位、Kairos、Creator Studio、Novart、虚拟偶像林雪妮和地球 Online 等产品。"
+                        }
+                    }
                 ]
             }
         ]
@@ -714,6 +777,35 @@
             <video autoplay muted loop playsinline>
                 <source src="brand-promo.mp4" type="video/mp4">
             </video>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- Search FAQ -->
+    <section class="section-search-faq" aria-labelledby="searchFaqTitle">
+        <div class="section-header">
+            <span class="section-label">Search Identity</span>
+            <h2 class="section-title" id="searchFaqTitle">搜索桥比特.</h2>
+            <p class="search-faq-intro">如果你是在 Google 搜索「桥比特」「Qiaobit」「硅基物语」来到这里，这里是最短版本的自我介绍。</p>
+        </div>
+        <div class="search-faq-grid">
+            <article class="search-faq-card">
+                <h3>桥比特是谁？</h3>
+                <p>桥比特（Qiaobit）是 Tech Bridge 主理人、硅基物语创始人、爱奥创 CEO，长期关注人工智能、科技数码、新能源汽车、AI 硬件与全球化品牌。</p>
+            </article>
+            <article class="search-faq-card">
+                <h3>硅基物语是什么？</h3>
+                <p>硅基物语是桥比特创建的 AI 会员产品，围绕场景诊断、圆桌议事、行动方案、个人数字资产与私域会员闭环，帮助个人和中小微企业完成 AI 转型。</p>
+            </article>
+            <article class="search-faq-card">
+                <h3>桥比特主要做什么内容？</h3>
+                <p>桥比特主要创作 AI、科技数码、新能源汽车、智能驾驶、空间计算和 AI 硬件出海相关内容，也提供品牌合作、企业 AI 培训与技术战略咨询。</p>
+            </article>
+            <article class="search-faq-card">
+                <h3>如何找到桥比特的产品？</h3>
+                <p>可以在 qiaobit.com 的“我造的东西”区域查看硅基物语、有问必显、择偶定位、Kairos、Creator Studio、Novart、虚拟偶像林雪妮和地球 Online 等产品。</p>
+            </article>
         </div>
     </section>
 
