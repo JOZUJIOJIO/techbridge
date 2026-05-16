@@ -2399,6 +2399,17 @@ footer::before {
     max-width: 560px;
 }
 
+.project-card-consulting {
+    background:
+        linear-gradient(135deg, rgba(26, 26, 24, 0.96), rgba(43, 40, 34, 0.94)),
+        radial-gradient(circle at 78% 22%, rgba(233, 93, 33, 0.24), transparent 34%),
+        radial-gradient(circle at 18% 80%, rgba(0, 140, 140, 0.18), transparent 30%);
+}
+
+.project-card-consulting .project-card-content {
+    max-width: 680px;
+}
+
 .project-card::before {
     content: "";
     position: absolute;
