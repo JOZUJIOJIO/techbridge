@@ -2753,6 +2753,56 @@ footer::before {
     color: var(--text-warm-white);
 }
 
+.public-account-card {
+    width: min(420px, 88vw);
+    margin: 36px auto 0;
+    padding: 18px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    border: 1px solid rgba(255, 252, 248, 0.08);
+    border-radius: 18px;
+    background: rgba(255, 252, 248, 0.035);
+}
+
+.public-account-copy {
+    flex: 1;
+    min-width: 0;
+    text-align: left;
+}
+
+.public-account-copy span {
+    display: block;
+    margin-bottom: 6px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--orange-main);
+    text-transform: uppercase;
+}
+
+.public-account-copy strong {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--text-warm-white);
+    font-size: 20px;
+}
+
+.public-account-copy p {
+    margin: 0;
+    color: var(--text-warm-grey);
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+.public-account-qr {
+    width: 118px;
+    height: 118px;
+    border-radius: 14px;
+    background: #fff;
+    object-fit: cover;
+}
+
 .wechat-qr-img {
     width: min(280px, 78vw);
     max-height: 70vh;
@@ -2852,6 +2902,17 @@ footer::before {
     .newsletter-title { font-size: 22px; }
     .newsletter-form { flex-direction: column; }
     .newsletter-input, .newsletter-btn { width: 100%; }
+    .public-account-card {
+        flex-direction: column;
+        text-align: center;
+    }
+    .public-account-copy {
+        text-align: center;
+    }
+    .public-account-qr {
+        width: 150px;
+        height: 150px;
+    }
     .belief-cn { font-size: 17px; }
     .belief-en { font-size: 14px; }
     footer { padding: 64px 20px 48px; }
