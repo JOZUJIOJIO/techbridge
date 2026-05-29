@@ -1431,7 +1431,7 @@ document.querySelectorAll('.product-video-cover').forEach(cover => {
         { icon: '🎯', label: '开启 Jarvis 交互', action: () => { window.location.href = 'jarvis-hud.html'; } },
         { icon: '▶️', label: 'YouTube 频道', shortcut: '↗', action: () => window.open('https://www.youtube.com/@The-Tech-Bridge','_blank') },
         { icon: '📺', label: 'Bilibili', shortcut: '↗', action: () => window.open('https://b23.tv/jvOokV7','_blank') },
-        { icon: '𝕏', label: 'X / Twitter', shortcut: '↗', action: () => window.open('https://x.com/TechBridgeZ','_blank') },
+        { icon: '𝕏', label: 'X / Twitter', shortcut: '↗', action: () => window.open('https://x.com/QiaoBitX','_blank') },
         { icon: '🎵', label: 'TikTok / 抖音', shortcut: '↗', action: () => window.open('https://www.tiktok.com/@techbridgez','_blank') },
         { icon: '🌐', label: '切换语言 / Toggle Language', action: () => { if (window._toggleLang) window._toggleLang(); } },
         { icon: '💬', label: '添加微信', action: () => { const m = document.querySelector('.wechat-modal'); if(m) m.classList.add('open'); } },
