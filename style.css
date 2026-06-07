@@ -2420,6 +2420,16 @@ footer::before {
         radial-gradient(circle at 18% 18%, rgba(255, 143, 76, 0.18), transparent 34%);
 }
 
+.project-card-sucaitong::before {
+    background:
+        linear-gradient(90deg, rgba(26, 26, 24, 0.9) 0%, rgba(26, 26, 24, 0.66) 38%, rgba(26, 26, 24, 0.2) 66%, rgba(26, 26, 24, 0.03) 100%),
+        radial-gradient(circle at 18% 18%, rgba(255, 143, 76, 0.14), transparent 34%);
+}
+
+.project-card-sucaitong .project-visual {
+    object-position: 76% center;
+}
+
 .project-card::after {
     content: "";
     position: absolute;
@@ -2674,6 +2684,27 @@ footer::before {
     }
     .project-card-featured .project-name {
         font-size: 24px;
+    }
+    .project-card-sucaitong .project-visual {
+        object-position: 84% center;
+    }
+    .project-card-sucaitong .project-card-content {
+        max-width: 42%;
+    }
+    .project-card-sucaitong .project-name {
+        font-size: 26px;
+        line-height: 1.16;
+    }
+    .project-card-sucaitong .project-desc {
+        display: none;
+    }
+    .project-card-sucaitong .project-meta {
+        gap: 6px;
+    }
+    .project-card-sucaitong .project-status,
+    .project-card-sucaitong .project-tag {
+        font-size: 10px;
+        letter-spacing: 0.04em;
     }
     .project-card-content {
         padding: 28px 24px 24px;
