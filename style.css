@@ -2827,11 +2827,13 @@ footer::before {
 }
 
 .public-account-qr {
+    display: block;
+    flex: 0 0 auto;
     width: 118px;
     height: 118px;
     border-radius: 14px;
     background: #fff;
-    object-fit: cover;
+    object-fit: contain;
 }
 
 .wechat-qr-img {
