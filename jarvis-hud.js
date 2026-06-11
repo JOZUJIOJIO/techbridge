@@ -1435,7 +1435,6 @@ document.querySelectorAll('.product-video-cover').forEach(cover => {
         { icon: '🎵', label: 'TikTok / 抖音', shortcut: '↗', action: () => window.open('https://www.tiktok.com/@techbridgez','_blank') },
         { icon: '🌐', label: '切换语言 / Toggle Language', action: () => { if (window._toggleLang) window._toggleLang(); } },
         { icon: '💬', label: '添加微信', action: () => { const m = document.querySelector('.wechat-modal'); if(m) m.classList.add('open'); } },
-        { icon: '☕', label: 'Buy Me a Coffee', shortcut: '↗', action: () => window.open('https://buymeacoffee.com/cyberbayes','_blank') },
     ];
 
     let activeIdx = 0;

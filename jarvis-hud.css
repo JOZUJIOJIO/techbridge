@@ -42,9 +42,9 @@
     right: 0;
     margin: 0 auto;
     z-index: var(--z-cursor);
-    border-color: #66bbff;
-    color: #88ccff;
-    box-shadow: 0 0 20px rgba(100,180,255,0.3);
+    border-color: #20B2AA;
+    color: #20B2AA;
+    box-shadow: 0 0 20px rgba(32,178,170,0.3);
     background: rgba(0,8,20,0.7);
 }
 
@@ -118,7 +118,7 @@
     width: 280px; height: 280px;
     transform: translate(-50%, -50%);
     border-radius: 50%;
-    border: 1px solid rgba(100,180,255,0.25);
+    border: 1px solid rgba(32,178,170,0.25);
     z-index: var(--z-hero-content);
     opacity: 0;
     pointer-events: none;
@@ -130,7 +130,7 @@
     position: absolute;
     inset: 0;
     border-radius: 50%;
-    background: conic-gradient(from 0deg, transparent 0%, transparent 70%, rgba(100,180,255,0.15) 100%);
+    background: conic-gradient(from 0deg, transparent 0%, transparent 70%, rgba(32,178,170,0.15) 100%);
     animation: radarSpin 4s linear infinite;
 }
 
@@ -139,7 +139,7 @@
     position: absolute;
     inset: 8px;
     border-radius: 50%;
-    border: 1px solid rgba(100,180,255,0.12);
+    border: 1px solid rgba(32,178,170,0.12);
 }
 
 @keyframes radarSpin {
@@ -158,7 +158,7 @@
     opacity: 0;
     transition: opacity 0.8s;
     font-family: var(--font-mono);
-    color: #88ccff;
+    color: #20B2AA;
 }
 
 .ar-panel-left {
@@ -179,13 +179,13 @@
     letter-spacing: 2px;
     margin-bottom: 10px;
     padding-bottom: 6px;
-    border-bottom: 1px solid rgba(100,180,255,0.2);
-    text-shadow: 0 0 10px rgba(100,180,255,0.5);
+    border-bottom: 1px solid rgba(32,178,170,0.2);
+    text-shadow: 0 0 10px rgba(32,178,170,0.5);
 }
 
 .ar-bar {
     height: 4px;
-    background: rgba(100,180,255,0.15);
+    background: rgba(32,178,170,0.15);
     border-radius: 2px;
     margin: 6px 0;
     overflow: hidden;
@@ -193,27 +193,27 @@
 
 .ar-bar-fill {
     height: 100%;
-    background: #88ccff;
+    background: #20B2AA;
     border-radius: 2px;
-    box-shadow: 0 0 8px rgba(100,180,255,0.4);
+    box-shadow: 0 0 8px rgba(32,178,170,0.4);
     animation: pulseBar 2s ease-in-out infinite;
 }
 
 @keyframes pulseBar {
     0%, 100% { opacity: 0.6; }
-    50% { opacity: 1; box-shadow: 0 0 15px rgba(100,180,255,0.6); }
+    50% { opacity: 1; box-shadow: 0 0 15px rgba(32,178,170,0.6); }
 }
 
 .ar-stat {
     font-size: 9px;
-    color: rgba(100,180,255,0.5);
+    color: rgba(32,178,170,0.5);
     letter-spacing: 1px;
     margin: 4px 0;
 }
 
 .ar-hex {
     font-size: 8px;
-    color: rgba(100,180,255,0.25);
+    color: rgba(32,178,170,0.25);
     line-height: 1.5;
     max-height: 80px;
     overflow: hidden;
@@ -288,13 +288,13 @@
     position: absolute;
     width: 40px;
     height: 40px;
-    border: 2px solid #88ccff;
+    border: 2px solid #20B2AA;
     border-radius: 50%;
     transform: translate(-50%, -50%);
     pointer-events: none;
     z-index: var(--z-ar-cursor);
     display: none;
-    box-shadow: 0 0 20px rgba(100,180,255,0.4);
+    box-shadow: 0 0 20px rgba(32,178,170,0.4);
     transition: width 0.1s, height 0.1s;
 }
 #arHandCursor::after {
@@ -327,22 +327,22 @@
 .ar-console-title {
     font-size: 9px;
     letter-spacing: 1.5px;
-    color: #88ccff;
-    border-bottom: 1px solid rgba(100,180,255,0.2);
+    color: #20B2AA;
+    border-bottom: 1px solid rgba(32,178,170,0.2);
     padding-bottom: 4px;
     margin-bottom: 6px;
 }
 
 .ar-console-log {
     font-size: 9px;
-    color: rgba(100,180,255,0.5);
+    color: rgba(32,178,170,0.5);
     line-height: 1.6;
     height: 90px;
     overflow: hidden;
     display: flex;
     flex-direction: column-reverse;
-    text-shadow: 0 0 3px rgba(100,180,255,0.3);
+    text-shadow: 0 0 3px rgba(32,178,170,0.3);
 }
 
-.ar-console-log .msg-sys { color: #88ccff; }
-.ar-console-log .msg-data { color: rgba(100,180,255,0.7); }
+.ar-console-log .msg-sys { color: #20B2AA; }
+.ar-console-log .msg-data { color: rgba(32,178,170,0.7); }
