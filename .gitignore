@@ -1,0 +1,4 @@
+# Local tool configs & scratch
+.claude/
+.superpowers/
+.DS_Store
