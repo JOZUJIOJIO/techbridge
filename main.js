@@ -1,3 +1,20 @@
+// === Shared scroll scheduler — one listener + one rAF dispatches all per-frame work ===
+var TBScroll = (function() {
+    var cbs = [];
+    var ticking = false;
+    function run() {
+        var y = window.scrollY;
+        for (var i = 0; i < cbs.length; i++) {
+            try { cbs[i](y); } catch (e) {}
+        }
+        ticking = false;
+    }
+    window.addEventListener('scroll', function() {
+        if (!ticking) { ticking = true; requestAnimationFrame(run); }
+    }, { passive: true });
+    return { add: function(cb) { cbs.push(cb); cb(window.scrollY); } };
+})();
+
 // Scroll Reveal (also observe dividers)
 const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
@@ -9,6 +26,8 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
 // === 1. Counter Animation ===
 (function() {
     const counters = document.querySelectorAll('.stat-accent');
+    // Reduced motion: keep the final numbers as authored, skip the count-up.
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     let animated = false;
 
     const counterObserver = new IntersectionObserver((entries) => {
@@ -131,13 +150,10 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
     btn.addEventListener('click', function() {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     });
-    window.addEventListener('scroll', function() {
-        if (window.scrollY > window.innerHeight) {
-            btn.classList.add('show');
-        } else {
-            btn.classList.remove('show');
-        }
-    }, { passive: true });
+    TBScroll.add(function(y) {
+        if (y > window.innerHeight) btn.classList.add('show');
+        else btn.classList.remove('show');
+    });
 })();
 
 // === 5. Mobile Menu (A1: moved from inline onclick) ===
@@ -156,54 +172,85 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
     });
 })();
 
-// === 6. Video Cover Click Handlers ===
+// === 6. Unified Video Player (mutual exclusion · closable · keyboard-accessible) ===
 (function() {
-    // Topic videos → embed Bilibili player inline (no danmaku)
-    document.querySelectorAll('[data-bvid]').forEach(function(cover) {
-        cover.addEventListener('click', function() {
-            var bvid = cover.getAttribute('data-bvid');
-            if (!bvid || cover.classList.contains('playing')) return;
-            cover.classList.add('playing');
-            var iframe = document.createElement('iframe');
-            iframe.src = 'https://player.bilibili.com/player.html?bvid=' + bvid + '&autoplay=1&danmaku=0&high_quality=1';
-            iframe.setAttribute('allowfullscreen', 'true');
-            iframe.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;border:none;z-index:2;';
-            cover.appendChild(iframe);
+    var current = null; // { cover, player, closeBtn }
+
+    function closeCurrent() {
+        if (!current) return;
+        var c = current;
+        current = null;
+        if (c.player && c.player.parentNode) c.player.parentNode.removeChild(c.player);
+        if (c.closeBtn && c.closeBtn.parentNode) c.closeBtn.parentNode.removeChild(c.closeBtn);
+        c.cover.classList.remove('playing');
+        c.cover.setAttribute('aria-pressed', 'false');
+    }
+
+    function makePlayer(cover) {
+        var bvid = cover.getAttribute('data-bvid');
+        var src = cover.getAttribute('data-video');
+        var el;
+        if (bvid) {
+            el = document.createElement('iframe');
+            el.src = 'https://player.bilibili.com/player.html?bvid=' + bvid + '&autoplay=1&danmaku=0&high_quality=1';
+            el.setAttribute('allowfullscreen', 'true');
+            el.allow = 'accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture';
+            el.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;border:none;z-index:2;';
+        } else {
+            el = document.createElement('video');
+            el.src = src;
+            el.controls = true;
+            el.autoplay = true;
+            el.playsInline = true;
+            el.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:2;background:#000;';
+        }
+        return el;
+    }
+
+    function makeCloseBtn() {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'video-close-btn';
+        b.setAttribute('aria-label', '关闭视频');
+        b.innerHTML = '<svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+        return b;
+    }
+
+    function openCover(cover) {
+        if (current && current.cover === cover) return;
+        closeCurrent(); // mutual exclusion — never two videos playing at once
+        if (getComputedStyle(cover).position === 'static') cover.style.position = 'relative';
+        var player = makePlayer(cover);
+        var closeBtn = makeCloseBtn();
+        cover.appendChild(player);
+        cover.appendChild(closeBtn);
+        cover.classList.add('playing');
+        cover.setAttribute('aria-pressed', 'true');
+        current = { cover: cover, player: player, closeBtn: closeBtn };
+        closeBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            closeCurrent();
+        });
+    }
+
+    var covers = document.querySelectorAll('[data-bvid], .latest-cover-wrap[data-video], .product-video-cover[data-video]');
+    covers.forEach(function(cover) {
+        cover.setAttribute('role', 'button');
+        cover.setAttribute('tabindex', '0');
+        cover.setAttribute('aria-pressed', 'false');
+        if (!cover.getAttribute('aria-label')) {
+            var label = cover.parentNode && cover.parentNode.querySelector('.topic-video-source, .latest-title, .product-name');
+            cover.setAttribute('aria-label', '播放视频' + (label ? '：' + label.textContent.trim() : ''));
+        }
+        cover.addEventListener('click', function() { openCover(cover); });
+        cover.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openCover(cover); }
         });
     });
 
-    // Latest videos → play mp4 inline from cover
-    document.querySelectorAll('.latest-cover-wrap[data-video]').forEach(function(cover) {
-        cover.addEventListener('click', function() {
-            var src = cover.getAttribute('data-video');
-            if (!src || cover.classList.contains('playing')) return;
-            cover.classList.add('playing');
-            var video = document.createElement('video');
-            video.src = src;
-            video.controls = true;
-            video.autoplay = true;
-            video.playsInline = true;
-            video.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:2;background:#000;';
-            cover.style.position = 'relative';
-            cover.appendChild(video);
-        });
-    });
-
-    // Product videos → play mp4 inline
-    document.querySelectorAll('.product-video-cover[data-video]').forEach(function(cover) {
-        cover.addEventListener('click', function() {
-            var src = cover.getAttribute('data-video');
-            if (!src || cover.classList.contains('playing')) return;
-            cover.classList.add('playing');
-            var video = document.createElement('video');
-            video.src = src;
-            video.controls = true;
-            video.autoplay = true;
-            video.playsInline = true;
-            video.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:2;background:#000;';
-            cover.style.position = 'relative';
-            cover.appendChild(video);
-        });
+    // ESC closes the open video (alongside the global ESC handler for modals)
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeCurrent();
     });
 })();
 
@@ -216,9 +263,11 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
     var closeBtn = document.getElementById('wechatModalClose');
 
     openLinks.forEach(function(openLink) {
-        openLink.addEventListener('click', function(e) {
-            e.preventDefault();
-            modal.classList.add('open');
+        function openModal(e) { e.preventDefault(); modal.classList.add('open'); }
+        openLink.addEventListener('click', openModal);
+        // Keyboard support for role="button" cards (Enter / Space)
+        openLink.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') openModal(e);
         });
     });
     if (closeBtn) {
@@ -233,34 +282,29 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
 (function() {
     var bar = document.getElementById('scrollProgress');
     if (!bar) return;
-    window.addEventListener('scroll', function() {
-        var scrollTop = window.scrollY;
+    TBScroll.add(function(scrollTop) {
         var docHeight = document.documentElement.scrollHeight - window.innerHeight;
         var progress = (scrollTop / docHeight) * 100;
         bar.style.width = progress + '%';
-    }, { passive: true });
+    });
 })();
 
 // === 8. Parallax scroll effects (A3: passive) ===
 (function() {
     var hero = document.getElementById('hero');
     if (!hero) return;
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var heroTitle = hero.querySelector('.hero-title');
     var heroSubEn = hero.querySelector('.hero-subtitle-en');
     var heroSub = hero.querySelector('.hero-subtitle');
     var heroBar = hero.querySelector('.hero-bar');
     var navbar = document.querySelector('.navbar');
 
-    var ticking = false;
-
-    window.addEventListener('scroll', function() {
-        if (!ticking) {
-            requestAnimationFrame(function() {
-                var scrollY = window.scrollY;
+    TBScroll.add(function(scrollY) {
                 var vh = window.innerHeight;
 
                 // Hero parallax — title moves slower, fades out
-                if (scrollY < vh) {
+                if (!reduceMotion && scrollY < vh) {
                     var progress = scrollY / vh;
                     var titleY = scrollY * 0.35;
                     var fade = 1 - progress * 1.5;
@@ -293,12 +337,7 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
                         navbar.style.borderBottomColor = 'rgba(255,255,255,0.04)';
                     }
                 }
-
-                ticking = false;
-            });
-            ticking = true;
-        }
-    }, { passive: true });
+    });
 })();
 
 // Hero background video loops in markup so the first screen stays alive.
@@ -469,7 +508,7 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
 // === 13. Card Spotlight (cursor-following glow, desktop only) ===
 (function() {
     if (window.matchMedia('(pointer: coarse)').matches) return;
-    var cards = document.querySelectorAll('.project-card, .collab-card, .knowledge-card, .latest-card');
+    var cards = document.querySelectorAll('.project-card:not(.project-card-static), .collab-card, .knowledge-card, .latest-card');
     cards.forEach(function(card) {
         var glow = document.createElement('span');
         glow.className = 'card-spotlight';
@@ -529,10 +568,7 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
         ticking = false;
     }
 
-    window.addEventListener('scroll', function() {
-        if (!ticking) { ticking = true; requestAnimationFrame(update); }
-    }, { passive: true });
-    update();
+    TBScroll.add(update);
 })();
 
 // === 16. Back-to-top progress ring ===
@@ -553,11 +589,11 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
     svg.appendChild(circle);
     btn.appendChild(svg);
 
-    window.addEventListener('scroll', function() {
+    TBScroll.add(function(y) {
         var docH = document.documentElement.scrollHeight - window.innerHeight;
-        var p = docH > 0 ? Math.min(window.scrollY / docH, 1) : 0;
+        var p = docH > 0 ? Math.min(y / docH, 1) : 0;
         circle.style.strokeDashoffset = C * (1 - p);
-    }, { passive: true });
+    });
 })();
 
 // === 17. Staggered grid reveals ===
@@ -582,4 +618,66 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
         var menu = document.getElementById('mobileMenu');
         if (menu && menu.classList.contains('open')) menu.classList.remove('open');
     });
+})();
+
+// === Mobile swipe carousels (latest news + highlights gallery) ===
+(function() {
+    var mq = window.matchMedia('(max-width: 600px)');
+
+    function buildHint() {
+        var hint = document.createElement('div');
+        hint.className = 'swipe-hint';
+        hint.innerHTML = '<svg class="swipe-hand" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/><path d="M11 6L5 12l6 6"/></svg><span>左右滑动浏览</span>';
+        return hint;
+    }
+
+    function enhance(grid) {
+        if (grid._swipeReady) return;
+        grid._swipeReady = true;
+        grid.classList.add('swipe-carousel');
+
+        // Progress track
+        var track = document.createElement('div');
+        track.className = 'swipe-progress';
+        var bar = document.createElement('div');
+        bar.className = 'swipe-progress-bar';
+        track.appendChild(bar);
+        grid.parentNode.insertBefore(track, grid.nextSibling);
+
+        // One-time swipe hint
+        var hint = buildHint();
+        track.parentNode.insertBefore(hint, track.nextSibling);
+
+        var ticking = false;
+        function update() {
+            var max = grid.scrollWidth - grid.clientWidth;
+            var ratio = grid.clientWidth / grid.scrollWidth; // visible fraction
+            bar.style.width = Math.max(ratio * 100, 12) + '%';
+            var p = max > 0 ? grid.scrollLeft / max : 0;
+            // travel = track width minus bar width, expressed in bar-width %
+            bar.style.transform = 'translateX(' + (p * (100 / Math.max(ratio, 0.12) - 100)) + '%)';
+            ticking = false;
+        }
+        grid.addEventListener('scroll', function() {
+            if (!ticking) { ticking = true; requestAnimationFrame(update); }
+            if (!hint.classList.contains('hidden') && grid.scrollLeft > 16) {
+                hint.classList.add('hidden');
+            }
+        }, { passive: true });
+        update();
+    }
+
+    function teardown(grid) {
+        // Leave DOM in place; CSS reverts to grid above 600px. Just reset bar.
+    }
+
+    function apply() {
+        if (!mq.matches) return;
+        document.querySelectorAll('.latest-grid, .highlights-grid').forEach(enhance);
+    }
+
+    apply();
+    // Re-check when crossing the breakpoint (e.g. orientation change)
+    if (mq.addEventListener) mq.addEventListener('change', apply);
+    else if (mq.addListener) mq.addListener(apply);
 })();

@@ -88,10 +88,10 @@ a { text-decoration: none; color: inherit; }
 /* Cursor glow */
 .cursor-glow {
     position: fixed;
-    width: 300px;
-    height: 300px;
+    width: 240px;
+    height: 240px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(233,93,33,0.08), transparent 70%);
+    background: radial-gradient(circle, rgba(233,93,33,0.05), transparent 70%);
     pointer-events: none;
     z-index: var(--z-cursor);
     transform: translate(-50%, -50%);
@@ -100,7 +100,7 @@ a { text-decoration: none; color: inherit; }
 }
 
 .cursor-glow.active {
-    opacity: 1;
+    opacity: 0.7;
 }
 
 /* Scroll progress bar */
@@ -3295,6 +3295,97 @@ section[id] { scroll-margin-top: 72px; }
     filter: brightness(1) saturate(1);
 }
 
+/* --- Command palette trigger (navbar) --- */
+.cmdk-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 9px;
+    font-family: var(--font-mono);
+    color: var(--text-warm-grey);
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--border-dark);
+    border-radius: 100px;
+    cursor: pointer;
+    transition: color 0.3s, border-color 0.3s, background 0.3s;
+}
+.cmdk-trigger svg { width: 15px; height: 15px; }
+.cmdk-kbd {
+    font-size: 11px;
+    line-height: 1;
+    letter-spacing: 0.5px;
+    padding: 3px 5px;
+    border: 1px solid var(--border-dark);
+    border-radius: 5px;
+    color: inherit;
+}
+.cmdk-trigger:hover {
+    color: var(--text-warm-white);
+    border-color: var(--orange-main);
+    background: rgba(233,93,33,0.06);
+}
+.cmdk-trigger:hover .cmdk-kbd { border-color: var(--orange-main); }
+.cmdk-trigger:focus-visible { outline: 2px solid var(--orange-main); outline-offset: 3px; }
+
+/* --- Command palette trigger (mobile menu) --- */
+.mobile-cmdk {
+    background: none;
+    border: none;
+    font: inherit;
+    cursor: pointer;
+    color: var(--orange-main);
+}
+
+/* --- Inline video player close button --- */
+.video-close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 3;
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 50%;
+    background: rgba(10,10,9,0.62);
+    color: var(--text-warm-white);
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition: background 0.2s, transform 0.2s;
+}
+.video-close-btn:hover { background: var(--orange-main); transform: scale(1.08); }
+.video-close-btn:focus-visible { outline: 2px solid var(--text-warm-white); outline-offset: 2px; }
+.video-close-btn svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; }
+
+/* --- Video cover focus ring (keyboard) --- */
+[data-bvid]:focus-visible,
+.latest-cover-wrap[data-video]:focus-visible,
+.product-video-cover[data-video]:focus-visible {
+    outline: 2px solid var(--orange-main);
+    outline-offset: 3px;
+}
+
+/* --- Info-only project cards: no false click affordance --- */
+.project-card.project-card-static { cursor: default; }
+.project-card.project-card-static:hover {
+    transform: none;
+    border-color: var(--border-dark);
+    box-shadow: none;
+}
+.project-card.project-card-static:hover .project-visual { transform: none; opacity: 1; }
+.project-card.project-card-static:hover .project-icon { color: inherit; }
+.project-card.project-card-static .card-spotlight { display: none; }
+
+/* --- Linkless-but-interactive cards (open WeChat) keep a clickable cursor + focus ring --- */
+.project-card.open-wechat-link { cursor: pointer; }
+.project-card.open-wechat-link:focus-visible {
+    outline: 2px solid var(--orange-main);
+    outline-offset: 3px;
+}
+
 /* --- Reduced motion: respect system preference --- */
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
@@ -3307,4 +3398,74 @@ section[id] { scroll-margin-top: 72px; }
         opacity: 1 !important;
         transform: none !important;
     }
+}
+
+/* === Mobile swipe carousels (latest news + highlights gallery) === */
+@media (max-width: 600px) {
+    .latest-grid.swipe-carousel,
+    .highlights-grid.swipe-carousel {
+        display: flex;
+        grid-template-columns: none;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        gap: 14px;
+        margin-left: -20px;
+        margin-right: -20px;
+        padding: 4px 20px;
+        scroll-padding-left: 20px;
+        scrollbar-width: none;
+    }
+    .swipe-carousel::-webkit-scrollbar { display: none; }
+
+    .latest-grid.swipe-carousel > .latest-card {
+        flex: 0 0 80%;
+        scroll-snap-align: center;
+    }
+    .highlights-grid.swipe-carousel > .highlight-item {
+        flex: 0 0 74%;
+        scroll-snap-align: center;
+        grid-column: auto !important;
+        grid-row: auto !important;
+        aspect-ratio: 3 / 2 !important;
+    }
+
+    /* Swipe progress indicator */
+    .swipe-progress {
+        height: 3px;
+        background: var(--border-dark);
+        border-radius: 3px;
+        margin: 16px 20px 0;
+        overflow: hidden;
+    }
+    .swipe-progress-bar {
+        height: 100%;
+        width: 40%;
+        background: var(--orange-main);
+        border-radius: 3px;
+        transform: translateX(0);
+        will-change: transform;
+    }
+    .swipe-hint {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 10px;
+        font-family: var(--font-mono);
+        font-size: 10px;
+        letter-spacing: 1.5px;
+        color: var(--text-warm-grey);
+        opacity: 0.7;
+        transition: opacity 0.4s;
+    }
+    .swipe-hint.hidden { opacity: 0; }
+    .swipe-hint svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 1.6; }
+    .swipe-hint .swipe-hand { animation: swipeNudge 1.8s ease-in-out infinite; }
+}
+
+@keyframes swipeNudge {
+    0%, 100% { transform: translateX(-4px); }
+    50% { transform: translateX(4px); }
 }

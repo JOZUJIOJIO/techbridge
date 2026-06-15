@@ -6,7 +6,7 @@ window.jarvisAR = window.jarvisAR || {
     fistness: 0,       // 0 = open palm, 1 = tight fist (smoothed)
     chargeLevel: 0,    // energy charge 0→1 (builds while fist held)
     explosion: 0,      // 0 = none, >0 = exploding (counts down)
-    gazeNav: { activeIdx: -1, dwellTime: 0, triggered: false, cooldown: 0 }
+    gazeNav: { activeIdx: -1, dwellTime: 0, triggered: false, cooldown: 0, grace: 0 }
 };
 (function() {
     const canvas = document.getElementById('heroCanvas');
@@ -90,6 +90,11 @@ window.jarvisAR = window.jarvisAR || {
 
     // ---- MAIN RENDER ----
     function animate() {
+        // Real elapsed time (seconds) since last frame — keeps dwell timing
+        // frame-rate independent (clamped so a tab-restore can't jump it).
+        const _nowMs = performance.now();
+        const dt = Math.min((_nowMs - (animate._last || _nowMs)) / 1000, 0.05);
+        animate._last = _nowMs;
         time += 0.006;
         ctx.clearRect(0, 0, w, h);
 
@@ -680,7 +685,12 @@ window.jarvisAR = window.jarvisAR || {
             // ========== GAZE NAVIGATION — Eye-controlled HUD =====
             // ====================================================
             const gaze = ar.gazeNav;
-            if (gaze.cooldown > 0) gaze.cooldown -= 0.016;
+            if (gaze.cooldown > 0) gaze.cooldown -= dt;
+
+            // Tuning constants for forgiving, deliberate gaze control
+            const DWELL_NEEDED = 1.8;   // seconds of sustained gaze to commit
+            const GRACE_MAX    = 0.45;  // seconds gaze may stray before progress decays
+            const DECAY_RATE   = 1.6;   // how fast dwell unwinds once grace is spent
 
             // Navigation targets — positioned around screen edges
             const navTargets = [
@@ -711,15 +721,20 @@ window.jarvisAR = window.jarvisAR || {
                 const ny = h * nav.dist + h * 0.55;
                 const targetR = 50;
 
-                // Check gaze proximity
+                // Check gaze proximity — hysteresis: the locked target keeps a
+                // larger release radius than the acquire radius, so head jitter
+                // doesn't drop the lock (sticky targeting).
                 const dx = gzX - nx, dy = gzY - ny;
                 const dist = Math.sqrt(dx * dx + dy * dy);
-                const isHovered = dist < targetR * 1.8;
+                const acquireR = targetR * 1.6;
+                const releaseR = targetR * 2.3;
+                const isLocked = (gaze.activeIdx === i);
+                const isHovered = dist < (isLocked ? releaseR : acquireR);
                 if (isHovered && gaze.cooldown <= 0) hoveredIdx = i;
 
                 // Dwell progress for this target
                 const isActive = (gaze.activeIdx === i);
-                const progress = isActive ? Math.min(gaze.dwellTime / 2.0, 1) : 0; // 2 sec dwell
+                const progress = isActive ? Math.min(gaze.dwellTime / DWELL_NEEDED, 1) : 0;
 
                 // --- Hexagonal frame ---
                 const hexR = targetR + (isHovered ? 8 : 0) + Math.sin(time * 2 + i) * 2;
@@ -737,14 +752,30 @@ window.jarvisAR = window.jarvisAR || {
                 }
                 ctx.stroke();
 
-                // Progress arc (dwell timer visualization)
+                // Progress arc (dwell timer visualization) — prominent ring
                 if (progress > 0) {
-                    ctx.strokeStyle = 'rgba(255,200,60,' + (0.8 * progress) + ')';
-                    ctx.lineWidth = 3;
+                    // Track ring (faint full circle so the gauge reads clearly)
+                    ctx.strokeStyle = 'rgba(255,200,60,0.15)';
+                    ctx.lineWidth = 5;
+                    ctx.beginPath();
+                    ctx.arc(nx, ny, hexR + 10, 0, PI2);
+                    ctx.stroke();
+                    // Filled progress
+                    ctx.strokeStyle = 'rgba(255,200,60,' + (0.55 + 0.45 * progress) + ')';
+                    ctx.lineWidth = 5;
                     ctx.lineCap = 'round';
                     ctx.beginPath();
-                    ctx.arc(nx, ny, hexR + 6, -PI / 2, -PI / 2 + progress * PI2);
+                    ctx.arc(nx, ny, hexR + 10, -PI / 2, -PI / 2 + progress * PI2);
                     ctx.stroke();
+                    ctx.lineCap = 'butt';
+
+                    // Countdown number (seconds remaining)
+                    const remain = Math.max(0, DWELL_NEEDED - gaze.dwellTime);
+                    ctx.font = 'bold 15px "JetBrains Mono",monospace';
+                    ctx.fillStyle = 'rgba(255,210,90,' + (0.6 + 0.4 * progress) + ')';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(remain.toFixed(1), nx, ny + 28);
+                    ctx.textAlign = 'left';
 
                     // Charging glow
                     const chGrd = ctx.createRadialGradient(nx, ny, 0, nx, ny, hexR);
@@ -783,7 +814,7 @@ window.jarvisAR = window.jarvisAR || {
                 // Sub-label
                 ctx.font = '9px "JetBrains Mono",monospace';
                 ctx.fillStyle = (isHovered ? 'rgba(255,200,60,' : T) + (baseAlpha * 0.8) + ')';
-                ctx.fillText(isHovered ? (progress > 0 ? 'LOCKING...' : 'DETECTED') : 'STANDBY', nx, ny + 12);
+                ctx.fillText(isHovered ? (progress > 0 ? '• LOCKING — 移开可取消' : 'DETECTED') : 'STANDBY', nx, ny + 12);
                 ctx.textAlign = 'left'; // reset
 
                 // Connection line from gaze cursor to hovered target
@@ -799,27 +830,46 @@ window.jarvisAR = window.jarvisAR || {
                 }
             });
 
-            // Dwell logic — accumulate time on same target
+            // Dwell logic — frame-rate independent, with a forgiveness grace window.
+            // Brief gaze strays (head jitter / tracking flicker) decay the timer
+            // through a grace buffer instead of zeroing it instantly; only a
+            // sustained look-away unwinds and releases the target.
             if (hoveredIdx >= 0) {
                 if (gaze.activeIdx === hoveredIdx) {
-                    gaze.dwellTime += 0.016; // ~1 frame at 60fps
-                    // Trigger at 2 seconds
-                    if (gaze.dwellTime >= 2.0 && !gaze.triggered) {
+                    gaze.grace = GRACE_MAX;            // refill forgiveness buffer
+                    gaze.dwellTime += dt;             // real elapsed seconds
+                    if (gaze.dwellTime >= DWELL_NEEDED && !gaze.triggered) {
                         gaze.triggered = true;
-                        gaze.cooldown = 3.0; // prevent re-trigger for 3s
+                        gaze.cooldown = 3.0;          // prevent re-trigger for 3s
+                        gaze.dwellTime = 0;
+                        gaze.activeIdx = -1;
                         const target = navTargets[hoveredIdx];
                         // Flash effect
                         ctx.fillStyle = 'rgba(100,180,255,0.15)';
                         ctx.fillRect(0, 0, w, h);
-                        // Navigate
-                        setTimeout(() => {
-                            document.querySelector(target.section)?.scrollIntoView({ behavior: 'smooth' });
-                        }, 300);
+                        // Navigate — safe manual smooth scroll (avoids scrollIntoView).
+                        const el = document.querySelector(target.section);
+                        if (el) {
+                            const top = el.getBoundingClientRect().top + window.scrollY - 72;
+                            setTimeout(() => window.scrollTo({ top: top, behavior: 'smooth' }), 300);
+                        }
                     }
                 } else {
                     gaze.activeIdx = hoveredIdx;
                     gaze.dwellTime = 0;
+                    gaze.grace = GRACE_MAX;
                     gaze.triggered = false;
+                }
+            } else if (gaze.activeIdx >= 0 && !gaze.triggered) {
+                // Gaze strayed: spend grace first, then decay progress gently.
+                if (gaze.grace > 0) {
+                    gaze.grace -= dt;
+                } else {
+                    gaze.dwellTime -= dt * DECAY_RATE;
+                    if (gaze.dwellTime <= 0) {
+                        gaze.dwellTime = 0;
+                        gaze.activeIdx = -1;
+                    }
                 }
             } else {
                 gaze.activeIdx = -1;
@@ -835,7 +885,7 @@ window.jarvisAR = window.jarvisAR || {
         }
 
         cx = baseCx; cy = baseCy;
-        requestAnimationFrame(animate);
+        if (!paused) rafId = requestAnimationFrame(animate);
     }
 
     window.addEventListener('resize', resize);
@@ -846,7 +896,43 @@ window.jarvisAR = window.jarvisAR || {
     document.getElementById('hero').addEventListener('mouseleave', () => {
         mouse.x = -1000; mouse.y = -1000;
     });
-    resize(); animate();
+    // --- Loop control: pause the HUD when it can't be seen (perf + battery) ---
+    let rafId = null, paused = false;
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const heroEl = document.getElementById('hero');
+
+    function startLoop() {
+        if (paused) { paused = false; if (!rafId) rafId = requestAnimationFrame(animate); }
+    }
+    function stopLoop() {
+        paused = true;
+        if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+    }
+    function heroOnScreen() {
+        if (!heroEl) return false;
+        const r = heroEl.getBoundingClientRect();
+        return r.bottom > 0 && r.top < window.innerHeight;
+    }
+
+    resize();
+    if (prefersReduced) {
+        // Reduced motion: paint one static frame, never loop.
+        paused = true;
+        animate();
+    } else {
+        animate();
+        // Pause when the Hero scrolls out of view.
+        if ('IntersectionObserver' in window && heroEl) {
+            new IntersectionObserver(function(entries) {
+                entries.forEach(function(en) { en.isIntersecting ? startLoop() : stopLoop(); });
+            }, { threshold: 0 }).observe(heroEl);
+        }
+        // Pause when the tab is backgrounded.
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) stopLoop();
+            else if (heroOnScreen()) startLoop();
+        });
+    }
 })();
 
 // ========== PREMIUM INTERACTIONS ==========
@@ -855,6 +941,8 @@ window.jarvisAR = window.jarvisAR || {
 (function() {
     const title = document.querySelector('.hero-title');
     if (!title) return;
+    // Reduced motion: leave the title fully visible, skip the per-char entrance.
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     let charIndex = 0;
 
@@ -1030,6 +1118,18 @@ window.jarvisAR = window.jarvisAR || {
     const status = document.getElementById('arStatus');
     const video = document.getElementById('arVideo');
     if (!trigger) return;
+
+    // P1-7: capability check — the Jarvis experience needs a camera.
+    // On devices/contexts without getUserMedia, hide the trigger instead of
+    // letting users tap into a dead end.
+    var arHint = document.getElementById('arHint');
+    var camSupported = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+    if (!camSupported) {
+        trigger.style.display = 'none';
+        if (status) status.style.display = 'none';
+        if (arHint) arHint.style.display = 'none';
+        return;
+    }
 
     // Shared tracking state — read by the Jarvis HUD renderer
     window.jarvisAR = {
@@ -1349,6 +1449,8 @@ window.jarvisAR = window.jarvisAR || {
 (function() {
     const el = document.getElementById('typewriterTarget');
     if (!el) return;
+    // Reduced motion: keep the static "Think Different." line, skip the rotation.
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const phrases = [
         '连接科技与人的桥',
         '硅基物语创始人',
@@ -1390,32 +1492,8 @@ window.jarvisAR = window.jarvisAR || {
     }, 3000);
 })();
 
-// === FEATURE: Video Cover → Click to Play ===
-document.querySelectorAll('.video-cover').forEach(cover => {
-    cover.addEventListener('click', () => {
-        const bvid = cover.dataset.bvid;
-        const iframe = document.createElement('iframe');
-        iframe.src = `https://player.bilibili.com/player.html?bvid=${bvid}&page=1&high_quality=1&danmaku=0&dm=0&autoplay=1`;
-        iframe.style.cssText = 'width:100%;aspect-ratio:16/9;display:block;border:none;';
-        iframe.allow = 'accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture';
-        iframe.allowFullscreen = true;
-        cover.replaceWith(iframe);
-    });
-});
-
-// === FEATURE: Product Video Cover → Click to Play ===
-document.querySelectorAll('.product-video-cover').forEach(cover => {
-    cover.addEventListener('click', () => {
-        const src = cover.dataset.video;
-        const video = document.createElement('video');
-        video.src = src;
-        video.controls = true;
-        video.autoplay = true;
-        video.playsInline = true;
-        video.style.cssText = 'width:100%;aspect-ratio:16/9;display:block;object-fit:cover;background:#000;';
-        cover.replaceWith(video);
-    });
-});
+// === FEATURE: Video covers are handled by the unified player in main.js
+// (mutual-exclusion + close button + keyboard access). Duplicate handlers removed.
 
 // === FEATURE: Cmd+K Command Palette ===
 (function() {
@@ -1474,6 +1552,17 @@ document.querySelectorAll('.product-video-cover').forEach(cover => {
     function close() {
         overlay.classList.remove('open');
     }
+
+    // P1-4: expose + wire visible triggers so the palette is discoverable
+    window.openCommandPalette = open;
+    var cmdkTrigger = document.getElementById('cmdkTrigger');
+    if (cmdkTrigger) cmdkTrigger.addEventListener('click', open);
+    var cmdkTriggerMobile = document.getElementById('cmdkTriggerMobile');
+    if (cmdkTriggerMobile) cmdkTriggerMobile.addEventListener('click', function() {
+        var mm = document.getElementById('mobileMenu');
+        if (mm) mm.classList.remove('open');
+        open();
+    });
 
     // Cmd+K / Ctrl+K
     document.addEventListener('keydown', e => {

@@ -234,8 +234,7 @@
             <a href="#topics" class="nav-link">Topics</a>
             <a href="#collab" class="nav-link">Collab</a>
             <div class="nav-social">
-                <!-- YouTube -->
-                <a href="https://www.youtube.com/@The-Tech-Bridge" title="YouTube" aria-label="YouTube" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24"><use href="#icon-youtube"/></svg></a>
+                <!-- YouTube -->                <a href="https://www.youtube.com/@The-Tech-Bridge" title="YouTube" aria-label="YouTube" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24"><use href="#icon-youtube"/></svg></a>
                 <!-- X/Twitter -->
                 <a href="https://x.com/QiaoBitX" title="X" aria-label="X" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24"><use href="#icon-x"/></svg></a>
                 <!-- TikTok -->
@@ -245,6 +244,10 @@
                 <!-- Telegram -->
                 <a href="https://t.me/Shirleyclaw" title="Telegram" aria-label="Telegram" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24"><use href="#icon-telegram"/></svg></a>
             </div>
+            <button class="cmdk-trigger" id="cmdkTrigger" type="button" aria-label="打开命令面板（搜索 / 快速跳转）" title="命令面板 ⌘K">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>
+                <span class="cmdk-kbd">⌘K</span>
+            </button>
             <button class="lang-toggle" id="langToggle">EN</button>
         </div>
         <button class="hamburger" id="hamburgerBtn">
@@ -261,6 +264,7 @@
         <a href="#projects" class="mobile-menu-link">Products</a>
         <a href="#topics" class="mobile-menu-link">Topics</a>
         <a href="#collab" class="mobile-menu-link">Collab</a>
+        <button class="mobile-menu-link mobile-cmdk" id="cmdkTriggerMobile" type="button">⌘ 快速跳转 / 搜索</button>
         <button class="mobile-lang-toggle" id="mobileLangToggle">EN / 中</button>
         <div class="mobile-menu-social">
             <a href="https://www.youtube.com/@The-Tech-Bridge" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24"><use href="#icon-youtube"/></svg></a>
@@ -308,9 +312,9 @@
             <span>开启 Jarvis 交互</span>
         </button>
         <div class="ar-status" id="arStatus"></div>
+        <div class="ar-hint" id="arHint">手势 + 视线操控 HUD · 需摄像头权限</div>
         <!-- Camera feed (fullscreen background when active) -->
         <video id="arVideo" autoplay playsinline muted>
-            <track kind="captions" label="中文" srclang="zh" default>
         </video>
         <div class="ar-video-overlay" id="arVideoOverlay"></div>
         <div class="ar-radar"></div>
@@ -363,7 +367,6 @@
         <div class="intro-video-wrapper reveal">
             <video controls playsinline preload="metadata">
                 <source src="intro-video.mp4" type="video/mp4">
-                <track kind="captions" label="中文" srclang="zh" default>
             </video>
         </div>
         <div class="stats-bar reveal">
@@ -674,7 +677,7 @@
                     </div>
                 </div>
             </a>
-            <div class="project-card reveal">
+            <div class="project-card open-wechat-link reveal" role="button" tabindex="0" aria-label="有问必显 — 预约体验，添加企业微信">
                 <img class="project-visual" src="project-geo.png" alt="" loading="lazy" aria-hidden="true">
                 <div class="project-card-content">
                     <div class="project-icon"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg></div>
@@ -683,6 +686,7 @@
                     <div class="project-meta">
                         <span class="project-status status-live">已上线</span>
                         <span class="project-tag">GEO × 答案曝光</span>
+                        <span class="project-action">预约体验 →</span>
                     </div>
                 </div>
             </div>
@@ -736,7 +740,7 @@
                     </div>
                 </div>
             </a>
-            <div class="project-card project-card-wide reveal">
+            <div class="project-card project-card-wide project-card-static reveal">
                 <img class="project-visual" src="project-earth-online.png" alt="" loading="lazy" aria-hidden="true">
                 <div class="project-card-content">
                     <div class="project-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><line x1="3" y1="12" x2="21" y2="12"/><path d="M12 3a13.5 13.5 0 0 1 3.6 9 13.5 13.5 0 0 1-3.6 9 13.5 13.5 0 0 1-3.6-9A13.5 13.5 0 0 1 12 3z"/></svg></div>
@@ -761,7 +765,7 @@
                     </div>
                 </div>
             </a>
-            <div class="project-card project-card-wide project-card-sucaitong reveal">
+            <div class="project-card project-card-wide project-card-sucaitong open-wechat-link reveal" role="button" tabindex="0" aria-label="电商AI素材通 — 预约体验，添加企业微信">
                 <img class="project-visual" src="project-sucaitong.png" alt="" loading="lazy" aria-hidden="true">
                 <div class="project-card-content">
                     <div class="project-icon"><svg viewBox="0 0 24 24"><path d="M3 11v3a1 1 0 0 0 1 1h2l3.5 4.5a1 1 0 0 0 1.8-.6V5.1a1 1 0 0 0-1.8-.6L6 9H4a1 1 0 0 0-1 1z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg></div>
@@ -770,6 +774,7 @@
                     <div class="project-meta">
                         <span class="project-status status-live">已上线</span>
                         <span class="project-tag">外贸 × 社媒素材</span>
+                        <span class="project-action">预约体验 →</span>
                     </div>
                 </div>
             </div>
