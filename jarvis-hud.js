@@ -1100,7 +1100,9 @@ window.jarvisAR = window.jarvisAR || {
 (function() {
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
-            const target = document.querySelector(this.getAttribute('href'));
+            const href = this.getAttribute('href');
+            if (!href || href === '#') return;
+            const target = document.querySelector(href);
             if (!target) return;
             e.preventDefault();
             const offset = 72; // navbar height
