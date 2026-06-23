@@ -278,6 +278,30 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
     });
 })();
 
+// === 6c. Mini App Modal (Sucaitong entry) ===
+(function() {
+    var modal = document.getElementById('miniappModal');
+    if (!modal) return;
+
+    var openLinks = document.querySelectorAll('.open-miniapp-link');
+    var closeBtn = document.getElementById('miniappModalClose');
+
+    openLinks.forEach(function(openLink) {
+        function openModal(e) { e.preventDefault(); modal.classList.add('open'); }
+        openLink.addEventListener('click', openModal);
+        // Keyboard support for role="button" cards (Enter / Space)
+        openLink.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') openModal(e);
+        });
+    });
+    if (closeBtn) {
+        closeBtn.addEventListener('click', function() { modal.classList.remove('open'); });
+    }
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) modal.classList.remove('open');
+    });
+})();
+
 // === 7. Scroll Progress Bar (A3: passive) ===
 (function() {
     var bar = document.getElementById('scrollProgress');
@@ -615,6 +639,8 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
         if (e.key !== 'Escape') return;
         var modal = document.getElementById('wechatModal');
         if (modal && modal.classList.contains('open')) modal.classList.remove('open');
+        var miniappModal = document.getElementById('miniappModal');
+        if (miniappModal && miniappModal.classList.contains('open')) miniappModal.classList.remove('open');
         var menu = document.getElementById('mobileMenu');
         if (menu && menu.classList.contains('open')) menu.classList.remove('open');
     });

@@ -765,7 +765,7 @@
                     </div>
                 </div>
             </a>
-            <div class="project-card project-card-wide project-card-sucaitong open-wechat-link reveal" role="button" tabindex="0" aria-label="电商AI素材通 — 预约体验，添加企业微信">
+            <div class="project-card project-card-wide project-card-sucaitong open-miniapp-link reveal" role="button" tabindex="0" aria-label="电商AI素材通 — 微信扫码进入小程序">
                 <img class="project-visual" src="project-sucaitong.png" alt="" loading="lazy" aria-hidden="true">
                 <div class="project-card-content">
                     <div class="project-icon"><svg viewBox="0 0 24 24"><path d="M3 11v3a1 1 0 0 0 1 1h2l3.5 4.5a1 1 0 0 0 1.8-.6V5.1a1 1 0 0 0-1.8-.6L6 9H4a1 1 0 0 0-1 1z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg></div>
@@ -774,7 +774,7 @@
                     <div class="project-meta">
                         <span class="project-status status-live">已上线</span>
                         <span class="project-tag">外贸 × 社媒素材</span>
-                        <span class="project-action">预约体验 →</span>
+                        <span class="project-action">扫码体验 →</span>
                     </div>
                 </div>
             </div>
@@ -993,7 +993,19 @@
         </div>
     </div>
 
-    <script src="main.js?v=5"></script>
+    <!-- Mini App Modal -->
+    <div class="wechat-modal miniapp-modal" id="miniappModal">
+        <div class="wechat-modal-content">
+            <button class="wechat-modal-close" id="miniappModalClose" aria-label="关闭小程序二维码">
+                <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+            <div class="wechat-modal-title">电商AI素材通</div>
+            <div class="wechat-modal-qr"><img src="sucaitong-miniapp-qr.png" alt="电商AI素材通小程序二维码" class="wechat-qr-img"></div>
+            <div class="wechat-modal-hint">微信扫码进入电商AI素材通小程序</div>
+        </div>
+    </div>
+
+    <script src="main.js?v=6"></script>
     <script src="jarvis-hud.js?v=4"></script>
 
 </body>

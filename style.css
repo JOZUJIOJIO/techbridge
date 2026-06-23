@@ -3379,9 +3379,11 @@ section[id] { scroll-margin-top: 72px; }
 .project-card.project-card-static:hover .project-icon { color: inherit; }
 .project-card.project-card-static .card-spotlight { display: none; }
 
-/* --- Linkless-but-interactive cards (open WeChat) keep a clickable cursor + focus ring --- */
-.project-card.open-wechat-link { cursor: pointer; }
-.project-card.open-wechat-link:focus-visible {
+/* --- Linkless-but-interactive cards keep a clickable cursor + focus ring --- */
+.project-card.open-wechat-link,
+.project-card.open-miniapp-link { cursor: pointer; }
+.project-card.open-wechat-link:focus-visible,
+.project-card.open-miniapp-link:focus-visible {
     outline: 2px solid var(--orange-main);
     outline-offset: 3px;
 }
