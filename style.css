@@ -654,6 +654,8 @@ a { text-decoration: none; color: inherit; }
     overflow: hidden;
     aspect-ratio: 3/2;
     cursor: pointer;
+    /* 懒加载占位色，避免图片未到时露白洞 */
+    background: var(--surface-card);
 }
 
 /* Magazine-style: first two items span 2 columns for visual hierarchy */
@@ -888,6 +890,7 @@ a { text-decoration: none; color: inherit; }
 .latest-cover-wrap {
     position: relative;
     cursor: pointer;
+    background: var(--surface-card);
 }
 
 .latest-cover-wrap img {
@@ -1579,7 +1582,8 @@ a { text-decoration: none; color: inherit; }
     font-family: var(--font-cn-body);
     font-size: 16px;
     color: var(--text-warm-grey);
-    font-weight: 300;
+    /* 300 字重已从字体包裁掉；400 在暗底上可读性更好 */
+    font-weight: 400;
     line-height: 1.8;
 }
 
@@ -1609,6 +1613,7 @@ a { text-decoration: none; color: inherit; }
     aspect-ratio: 16/9;
     cursor: pointer;
     overflow: hidden;
+    background: var(--surface-card);
 }
 
 .video-cover img {
