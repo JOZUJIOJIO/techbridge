@@ -491,6 +491,8 @@ a { text-decoration: none; color: inherit; }
     font-weight: 700;
     color: var(--text-warm-white);
     letter-spacing: -1px;
+    /* 计数动画时等宽数字不抖动 */
+    font-variant-numeric: tabular-nums;
 }
 
 .stat-number .stat-accent {
@@ -607,6 +609,13 @@ a { text-decoration: none; color: inherit; }
 }
 
 /* Language toggle */
+/* 暂时隐藏语言开关：目前全站只有 2 个 data-lang 元素，点击后几乎无变化（假开关伤信任）。
+   做完全站双语覆盖后删除下面这条恢复即可。 */
+.lang-toggle,
+.mobile-lang-toggle {
+    display: none !important;
+}
+
 .lang-toggle {
     font-family: var(--font-mono);
     font-size: 11px;
@@ -1515,7 +1524,7 @@ a { text-decoration: none; color: inherit; }
 .section-title {
     font-family: var(--font-en-display);
     font-weight: 800;
-    font-size: 56px;
+    font-size: clamp(40px, 5vw, 56px);
     letter-spacing: -2.5px;
     margin-top: 16px;
 }
