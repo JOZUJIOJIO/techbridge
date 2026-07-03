@@ -29,10 +29,28 @@
     opacity: 0;
 }
 
-.ar-trigger:hover {
-    border-color: var(--orange-main);
+/* 降噪：未激活时颜色/底色整体退后，hover 恢复——功能在，视觉不抢 */
+.ar-trigger:not(.active) {
+    color: rgba(138, 133, 128, 0.55);
+    background: rgba(30, 30, 27, 0.35);
+    border-color: rgba(58, 58, 53, 0.5);
+}
+
+.ar-trigger:not(.active) svg {
+    opacity: 0.5;
+}
+
+.ar-trigger:hover,
+.ar-trigger:not(.active):hover {
     color: var(--text-warm-white);
+    background: rgba(30, 30, 27, 0.6);
+    border-color: var(--orange-main);
     box-shadow: 0 0 20px rgba(233,93,33,0.15);
+}
+
+.ar-trigger:hover svg,
+.ar-trigger:not(.active):hover svg {
+    opacity: 1;
 }
 
 .ar-trigger.active {

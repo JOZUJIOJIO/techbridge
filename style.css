@@ -235,10 +235,12 @@ a { text-decoration: none; color: inherit; }
 
 
 /* Jarvis HUD Canvas — must be above video + overlay */
+/* 降噪：HUD 装饰整体退后，大字标题是首屏唯一主角 */
 .hero-canvas {
     position: absolute;
     inset: 0;
     z-index: 2;
+    opacity: 0.45;
 }
 
 /* Ambient glow behind HUD */
@@ -363,9 +365,17 @@ a { text-decoration: none; color: inherit; }
     box-shadow: 0 12px 32px rgba(233, 93, 33, 0.22);
 }
 
+/* 次按钮降级为幽灵样式：主 CTA 唯一实心 */
 .hero-action-secondary {
-    background: rgba(255, 252, 248, 0.08);
-    border: 1px solid rgba(255, 252, 248, 0.18);
+    background: transparent;
+    border: 1px solid rgba(255, 252, 248, 0.14);
+    color: var(--text-sand);
+    backdrop-filter: none;
+}
+
+.hero-action-secondary:hover {
+    border-color: rgba(255, 252, 248, 0.4);
+    color: var(--text-warm-white);
 }
 
 .scroll-hint {
@@ -2913,6 +2923,8 @@ footer::before {
     .hero-title { font-size: 52px; }
     .hero-subtitle { font-size: 16px; }
     .hero-subtitle-en { font-size: 12px; }
+    /* 移动端：HUD 画布文字会压住副标题，直接隐藏 */
+    .hero-canvas { display: none; }
 
     .section-about { padding: 80px 20px; }
     .portrait-ring { width: 116px; height: 116px; }
