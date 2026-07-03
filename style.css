@@ -198,7 +198,8 @@ a { text-decoration: none; color: inherit; }
     object-fit: cover;
     z-index: 0;
     animation: heroBreathe 12s ease-in-out infinite;
-    filter: brightness(0.45) saturate(0.8);
+    /* 降饱和压住素材本身的蓝紫，色温交给 .hero-overlay 的品牌 tint */
+    filter: brightness(0.45) saturate(0.62);
     transition: opacity 1.5s ease;
 }
 
@@ -262,17 +263,30 @@ a { text-decoration: none; color: inherit; }
     50% { opacity: 0.6; transform: translate(-50%, -50%) scale(1.08); }
 }
 
-/* Dark overlay — vignette, lighter center to show HUD */
+/* Dark overlay — vignette + 品牌色 tint，把偏蓝紫的视频压进橙绿暖调 */
 .hero-overlay {
     position: absolute;
     inset: 0;
     z-index: 1;
-    background: radial-gradient(
-        ellipse 80% 70% at 50% 50%,
-        transparent 0%,
-        rgba(10, 10, 10, 0.15) 40%,
-        rgba(10, 10, 10, 0.6) 100%
-    );
+    background:
+        /* 底部渐入页面暖黑，让首屏与下一节无缝衔接 */
+        linear-gradient(to bottom,
+            transparent 55%,
+            rgba(26, 26, 24, 0.55) 85%,
+            rgba(26, 26, 24, 0.92) 100%
+        ),
+        /* 品牌色温：左上橙、右下绿，低透明度 */
+        linear-gradient(135deg,
+            rgba(233, 93, 33, 0.12) 0%,
+            rgba(26, 26, 24, 0) 45%,
+            rgba(0, 140, 140, 0.14) 100%
+        ),
+        radial-gradient(
+            ellipse 80% 70% at 50% 50%,
+            transparent 0%,
+            rgba(10, 10, 10, 0.15) 40%,
+            rgba(10, 10, 10, 0.6) 100%
+        );
 }
 
 .hero-content {
