@@ -184,30 +184,11 @@ a { text-decoration: none; color: inherit; }
     text-align: center;
     position: relative;
     overflow: hidden;
-    background-color: #0a0a0a;
+    /* 无视频后与全站同底色，首屏与下一节无缝 */
+    background-color: var(--bg-warm-black);
 }
 
-/* Hero background video — breathing sway */
-.hero-bg-video {
-    position: absolute;
-    inset: -5%;
-    width: 110%;
-    height: 110%;
-    object-fit: cover;
-    z-index: 0;
-    animation: heroBreathe 12s ease-in-out infinite;
-    /* 降饱和压住素材本身的蓝紫，色温交给 .hero-overlay 的品牌 tint */
-    filter: brightness(0.45) saturate(0.62);
-    transition: opacity 1.5s ease;
-}
-
-@keyframes heroBreathe {
-    0%   { transform: scale(1.00) translate(0, 0); }
-    20%  { transform: scale(1.03) translate(-0.5%, 0.3%); }
-    45%  { transform: scale(1.01) translate(0.4%, -0.5%); }
-    70%  { transform: scale(1.04) translate(-0.3%, 0.2%); }
-    100% { transform: scale(1.00) translate(0, 0); }
-}
+/* Hero 背景视频已移除（2026-07-04）：纯暖黑 + 品牌光晕，大字是唯一主角 */
 
 /* Helmet visor vignette overlay */
 .hero-visor {
