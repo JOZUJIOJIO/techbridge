@@ -63,51 +63,7 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
     if (statsBar) counterObserver.observe(statsBar);
 })();
 
-// === 2. Cursor Glow (A4: pauses on mobile / when inactive) ===
-(function() {
-    const glow = document.getElementById('cursorGlow');
-    if (!glow) return;
-    // Skip RAF loop entirely on touch devices
-    if (window.matchMedia('(pointer: coarse)').matches) return;
-
-    let mouseX = -500, mouseY = -500;
-    let glowX = -500, glowY = -500;
-    let isActive = false;
-    let rafId = null;
-
-    function animateGlow() {
-        glowX += (mouseX - glowX) * 0.15;
-        glowY += (mouseY - glowY) * 0.15;
-        glow.style.left = glowX + 'px';
-        glow.style.top = glowY + 'px';
-        rafId = requestAnimationFrame(animateGlow);
-    }
-
-    function startGlow() {
-        if (!isActive) {
-            isActive = true;
-            glow.classList.add('active');
-            rafId = requestAnimationFrame(animateGlow);
-        }
-    }
-
-    function stopGlow() {
-        isActive = false;
-        glow.classList.remove('active');
-        if (rafId) {
-            cancelAnimationFrame(rafId);
-            rafId = null;
-        }
-    }
-
-    document.addEventListener('mousemove', (e) => {
-        mouseX = e.clientX;
-        mouseY = e.clientY;
-        startGlow();
-    });
-
-    document.addEventListener('mouseleave', stopGlow);
-})();
+// === 2. Cursor Glow — 已移除（交互减法：全站指针效果只保留卡片 spotlight 与 hero parallax） ===
 
 // === 3. Language Toggle (A2: scoped, not global; C4: persists to localStorage) ===
 (function() {
@@ -366,22 +322,7 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
 
 // Hero background video loops in markup so the first screen stays alive.
 
-// === 10. Topic video 3D tilt on mousemove ===
-(function() {
-    document.querySelectorAll('.topic-video').forEach(function(card) {
-        card.addEventListener('mousemove', function(e) {
-            var rect = card.getBoundingClientRect();
-            var x = (e.clientX - rect.left) / rect.width - 0.5;
-            var y = (e.clientY - rect.top) / rect.height - 0.5;
-            card.style.setProperty('--rx', (x * 6) + 'deg');
-            card.style.setProperty('--ry', (-y * 6) + 'deg');
-        });
-        card.addEventListener('mouseleave', function() {
-            card.style.setProperty('--rx', '0deg');
-            card.style.setProperty('--ry', '0deg');
-        });
-    });
-})();
+// === 10. Topic video 3D tilt — 已移除（交互减法） ===
 
 // Command Palette is handled by jarvis-hud.js
 
@@ -545,26 +486,7 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
     });
 })();
 
-// === 14. Magnetic Buttons (desktop only) ===
-(function() {
-    if (window.matchMedia('(pointer: coarse)').matches) return;
-    var els = document.querySelectorAll('.hero-action, .cta-button, .project-cta-btn, .knowledge-btn');
-    var strength = 0.22;
-    els.forEach(function(el) {
-        el.classList.add('magnetic');
-        el.addEventListener('mousemove', function(e) {
-            var r = el.getBoundingClientRect();
-            var x = e.clientX - r.left - r.width / 2;
-            var y = e.clientY - r.top - r.height / 2;
-            el.style.setProperty('--magx', (x * strength).toFixed(1) + 'px');
-            el.style.setProperty('--magy', (y * strength).toFixed(1) + 'px');
-        });
-        el.addEventListener('mouseleave', function() {
-            el.style.setProperty('--magx', '0px');
-            el.style.setProperty('--magy', '0px');
-        });
-    });
-})();
+// === 14. Magnetic Buttons — 已移除（交互减法：按钮回归标准 hover） ===
 
 // === 15. Timeline scroll draw ===
 (function() {

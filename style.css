@@ -98,23 +98,8 @@ body::after {
 
 a { text-decoration: none; color: inherit; }
 
-/* Cursor glow */
-.cursor-glow {
-    position: fixed;
-    width: 240px;
-    height: 240px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(233,93,33,0.05), transparent 70%);
-    pointer-events: none;
-    z-index: var(--z-cursor);
-    transform: translate(-50%, -50%);
-    transition: opacity 0.3s;
-    opacity: 0;
-}
-
-.cursor-glow.active {
-    opacity: 0.7;
-}
+/* Cursor glow — 已移除（交互减法），保留空类以防旧引用 */
+.cursor-glow { display: none; }
 
 /* Scroll progress bar */
 .scroll-progress {
@@ -2268,12 +2253,7 @@ footer::before {
     }
 }
 
-/* 4. Topic video 3D tilt */
-.topic-video {
-    transform-style: preserve-3d;
-    transition: transform 0.15s ease-out;
-    transform: perspective(800px) rotateY(var(--rx, 0deg)) rotateX(var(--ry, 0deg));
-}
+/* 4. Topic video 3D tilt — 已移除（交互减法） */
 
 /* 5. WeChat modal entrance animation */
 .wechat-modal {
@@ -3314,16 +3294,7 @@ section[id] { scroll-margin-top: 72px; }
 .knowledge-card:hover .card-spotlight,
 .latest-card:hover .card-spotlight { opacity: 1; }
 
-/* --- Magnetic buttons (overrides hover translateY; cursor pull replaces lift) --- */
-.hero-action.magnetic,
-.cta-button.magnetic,
-.project-cta-btn.magnetic,
-.knowledge-btn.magnetic {
-    transform: translate3d(var(--magx, 0px), var(--magy, 0px), 0);
-    transition: transform 0.3s cubic-bezier(0.33, 1, 0.68, 1),
-                background 0.3s, box-shadow 0.3s, border-color 0.3s, color 0.3s;
-    will-change: transform;
-}
+/* --- Magnetic buttons — 已移除（交互减法：按钮回归标准 hover） --- */
 
 /* --- Timeline scroll draw --- */
 .timeline.tl-animated::before {
