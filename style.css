@@ -1578,6 +1578,35 @@ a { text-decoration: none; color: inherit; }
     margin-bottom: 80px;
 }
 
+/* 左题右语的编辑排版：利用大标题右侧的空白 */
+.section-header-split {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 48px;
+}
+
+.section-intro {
+    max-width: 380px;
+    font-family: var(--font-cn-body);
+    font-size: 15px;
+    line-height: 1.9;
+    color: var(--text-warm-grey);
+    padding-bottom: 10px;
+}
+
+@media (max-width: 768px) {
+    .section-header-split {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+    }
+    .section-intro {
+        padding-bottom: 0;
+        font-size: 13px;
+    }
+}
+
 .section-title {
     font-family: var(--font-en-display);
     font-weight: 800;
