@@ -465,6 +465,38 @@ a { text-decoration: none; color: inherit; }
     margin-bottom: 48px;
 }
 
+/* 人像 + 自我介绍组成一行：人像不再是悬空的小圆点 */
+.about-intro-row {
+    display: flex;
+    align-items: center;
+    gap: 56px;
+    text-align: left;
+    margin-bottom: 64px;
+}
+
+.about-intro-row .portrait-wrapper {
+    margin-bottom: 0;
+    flex-shrink: 0;
+}
+
+.about-intro-row .portrait-ring {
+    width: 176px;
+    height: 176px;
+}
+
+.about-intro-row .about-text {
+    font-size: 26px;
+}
+
+@media (max-width: 768px) {
+    .about-intro-row {
+        flex-direction: column;
+        gap: 28px;
+        text-align: center;
+        margin-bottom: 48px;
+    }
+}
+
 /* Intro video in About */
 .intro-video-wrapper {
     margin-bottom: 56px;
