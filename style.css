@@ -3467,6 +3467,8 @@ section[id] { scroll-margin-top: 72px; }
 }
 .cmdk-trigger:hover .cmdk-kbd { border-color: var(--orange-main); }
 .cmdk-trigger:focus-visible { outline: 2px solid var(--orange-main); outline-offset: 3px; }
+.projects-toggle:focus-visible { outline: 2px solid var(--orange-main); outline-offset: 3px; }
+.cmd-palette-input:focus-visible { border-bottom-color: var(--orange-main); }
 
 /* --- Command palette trigger (mobile menu) --- */
 .mobile-cmdk {
