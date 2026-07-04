@@ -1451,14 +1451,13 @@ window.jarvisAR = window.jarvisAR || {
 (function() {
     const el = document.getElementById('typewriterTarget');
     if (!el) return;
-    // Reduced motion: keep the static "Think Different." line, skip the rotation.
+    // Reduced motion: keep the static "Dare Greatly." line, skip the rotation.
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const phrases = [
         '连接科技与人的桥',
+        'AI 硬件出海实践者',
         '硅基物语创始人',
-        '爱奥创 CEO',
-        '科技内容创作者',
-        'AI 硬件出海实践者'
+        '爱奥创 CEO'
     ];
     let phraseIdx = 0;
     let charIdx = 0;
