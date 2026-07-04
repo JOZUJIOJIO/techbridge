@@ -707,3 +707,16 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
     if (mq.addEventListener) mq.addEventListener('change', apply);
     else if (mq.addListener) mq.addListener(apply);
 })();
+
+// === Mobile: projects grid collapse (show 4, expand on demand) ===
+(function() {
+    var btn = document.getElementById('projectsToggle');
+    var grid = document.querySelector('.projects-grid');
+    if (!btn || !grid) return;
+    btn.addEventListener('click', function() {
+        grid.classList.add('expanded');
+        btn.setAttribute('aria-expanded', 'true');
+        // 新展开的卡片带 .reveal，立即置为可见，避免等 IntersectionObserver
+        grid.querySelectorAll('.reveal').forEach(function(el) { el.classList.add('visible'); });
+    });
+})();

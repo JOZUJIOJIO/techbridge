@@ -2699,6 +2699,49 @@ footer::before {
     background: rgba(233, 93, 33, 0.18);
 }
 
+/* 策划中的卡片视觉弱化，把注意力留给已上线产品 */
+.project-card:has(.status-planned) {
+    opacity: 0.62;
+    transition: opacity 0.3s ease, transform 0.4s ease, border-color 0.3s ease, box-shadow 0.4s ease;
+}
+
+.project-card:has(.status-planned):hover {
+    opacity: 1;
+}
+
+/* 移动端项目卡折叠：默认前 4 张 + 展开按钮 */
+.projects-toggle {
+    display: none;
+    margin: 24px auto 0;
+    padding: 12px 28px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 1px;
+    color: var(--text-sand);
+    background: transparent;
+    border: 1px solid var(--border-dark);
+    border-radius: 100px;
+    cursor: pointer;
+    transition: border-color 0.3s, color 0.3s;
+}
+
+.projects-toggle:hover {
+    border-color: var(--orange-main);
+    color: var(--text-warm-white);
+}
+
+@media (max-width: 768px) {
+    .projects-grid:not(.expanded) .project-card:nth-child(n+5) {
+        display: none;
+    }
+    .projects-grid.expanded + .projects-toggle {
+        display: none;
+    }
+    .projects-toggle {
+        display: block;
+    }
+}
+
 .status-planned {
     color: var(--text-sand);
     background: rgba(255, 252, 248, 0.1);
