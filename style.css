@@ -1066,17 +1066,18 @@ a { text-decoration: none; color: inherit; }
     margin-top: 64px;
 }
 
+/* 编辑化排版：左对齐、小图标，摆脱"居中图标卡"模板感 */
 .knowledge-card {
     background: var(--surface-dark);
     border: 1px solid var(--border-dark);
     border-radius: 16px;
-    padding: 40px 32px;
-    text-align: center;
+    padding: 36px 32px;
+    text-align: left;
     transition: all 0.4s;
     position: relative;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
 }
 
 .knowledge-card:hover {
@@ -1110,15 +1111,15 @@ a { text-decoration: none; color: inherit; }
 }
 
 .knowledge-icon {
-    margin-bottom: 20px;
+    margin-bottom: 16px;
     color: var(--text-warm-grey);
     transition: color 0.3s;
 }
 
 .knowledge-icon svg {
     display: block;
-    width: 32px;
-    height: 32px;
+    width: 24px;
+    height: 24px;
     stroke: currentColor;
     fill: none;
     stroke-width: 1.5;
@@ -1205,13 +1206,14 @@ a { text-decoration: none; color: inherit; }
     margin-top: 64px;
 }
 
+/* 编辑化排版：左对齐、小图标（顶部色条保留作身份色） */
 .collab-card {
     background: var(--surface-dark);
     border: 1px solid var(--border-dark);
     border-radius: 16px;
     padding: 36px;
     padding-top: 40px;
-    text-align: center;
+    text-align: left;
     transition: all 0.3s;
     position: relative;
     overflow: hidden;
@@ -1251,17 +1253,17 @@ a { text-decoration: none; color: inherit; }
 }
 
 .collab-icon {
-    width: 48px;
-    height: 48px;
-    margin: 0 auto 20px;
+    width: 40px;
+    height: 40px;
+    margin: 0 0 16px;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
 }
 
 .collab-icon svg {
-    width: 32px;
-    height: 32px;
+    width: 26px;
+    height: 26px;
     stroke: var(--text-warm-grey);
     fill: none;
     stroke-width: 1.5;
