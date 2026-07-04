@@ -276,7 +276,7 @@
 
     <!-- Screen 1: Hero -->
     <section id="hero">
-        <video class="hero-bg-video" id="heroBgVideo" autoplay muted loop playsinline>
+        <video class="hero-bg-video" id="heroBgVideo" autoplay muted loop playsinline poster="poster-hero.webp">
             <source src="hero-bg.mp4" type="video/mp4">
         </video>
         <div class="hero-visor"></div>
@@ -814,7 +814,7 @@
         </p>
         <div class="brand-promo-video reveal">
             <!-- 懒加载：进入视口才由 main.js 播放，避免首屏就下载整条视频 -->
-            <video muted loop playsinline preload="none" data-lazy-autoplay>
+            <video muted loop playsinline preload="none" poster="poster-brand-promo.webp" data-lazy-autoplay>
                 <source src="brand-promo.mp4" type="video/mp4">
             </video>
         </div>
