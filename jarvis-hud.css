@@ -75,6 +75,27 @@
     pointer-events: none;
 }
 
+/* AR 提示：默认隐藏，悬停 Jarvis 入口时淡入（原先是裸文本，被旧视频背景遮着才没暴露） */
+.ar-hint {
+    position: absolute;
+    bottom: 148px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 1px;
+    color: var(--text-warm-grey);
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+    z-index: var(--z-hero-content);
+}
+
+.ar-trigger:hover ~ .ar-hint {
+    opacity: 0.85;
+}
+
 .ar-status {
     position: absolute;
     bottom: 68px;
