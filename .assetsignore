@@ -1,0 +1,11 @@
+# Cloudflare Workers 静态资源忽略清单——这些不是网站内容，不上传
+# （修复 2026-07-04 构建失败：.git pack 72MB 超过单文件 25MB 限制）
+.git
+.github
+.wrangler
+.claude
+.gstack
+.cloudflare-pages
+node_modules
+*.log
+修改问题反馈记录.md
