@@ -698,7 +698,8 @@ a { text-decoration: none; color: inherit; }
 .highlights-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    grid-auto-rows: 1fr;
+    /* 行高由 3/2 单元自然决定 + dense 回填，消除杂志格空洞 */
+    grid-auto-flow: dense;
     gap: 12px;
 }
 
@@ -712,16 +713,17 @@ a { text-decoration: none; color: inherit; }
     background: var(--surface-card);
 }
 
-/* Magazine-style: first two items span 2 columns for visual hierarchy */
+/* Magazine-style: first two items span 2 columns for visual hierarchy.
+   跨栏项必须显式给宽高比，否则会被图片原始高度撑爆整行 */
 .highlight-item:nth-child(1) {
     grid-column: span 2;
     grid-row: span 2;
-    aspect-ratio: auto;
+    aspect-ratio: 3/2;
 }
 
 .highlight-item:nth-child(2) {
     grid-column: span 2;
-    aspect-ratio: 2/1;
+    aspect-ratio: 3/1;
 }
 
 .highlight-item img {
