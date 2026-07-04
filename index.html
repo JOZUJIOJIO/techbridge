@@ -813,7 +813,8 @@
             <span class="highlight">这就是 Tech Bridge。</span>
         </p>
         <div class="brand-promo-video reveal">
-            <video autoplay muted loop playsinline>
+            <!-- 懒加载：进入视口才由 main.js 播放，避免首屏就下载整条视频 -->
+            <video muted loop playsinline preload="none" data-lazy-autoplay>
                 <source src="brand-promo.mp4" type="video/mp4">
             </video>
         </div>

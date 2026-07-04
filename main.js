@@ -630,6 +630,27 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
     else if (mq.addListener) mq.addListener(apply);
 })();
 
+// === Lazy autoplay videos: 进入视口才加载播放，离开暂停 ===
+(function() {
+    var vids = document.querySelectorAll('video[data-lazy-autoplay]');
+    if (!vids.length || !('IntersectionObserver' in window)) {
+        // 兜底：不支持 IO 时恢复原行为
+        vids.forEach(function(v) { v.play && v.play().catch(function(){}); });
+        return;
+    }
+    var io = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            var v = entry.target;
+            if (entry.isIntersecting) {
+                v.play().catch(function(){});
+            } else {
+                v.pause();
+            }
+        });
+    }, { rootMargin: '200px 0px' });
+    vids.forEach(function(v) { io.observe(v); });
+})();
+
 // === Mobile: projects grid collapse (show 4, expand on demand) ===
 (function() {
     var btn = document.getElementById('projectsToggle');
