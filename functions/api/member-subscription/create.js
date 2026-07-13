@@ -32,7 +32,7 @@ async function createStripeCheckoutSession(env, request, payload) {
   if (!env.STRIPE_SECRET_KEY || !priceId) {
     return {
       missingConfig: true,
-      message: 'Stripe 环境变量未配置：需要 STRIPE_SECRET_KEY 和 STRIPE_PRICE_ID_ANNUAL / STRIPE_PRICE_ID_MONTHLY。'
+      message: '会员支付服务正在配置中，请稍后再试。'
     };
   }
 

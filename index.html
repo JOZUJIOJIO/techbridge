@@ -922,11 +922,11 @@
                 <div class="commercial-path-index">02</div>
                 <div class="commercial-path-meta">MEMBERSHIP · 持续同行</div>
                 <h3>加入 Tech Bridge 会员</h3>
-                <p>把我正在验证的产品、增长方法和科技商业判断，整理成可执行的会员内容。</p>
+                <p>不是泛泛的资讯摘要，而是我在真实项目中验证过、可以直接复用的方法与判断。</p>
                 <ul>
-                    <li>Tech Bridge 会员信</li>
-                    <li>AI 产品实战与项目内参</li>
-                    <li>AI 武器库与独家资源</li>
+                    <li>真实项目复盘：关键决策、结果与踩坑</li>
+                    <li>可直接使用的提示词、工作流与模板</li>
+                    <li>AI 商业化、内容增长与硬件出海判断</li>
                 </ul>
                 <div class="commercial-price"><strong>¥199</strong><span>/ 年 · 会员价</span></div>
                 <button class="commercial-link commercial-link-orange" id="memberCheckoutToggle" type="button" aria-expanded="false" aria-controls="memberCheckout">加入会员 →</button>
@@ -950,8 +950,14 @@
         <div class="member-checkout" id="memberCheckout" hidden>
             <div class="member-checkout-copy">
                 <div class="paid-subscribe-kicker">Founder Edition</div>
-                <h3>开通会员信</h3>
-                <p>选择订阅周期并留下邮箱。付款成功后，系统会自动开通会员邮件权限。</p>
+                <h3>你会得到什么</h3>
+                <p>会员信不做新闻搬运。它把我正在验证的产品、方法和商业判断，整理成可以直接使用的内容。</p>
+                <ul class="member-checkout-benefits">
+                    <li><strong>项目复盘</strong><span>产品从 0 到 1、获客、商业化和出海过程</span></li>
+                    <li><strong>实用资料</strong><span>提示词、SOP、模板、案例和工具清单</span></li>
+                    <li><strong>决策参考</strong><span>重要趋势、机会判断与失败教训</span></li>
+                    <li><strong>会员更新</strong><span>新产品进展与可公开的内测资源</span></li>
+                </ul>
                 <button class="member-checkout-close" id="memberCheckoutClose" type="button" aria-label="关闭会员订阅表单" title="关闭">
                     <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                 </button>
@@ -962,13 +968,13 @@
                     <strong>¥199 / 年</strong>
                 </div>
                 <input type="hidden" name="plan" value="annual">
-                <p class="subscribe-single-plan">年度会员 · 一次开通，持续接收全年会员内容与资源更新。</p>
+                <p class="subscribe-single-plan">年度会员 · ¥199 / 年。填写邮箱后，下一步前往 Stripe 安全支付页。</p>
                 <label class="subscribe-email-label" for="paidSubscribeEmail">接收会员信的邮箱</label>
                 <div class="subscribe-email-row">
                     <input class="subscribe-email-input" id="paidSubscribeEmail" name="email" type="email" inputmode="email" autocomplete="email" placeholder="your@email.com" required>
-                    <button class="subscribe-submit" id="paidSubscribeSubmit" type="submit">开通订阅 →</button>
+                    <button class="subscribe-submit" id="paidSubscribeSubmit" type="submit">前往安全支付 →</button>
                 </div>
-                <p class="subscribe-trust">支付由 Stripe Checkout 托管；付款成功后自动开通邮件权限。</p>
+                <p class="subscribe-trust">支付将在 Stripe Checkout 完成；本页面不会保存银行卡信息。</p>
                 <p class="subscribe-status" id="paidSubscribeStatus" aria-live="polite"></p>
             </form>
         </div>

@@ -476,7 +476,7 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
     function setLoading(isLoading) {
         if (!submitBtn) return;
         submitBtn.disabled = isLoading;
-        submitBtn.textContent = isLoading ? '正在创建订单...' : '开通订阅 →';
+        submitBtn.textContent = isLoading ? '正在创建安全订单...' : '前往安全支付 →';
     }
 
     function selectedPlan() {
@@ -506,7 +506,7 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
         }
 
         setLoading(true);
-        setStatus('正在连接支付系统...', '');
+        setStatus('正在连接 Stripe 安全支付...', '');
 
         try {
             var res = await fetch(endpoint, {
