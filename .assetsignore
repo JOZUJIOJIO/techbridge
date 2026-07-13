@@ -5,7 +5,16 @@
 .wrangler
 .claude
 .gstack
+.playwright-cli
+.vscode
 .cloudflare-pages
+output
 node_modules
+functions
+supabase
+worker.js
+wrangler.jsonc
+.dev.vars.example
+README.md
 *.log
 修改问题反馈记录.md

@@ -2,3 +2,10 @@
 .claude/
 .superpowers/
 .DS_Store
+.gstack/
+.playwright-cli/
+.wrangler/
+output/
+.dev.vars
+.env
+.env.*

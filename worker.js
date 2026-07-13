@@ -1,0 +1,40 @@
+import * as contactInquiry from './functions/api/contact-inquiry.js';
+import * as memberSubscription from './functions/api/member-subscription/create.js';
+import * as stripeWebhook from './functions/api/stripe-webhook.js';
+
+const API_ROUTES = new Map([
+  ['/api/contact-inquiry', contactInquiry],
+  ['/api/member-subscription/create', memberSubscription],
+  ['/api/stripe-webhook', stripeWebhook]
+]);
+
+function json(data, status) {
+  return new Response(JSON.stringify(data), {
+    status,
+    headers: {
+      'content-type': 'application/json; charset=utf-8',
+      'cache-control': 'no-store'
+    }
+  });
+}
+
+export default {
+  async fetch(request, env, ctx) {
+    const url = new URL(request.url);
+    const handler = API_ROUTES.get(url.pathname);
+
+    if (!handler) {
+      if (url.pathname.startsWith('/api/')) {
+        return json({ error: 'not_found', message: '接口不存在。' }, 404);
+      }
+      return env.ASSETS.fetch(request);
+    }
+
+    const methodHandler = handler[`onRequest${request.method.charAt(0)}${request.method.slice(1).toLowerCase()}`];
+    if (!methodHandler) {
+      return json({ error: 'method_not_allowed', message: '请求方法不受支持。' }, 405);
+    }
+
+    return methodHandler({ request, env, ctx });
+  }
+};

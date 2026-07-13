@@ -258,6 +258,325 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
     });
 })();
 
+// === 6d. Member checkout disclosure ===
+(function() {
+    var toggle = document.getElementById('memberCheckoutToggle');
+    var panel = document.getElementById('memberCheckout');
+    var closeBtn = document.getElementById('memberCheckoutClose');
+    var emailInput = document.getElementById('paidSubscribeEmail');
+    if (!toggle || !panel) return;
+
+    function openCheckout(options) {
+        var settings = options || {};
+        panel.hidden = false;
+        toggle.setAttribute('aria-expanded', 'true');
+        window.requestAnimationFrame(function() {
+            panel.classList.add('is-open');
+        });
+        if (settings.updateHash && window.history && window.history.pushState) {
+            window.history.pushState(null, '', '#member-subscribe');
+        }
+        if (settings.scroll) {
+            window.setTimeout(function() {
+                panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 80);
+        }
+        if (settings.focus) {
+            window.setTimeout(function() {
+                if (emailInput) emailInput.focus({ preventScroll: true });
+            }, 500);
+        }
+    }
+
+    function closeCheckout() {
+        panel.classList.remove('is-open');
+        toggle.setAttribute('aria-expanded', 'false');
+        window.setTimeout(function() {
+            if (!panel.classList.contains('is-open')) panel.hidden = true;
+        }, 280);
+        toggle.focus({ preventScroll: true });
+    }
+
+    toggle.addEventListener('click', function() {
+        if (panel.hidden) {
+            openCheckout({ scroll: true, focus: true, updateHash: true });
+        } else {
+            closeCheckout();
+        }
+    });
+
+    if (closeBtn) closeBtn.addEventListener('click', closeCheckout);
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && !panel.hidden) closeCheckout();
+    });
+
+    if (window.location.hash === '#member-subscribe') {
+        openCheckout({ scroll: false, focus: false, updateHash: false });
+    }
+})();
+
+// === 6e. Cooperation inquiry ===
+(function() {
+    var modal = document.getElementById('inquiryModal');
+    var form = document.getElementById('inquiryForm');
+    if (!modal || !form) return;
+
+    var dialog = modal.querySelector('.inquiry-dialog');
+    var openButtons = document.querySelectorAll('.open-inquiry-link');
+    var closeButton = document.getElementById('inquiryModalClose');
+    var submitButton = document.getElementById('inquirySubmit');
+    var submitAnother = document.getElementById('inquirySubmitAnother');
+    var status = document.getElementById('inquiryStatus');
+    var success = document.getElementById('inquirySuccess');
+    var firstField = document.getElementById('inquiryName');
+    var previousFocus = null;
+    var submitting = false;
+
+    function isLocalPreview() {
+        return window.location.protocol === 'file:' || /^(localhost|127\.0\.0\.1)$/.test(window.location.hostname);
+    }
+
+    function openModal() {
+        previousFocus = document.activeElement;
+        modal.classList.add('open');
+        modal.setAttribute('aria-hidden', 'false');
+        document.body.classList.add('inquiry-modal-open');
+        window.setTimeout(function() { if (firstField) firstField.focus(); }, 120);
+    }
+
+    function closeModal() {
+        modal.classList.remove('open');
+        modal.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('inquiry-modal-open');
+        if (previousFocus && previousFocus.focus) previousFocus.focus();
+    }
+
+    function showSuccess() {
+        form.hidden = true;
+        success.hidden = false;
+        dialog.classList.add('is-success');
+        var heading = success.querySelector('h3');
+        if (heading) heading.focus({ preventScroll: true });
+    }
+
+    function resetForm() {
+        form.reset();
+        form.hidden = false;
+        success.hidden = true;
+        dialog.classList.remove('is-success');
+        status.textContent = '';
+        status.className = 'inquiry-status';
+        if (firstField) firstField.focus();
+    }
+
+    openButtons.forEach(function(button) {
+        button.addEventListener('click', function(event) {
+            event.preventDefault();
+            openModal();
+        });
+    });
+
+    if (closeButton) closeButton.addEventListener('click', closeModal);
+    if (submitAnother) submitAnother.addEventListener('click', resetForm);
+    modal.addEventListener('click', function(event) {
+        if (event.target === modal) closeModal();
+    });
+
+    modal.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            closeModal();
+            return;
+        }
+        if (event.key !== 'Tab') return;
+        var focusable = Array.prototype.slice.call(dialog.querySelectorAll('button:not([hidden]), input:not([type="hidden"]):not([tabindex="-1"]), select, textarea'))
+            .filter(function(element) { return !element.disabled && element.offsetParent !== null; });
+        if (!focusable.length) return;
+        var first = focusable[0];
+        var last = focusable[focusable.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+            event.preventDefault();
+            last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+            event.preventDefault();
+            first.focus();
+        }
+    });
+
+    form.addEventListener('submit', async function(event) {
+        event.preventDefault();
+        if (submitting) return;
+        if (!form.checkValidity()) {
+            form.reportValidity();
+            return;
+        }
+
+        var data = new FormData(form);
+        var payload = {
+            cooperationType: data.get('cooperationType'),
+            contactName: data.get('contactName'),
+            company: data.get('company'),
+            contactMethod: data.get('contactMethod'),
+            budget: data.get('budget'),
+            timeline: data.get('timeline'),
+            need: data.get('need'),
+            website: data.get('website'),
+            source: 'qiaobit-homepage'
+        };
+
+        submitting = true;
+        submitButton.disabled = true;
+        submitButton.textContent = '正在提交…';
+        status.textContent = '';
+        status.className = 'inquiry-status';
+
+        try {
+            if (isLocalPreview()) {
+                await new Promise(function(resolve) { window.setTimeout(resolve, 420); });
+                showSuccess();
+                return;
+            }
+            var response = await fetch(form.dataset.endpoint, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            var result = await response.json().catch(function() { return {}; });
+            if (!response.ok) throw new Error(result.message || '提交失败，请稍后重试。');
+            showSuccess();
+        } catch (error) {
+            status.textContent = error.message || '提交失败，请稍后重试。';
+            status.classList.add('is-error');
+        } finally {
+            submitting = false;
+            submitButton.disabled = false;
+            submitButton.innerHTML = '提交申请 <span>→</span>';
+        }
+    });
+})();
+
+// === 6e. Paid member newsletter checkout ===
+(function() {
+    var form = document.getElementById('paidSubscribeForm');
+    if (!form) return;
+
+    var emailInput = document.getElementById('paidSubscribeEmail');
+    var submitBtn = document.getElementById('paidSubscribeSubmit');
+    var statusEl = document.getElementById('paidSubscribeStatus');
+    var planInputs = form.querySelectorAll('input[name="plan"]');
+    var endpoint = form.getAttribute('data-endpoint') || '/api/member-subscription/create';
+    var isLocalPreview = /^(localhost|127\.0\.0\.1)$/.test(window.location.hostname) || window.location.protocol === 'file:';
+
+    function setStatus(message, tone) {
+        if (!statusEl) return;
+        statusEl.textContent = message || '';
+        statusEl.classList.remove('is-success', 'is-error');
+        if (tone) statusEl.classList.add('is-' + tone);
+    }
+
+    function setLoading(isLoading) {
+        if (!submitBtn) return;
+        submitBtn.disabled = isLoading;
+        submitBtn.textContent = isLoading ? '正在创建订单...' : '开通订阅 →';
+    }
+
+    function selectedPlan() {
+        var checked = form.querySelector('input[name="plan"]:checked');
+        return checked ? checked.value : 'annual';
+    }
+
+    function updatePlanState() {
+        planInputs.forEach(function(input) {
+            var label = input.closest('.subscribe-plan');
+            if (label) label.classList.toggle('is-selected', input.checked);
+        });
+    }
+
+    planInputs.forEach(function(input) {
+        input.addEventListener('change', updatePlanState);
+    });
+    updatePlanState();
+
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        var email = (emailInput && emailInput.value || '').trim();
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            setStatus('先填一个有效邮箱，我才能给你创建订阅订单。', 'error');
+            if (emailInput) emailInput.focus();
+            return;
+        }
+
+        setLoading(true);
+        setStatus('正在连接支付系统...', '');
+
+        try {
+            var res = await fetch(endpoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: email,
+                    plan: selectedPlan(),
+                    source: 'qiaobit-homepage'
+                })
+            });
+            var data = await res.json().catch(function() { return {}; });
+
+            if (!res.ok || data.error) {
+                throw new Error(data.message || data.error || '支付接口暂时不可用');
+            }
+
+            if (data.checkoutUrl) {
+                setStatus('订单已创建，正在跳转到 Stripe Checkout...', 'success');
+                window.location.href = data.checkoutUrl;
+                return;
+            }
+
+            if (data.preview) {
+                setStatus(data.message || '本地预览通过：上线配置密钥后会跳转 Stripe Checkout。', 'success');
+                return;
+            }
+
+            setStatus('订单已提交，请检查邮箱里的后续开通说明。', 'success');
+        } catch (err) {
+            if (isLocalPreview) {
+                setStatus('本地预览通过：邮箱和方案选择已可用；生产环境配置 Stripe/Supabase/Resend 后会自动跳转付款。', 'success');
+            } else {
+                setStatus(err.message || '支付接口暂时不可用，请稍后重试。', 'error');
+            }
+        } finally {
+            setLoading(false);
+        }
+    });
+})();
+
+// === 6f. Floating commercial hub CTA ===
+(function() {
+    var trigger = document.getElementById('floatingSubscribe');
+    var section = document.getElementById('collab');
+    if (!trigger || !section) return;
+
+    trigger.addEventListener('click', function(e) {
+        e.preventDefault();
+        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        if (window.history && window.history.pushState) {
+            window.history.pushState(null, '', '#collab');
+        }
+    });
+
+    if ('IntersectionObserver' in window) {
+        var visibleContexts = new Set();
+        var observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) visibleContexts.add(entry.target);
+                else visibleContexts.delete(entry.target);
+            });
+            trigger.classList.toggle('is-context-hidden', visibleContexts.size > 0);
+        }, { threshold: 0.04 });
+        [section, document.getElementById('projects')].forEach(function(context) {
+            if (context) observer.observe(context);
+        });
+    }
+})();
+
 // === 7. Scroll Progress Bar (A3: passive) ===
 (function() {
     var bar = document.getElementById('scrollProgress');
@@ -563,6 +882,12 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
         if (modal && modal.classList.contains('open')) modal.classList.remove('open');
         var miniappModal = document.getElementById('miniappModal');
         if (miniappModal && miniappModal.classList.contains('open')) miniappModal.classList.remove('open');
+        var inquiryModal = document.getElementById('inquiryModal');
+        if (inquiryModal && inquiryModal.classList.contains('open')) {
+            inquiryModal.classList.remove('open');
+            inquiryModal.setAttribute('aria-hidden', 'true');
+            document.body.classList.remove('inquiry-modal-open');
+        }
         var menu = document.getElementById('mobileMenu');
         if (menu && menu.classList.contains('open')) menu.classList.remove('open');
     });
@@ -616,12 +941,24 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
     }
 
     function teardown(grid) {
-        // Leave DOM in place; CSS reverts to grid above 600px. Just reset bar.
+        if (!grid._swipeReady) return;
+        grid._swipeReady = false;
+        grid.classList.remove('swipe-carousel');
+        grid.scrollLeft = 0;
+
+        var track = grid.nextElementSibling;
+        if (track && track.classList.contains('swipe-progress')) {
+            var hint = track.nextElementSibling;
+            track.remove();
+            if (hint && hint.classList.contains('swipe-hint')) hint.remove();
+        }
     }
 
     function apply() {
-        if (!mq.matches) return;
-        document.querySelectorAll('.latest-grid, .highlights-grid').forEach(enhance);
+        document.querySelectorAll('.latest-grid, .highlights-grid').forEach(function(grid) {
+            if (mq.matches) enhance(grid);
+            else teardown(grid);
+        });
     }
 
     apply();

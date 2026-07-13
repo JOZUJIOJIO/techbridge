@@ -51,7 +51,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <!-- 字重按实际用量裁剪：去掉未使用的 Mono 300、Sans SC 300/900、Serif SC 900，显著减少 CJK 字体加载 -->
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@400;700&family=Noto+Sans+SC:wght@400;700&family=Noto+Serif+SC:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=6">
+    <link rel="stylesheet" href="style.css?v=13">
     <link rel="stylesheet" href="jarvis-hud.css?v=6">
 
     <!-- Structured Data -->
@@ -652,7 +652,7 @@
         <div class="section-header reveal">
             <span class="section-label">05 — Projects</span>
             <h2 class="section-title">我造的东西.</h2>
-            <p class="project-section-desc">硅基物语是主线产品，择偶定位和有问必显承接快速验证，Creator Studio、Novart、Kairos、林雪妮、地球 Online、超模算力与电商AI素材通继续扩展我的 AI 产品矩阵。</p>
+            <p class="project-section-desc">从 AI 原生产品到智能硬件，我持续把想法做成可以体验、使用和交付的东西。</p>
         </div>
         <div class="projects-grid">
             <a class="project-card project-card-featured reveal" href="https://siliconstory.cn" target="_blank" rel="noopener noreferrer">
@@ -784,14 +784,57 @@
             </div>
         </div>
         <button class="projects-toggle" id="projectsToggle" aria-expanded="false">展开全部 10 个产品 ↓</button>
+
+        <div class="hardware-products reveal" id="hardware-products" aria-labelledby="hardwareProductsTitle">
+            <div class="hardware-products-head">
+                <div>
+                    <span class="hardware-products-label">Smart Hardware</span>
+                    <h3 id="hardwareProductsTitle">智能硬件.</h3>
+                </div>
+                <p>不只做软件，也把 AI 与创意变成拿在手里的智能硬件。点击产品可以查看实物视频。</p>
+            </div>
+            <div class="product-grid hardware-product-grid">
+                <article class="product-card">
+                    <div class="product-video-cover" data-video="product-case.mp4">
+                        <img src="poster-case.webp" alt="律动手机壳实物" loading="lazy">
+                        <div class="product-play" aria-hidden="true"><svg viewBox="0 0 24 24"><polygon points="8,5 19,12 8,19"/></svg></div>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-name">律动手机壳</div>
+                        <div class="product-desc">科技感保护壳</div>
+                    </div>
+                </article>
+                <article class="product-card">
+                    <div class="product-video-cover" data-video="product-badge.mp4">
+                        <img src="poster-badge.webp" alt="泡泡吧唧实物" loading="lazy">
+                        <div class="product-play" aria-hidden="true"><svg viewBox="0 0 24 24"><polygon points="8,5 19,12 8,19"/></svg></div>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-name">泡泡吧唧</div>
+                        <div class="product-desc">创意科技周边</div>
+                    </div>
+                </article>
+                <article class="product-card">
+                    <div class="product-video-cover" data-video="product-mouse.mp4">
+                        <img src="poster-mouse.webp" alt="LuGy 智能鼠标实物" loading="lazy">
+                        <div class="product-play" aria-hidden="true"><svg viewBox="0 0 24 24"><polygon points="8,5 19,12 8,19"/></svg></div>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-name">LuGy 智能鼠标</div>
+                        <div class="product-desc">AI 智能硬件 · 支持 OEM / ODM</div>
+                    </div>
+                </article>
+            </div>
+        </div>
+
         <div class="project-cta reveal">
             <div>
-                <div class="project-cta-title">想体验产品，或聊一次合作？</div>
-                <p class="project-cta-desc">添加企业微信备注「产品内测」或「商务合作」，我会优先同步硅基物语、择偶定位、有问必显、林雪妮、Creator Studio、超模算力和电商AI素材通的体验机会。</p>
+                <div class="project-cta-title">想体验产品，或发起一项合作？</div>
+                <p class="project-cta-desc">产品内测可添加企业微信；正式合作请先提交目标、预算和时间，我会判断是否匹配并联系你进入下一步。</p>
             </div>
             <div class="project-cta-actions">
                 <a href="#" class="project-cta-btn open-wechat-link">添加企业微信 →</a>
-                <a href="mailto:qiaobitx@gmail.com" class="project-cta-btn project-cta-btn-outline">发送邮件 →</a>
+                <button class="project-cta-btn project-cta-btn-outline open-inquiry-link" type="button">提交合作需求 →</button>
             </div>
         </div>
     </section>
@@ -848,108 +891,96 @@
 
     <div class="section-divider"></div>
 
-    <!-- Knowledge Hub -->
-    <section class="section-knowledge">
-        <div class="section-header reveal">
-            <span class="section-label">Knowledge</span>
-            <h2 class="section-title">从这里开始.</h2>
+    <!-- Commercial Hub -->
+    <section id="collab" class="commercial-hub" aria-labelledby="commercialHubTitle">
+        <div class="commercial-hub-head reveal">
+            <div>
+                <span class="section-label">06 — Start Here</span>
+                <h2 class="section-title" id="commercialHubTitle">选择我们一起做事的方式.</h2>
+            </div>
+            <p>从免费内容开始，持续订阅我的一线实践，或者带着一个明确的问题直接合作。</p>
         </div>
-        <div class="knowledge-grid">
-            <div class="knowledge-card reveal">
-                <div class="knowledge-icon"><svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
-                <div class="knowledge-name">科技前沿精选</div>
-                <div class="knowledge-desc">AI 工具合集、行业趋势解读、入门指南 — 我精选的科技内容，帮你快速建立认知框架。</div>
-                <div class="knowledge-tag knowledge-tag-free">FREE</div>
-                <a href="https://ask.feishu.cn/shared-space/7608462083906112708" target="_blank" rel="noopener noreferrer" class="knowledge-btn knowledge-btn-free">免费领取 →</a>
+
+        <div class="commercial-paths">
+            <article class="commercial-path commercial-path-start reveal">
+                <div class="commercial-path-index">01</div>
+                <div class="commercial-path-meta">FREE · 自助探索</div>
+                <h3>从这里开始</h3>
+                <p>第一次认识我，可以先从精选内容和已经上线的产品开始。</p>
+                <ul>
+                    <li>AI 工具与科技前沿精选</li>
+                    <li>行业趋势与入门指南</li>
+                    <li>浏览我打造的产品矩阵</li>
+                </ul>
+                <div class="commercial-path-actions">
+                    <a class="commercial-link commercial-link-green" href="https://ask.feishu.cn/shared-space/7608462083906112708" target="_blank" rel="noopener noreferrer">免费领取 →</a>
+                    <a class="commercial-text-link" href="#projects">查看产品</a>
+                </div>
+            </article>
+
+            <article class="commercial-path commercial-path-member reveal" id="member-subscribe">
+                <div class="commercial-path-index">02</div>
+                <div class="commercial-path-meta">MEMBERSHIP · 持续同行</div>
+                <h3>加入 Tech Bridge 会员</h3>
+                <p>把我正在验证的产品、增长方法和科技商业判断，整理成可执行的会员内容。</p>
+                <ul>
+                    <li>Tech Bridge 会员信</li>
+                    <li>AI 产品实战与项目内参</li>
+                    <li>AI 武器库与独家资源</li>
+                </ul>
+                <div class="commercial-price"><strong>¥199</strong><span>/ 年 · 会员价</span></div>
+                <button class="commercial-link commercial-link-orange" id="memberCheckoutToggle" type="button" aria-expanded="false" aria-controls="memberCheckout">加入会员 →</button>
+            </article>
+
+            <article class="commercial-path commercial-path-work reveal">
+                <div class="commercial-path-index">03</div>
+                <div class="commercial-path-meta">WORK WITH ME · 项目合作</div>
+                <h3>直接和我一起做事</h3>
+                <p>适合已有明确业务目标，希望获得策略、内容、产品或落地支持的企业。</p>
+                <ul>
+                    <li>企业 AI 培训与战略咨询</li>
+                    <li>品牌内容合作与新品发布</li>
+                    <li>AI 产品落地与硬件 OEM / ODM</li>
+                </ul>
+                <div class="commercial-price commercial-price-custom"><strong>按项目报价</strong><span>先聊清楚问题</span></div>
+                <button class="commercial-link commercial-link-neutral open-inquiry-link" type="button">提交合作需求 →</button>
+            </article>
+        </div>
+
+        <div class="member-checkout" id="memberCheckout" hidden>
+            <div class="member-checkout-copy">
+                <div class="paid-subscribe-kicker">Founder Edition</div>
+                <h3>开通会员信</h3>
+                <p>选择订阅周期并留下邮箱。付款成功后，系统会自动开通会员邮件权限。</p>
+                <button class="member-checkout-close" id="memberCheckoutClose" type="button" aria-label="关闭会员订阅表单" title="关闭">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
             </div>
-            <div class="knowledge-card knowledge-card-premium reveal">
-                <div class="knowledge-badge">推荐</div>
-                <div class="knowledge-icon"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
-                <div class="knowledge-name">桥比特的 AI 武器库</div>
-                <div class="knowledge-desc">深度研究报告、实战方法论、独家资源包 — 持续更新的完整知识体系，助你在 AI 时代领先一步。</div>
-                <a href="https://ask.feishu.cn/shared-space/7608462937476304092" target="_blank" rel="noopener noreferrer" class="knowledge-btn knowledge-btn-premium">立即解锁 →</a>
-            </div>
+            <form class="paid-subscribe-card" id="paidSubscribeForm" data-endpoint="/api/member-subscription/create" novalidate>
+                <div class="paid-subscribe-card-head">
+                    <span>Tech Bridge Membership</span>
+                    <strong>¥199 / 年</strong>
+                </div>
+                <input type="hidden" name="plan" value="annual">
+                <p class="subscribe-single-plan">年度会员 · 一次开通，持续接收全年会员内容与资源更新。</p>
+                <label class="subscribe-email-label" for="paidSubscribeEmail">接收会员信的邮箱</label>
+                <div class="subscribe-email-row">
+                    <input class="subscribe-email-input" id="paidSubscribeEmail" name="email" type="email" inputmode="email" autocomplete="email" placeholder="your@email.com" required>
+                    <button class="subscribe-submit" id="paidSubscribeSubmit" type="submit">开通订阅 →</button>
+                </div>
+                <p class="subscribe-trust">支付由 Stripe Checkout 托管；付款成功后自动开通邮件权限。</p>
+                <p class="subscribe-status" id="paidSubscribeStatus" aria-live="polite"></p>
+            </form>
         </div>
     </section>
-
-    <div class="section-divider"></div>
-
-    <!-- Work With Me -->
-    <section id="collab" class="section-collab">
-        <div class="section-header reveal">
-            <span class="section-label">06 — Collaboration</span>
-            <h2 class="section-title">Work With Me.</h2>
-        </div>
-
-        <div class="collab-grid">
-            <div class="collab-card reveal">
-                <div class="collab-icon"><svg viewBox="0 0 24 24"><path d="M15 10l4.553-2.276A1 1 0 0 1 21 8.618v6.764a1 1 0 0 1-1.447.894L15 14M3 6h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z"/></svg></div>
-                <div class="collab-title">品牌合作</div>
-                <div class="collab-desc">深度内容定制、新品首发测评、跨平台联名推广。</div>
-            </div>
-            <div class="collab-card reveal">
-                <div class="collab-icon"><svg viewBox="0 0 24 24"><path d="M12 2a4 4 0 0 1 4 4v1h2a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h2V6a4 4 0 0 1 4-4z"/><circle cx="12" cy="14" r="2"/><path d="M8 7V6a4 4 0 0 1 8 0v1"/></svg></div>
-                <div class="collab-title">AI 硬件 OEM</div>
-                <div class="collab-desc">LuGy 智能鼠标等 AI 硬件，支持 OEM（500件起）/ ODM 定制与全球分销。</div>
-            </div>
-            <div class="collab-card reveal">
-                <div class="collab-icon"><svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></div>
-                <div class="collab-title">企培与咨询</div>
-                <div class="collab-desc">企业 AI 转型培训、技术战略咨询、行业大会主题演讲。</div>
-            </div>
-        </div>
-
-        <!-- Product Showcase -->
-        <div class="product-showcase reveal">
-            <div class="product-showcase-label">Our Products</div>
-            <div class="product-grid">
-                <div class="product-card">
-                    <div class="product-video-cover" data-video="product-case.mp4">
-                        <img src="poster-case.webp" alt="律动手机壳" loading="lazy">
-                        <div class="product-play"><svg viewBox="0 0 24 24"><polygon points="8,5 19,12 8,19"/></svg></div>
-                    </div>
-                    <div class="product-info">
-                        <div class="product-name">律动手机壳</div>
-                        <div class="product-desc">科技感保护壳</div>
-                    </div>
-                </div>
-                <div class="product-card">
-                    <div class="product-video-cover" data-video="product-badge.mp4">
-                        <img src="poster-badge.webp" alt="泡泡吧唧" loading="lazy">
-                        <div class="product-play"><svg viewBox="0 0 24 24"><polygon points="8,5 19,12 8,19"/></svg></div>
-                    </div>
-                    <div class="product-info">
-                        <div class="product-name">泡泡吧唧</div>
-                        <div class="product-desc">创意科技周边</div>
-                    </div>
-                </div>
-                <div class="product-card">
-                    <div class="product-video-cover" data-video="product-mouse.mp4">
-                        <img src="poster-mouse.webp" alt="LuGy 智能鼠标" loading="lazy">
-                        <div class="product-play"><svg viewBox="0 0 24 24"><polygon points="8,5 19,12 8,19"/></svg></div>
-                    </div>
-                    <div class="product-info">
-                        <div class="product-name">LuGy 智能鼠标</div>
-                        <div class="product-desc">AI 智能硬件</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="collab-cta reveal">
-            <a href="mailto:qiaobitx@gmail.com" class="cta-button">Get in Touch →</a>
-        </div>
-    </section>
-
-    <div class="section-divider"></div>
 
     <!-- Connect -->
     <div class="newsletter reveal">
         <div class="newsletter-title">Let's Connect</div>
         <div class="newsletter-desc">商务合作、内容共创、产品咨询，欢迎通过以下方式联系我。</div>
         <div class="connect-actions">
-            <a href="#" id="openWechatLink" class="cta-button connect-btn">添加企业微信 →</a>
-            <a href="mailto:qiaobitx@gmail.com" class="cta-button connect-btn connect-btn-outline">发送邮件 →</a>
+            <a href="#" id="openWechatLink" class="cta-button connect-btn">产品体验 →</a>
+            <button type="button" class="cta-button connect-btn connect-btn-outline open-inquiry-link">提交合作需求 →</button>
         </div>
         <div class="public-account-card" aria-label="Tech Bridge 公众号二维码">
             <div class="public-account-copy">
@@ -983,6 +1014,15 @@
     </footer>
 
     <!-- Back to Top -->
+    <a class="floating-subscribe" id="floatingSubscribe" href="#collab" aria-label="查看产品、会员和合作方式">
+        <span class="floating-subscribe-glow" aria-hidden="true"></span>
+        <span class="floating-subscribe-copy">
+            <span class="floating-subscribe-kicker">START HERE</span>
+            <strong>一起做点有趣的事</strong>
+            <em>产品 · 会员 · 咨询</em>
+        </span>
+        <span class="floating-subscribe-cta">查看 →</span>
+    </a>
     <button class="back-to-top" id="backToTop" aria-label="回到顶部">
         <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
     </button>
@@ -1011,7 +1051,118 @@
         </div>
     </div>
 
-    <script src="main.js?v=6"></script>
+    <!-- Cooperation Inquiry Modal -->
+    <div class="inquiry-modal" id="inquiryModal" aria-hidden="true">
+        <div class="inquiry-dialog" role="dialog" aria-modal="true" aria-labelledby="inquiryTitle" aria-describedby="inquiryIntro">
+            <button class="inquiry-modal-close" id="inquiryModalClose" type="button" aria-label="关闭合作申请窗口" title="关闭">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+
+            <div class="inquiry-dialog-head">
+                <div class="inquiry-heading-copy">
+                    <span class="inquiry-eyebrow">PROJECT INQUIRY · 合作申请</span>
+                    <h2 id="inquiryTitle">先把问题说清楚。</h2>
+                </div>
+                <p id="inquiryIntro">请用 2 分钟说明目标、预算和时间。我会先判断是否匹配，再联系你进入下一步。</p>
+            </div>
+
+            <form class="inquiry-form" id="inquiryForm" data-endpoint="/api/contact-inquiry" novalidate>
+                <fieldset class="inquiry-type-fieldset">
+                    <legend>你希望合作什么？</legend>
+                    <div class="inquiry-type-grid">
+                        <label class="inquiry-type-option">
+                            <input type="radio" name="cooperationType" value="ai_consulting" checked>
+                            <span class="inquiry-type-index">01</span>
+                            <strong>AI 培训与咨询</strong>
+                            <em>企业内训、战略与业务诊断</em>
+                        </label>
+                        <label class="inquiry-type-option">
+                            <input type="radio" name="cooperationType" value="brand_content">
+                            <span class="inquiry-type-index">02</span>
+                            <strong>品牌内容合作</strong>
+                            <em>新品发布、内容共创与传播</em>
+                        </label>
+                        <label class="inquiry-type-option">
+                            <input type="radio" name="cooperationType" value="ai_product">
+                            <span class="inquiry-type-index">03</span>
+                            <strong>AI 产品落地</strong>
+                            <em>产品设计、原型与商业化</em>
+                        </label>
+                        <label class="inquiry-type-option">
+                            <input type="radio" name="cooperationType" value="smart_hardware">
+                            <span class="inquiry-type-index">04</span>
+                            <strong>智能硬件</strong>
+                            <em>方案定义、OEM / ODM 与出海</em>
+                        </label>
+                    </div>
+                </fieldset>
+
+                <div class="inquiry-form-grid">
+                    <label class="inquiry-field">
+                        <span>你的姓名 <b>*</b></span>
+                        <input id="inquiryName" name="contactName" type="text" autocomplete="name" maxlength="60" placeholder="怎么称呼你" required>
+                    </label>
+                    <label class="inquiry-field">
+                        <span>公司 / 团队</span>
+                        <input name="company" type="text" autocomplete="organization" maxlength="100" placeholder="选填">
+                    </label>
+                    <label class="inquiry-field inquiry-field-wide">
+                        <span>联系方式 <b>*</b></span>
+                        <input name="contactMethod" type="text" autocomplete="email" maxlength="120" placeholder="微信号、邮箱或手机号，任选一种" required>
+                    </label>
+                    <label class="inquiry-field">
+                        <span>预算范围 <b>*</b></span>
+                        <select name="budget" required>
+                            <option value="">请选择</option>
+                            <option value="under_10k">1 万以内</option>
+                            <option value="10k_50k">1–5 万</option>
+                            <option value="50k_200k">5–20 万</option>
+                            <option value="over_200k">20 万以上</option>
+                            <option value="to_assess">需要共同评估</option>
+                        </select>
+                    </label>
+                    <label class="inquiry-field">
+                        <span>期望启动时间 <b>*</b></span>
+                        <select name="timeline" required>
+                            <option value="">请选择</option>
+                            <option value="within_2_weeks">2 周内</option>
+                            <option value="within_1_month">1 个月内</option>
+                            <option value="within_3_months">1–3 个月</option>
+                            <option value="after_3_months">3 个月以后</option>
+                            <option value="to_assess">先评估，不着急启动</option>
+                        </select>
+                    </label>
+                    <label class="inquiry-field inquiry-field-wide">
+                        <span>你想解决什么问题？ <b>*</b></span>
+                        <textarea name="need" rows="4" minlength="12" maxlength="1200" placeholder="请说明当前情况、希望达成的结果，以及已经尝试过什么。" required></textarea>
+                    </label>
+                </div>
+
+                <label class="inquiry-honeypot" aria-hidden="true" hidden>
+                    <span>Website</span>
+                    <input name="website" type="text" tabindex="-1" autocomplete="off">
+                </label>
+
+                <div class="inquiry-form-footer">
+                    <p>提交不是付费承诺。匹配后再沟通方案、交付范围与报价。</p>
+                    <button class="inquiry-submit" id="inquirySubmit" type="submit">提交申请 <span>→</span></button>
+                </div>
+                <p class="inquiry-status" id="inquiryStatus" aria-live="polite"></p>
+            </form>
+
+            <div class="inquiry-success" id="inquirySuccess" hidden>
+                <span class="inquiry-success-mark" aria-hidden="true">✓</span>
+                <div>
+                    <div class="inquiry-eyebrow">APPLICATION RECEIVED</div>
+                    <h3 tabindex="-1">申请已收到。</h3>
+                    <p>我会先阅读你的需求。如果匹配，会通过你留下的联系方式进入下一步。</p>
+                    <button id="inquirySubmitAnother" type="button">再提交一项需求</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="main.js?v=13"></script>
     <script src="jarvis-hud.js?v=4"></script>
 
 </body>
