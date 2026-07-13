@@ -3047,6 +3047,7 @@ body.inquiry-modal-open {
     transition: transform 0.38s cubic-bezier(0.16, 1, 0.3, 1);
     scrollbar-width: thin;
     scrollbar-color: var(--orange-main) transparent;
+    color-scheme: dark;
 }
 
 .inquiry-modal.open .inquiry-dialog {
@@ -3258,6 +3259,17 @@ body.inquiry-modal-open {
 
 .inquiry-field select {
     color-scheme: dark;
+    color: var(--text-warm-white);
+    background-color: #20201e;
+}
+
+.inquiry-field select option {
+    color: #f7f4ef;
+    background-color: #181816;
+}
+
+.inquiry-field select option:disabled {
+    color: #817b72;
 }
 
 .inquiry-field input::placeholder,
