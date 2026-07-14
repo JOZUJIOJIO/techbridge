@@ -1,7 +1,4 @@
-const PLAN_PRICE_ENV = {
-  annual: 'STRIPE_PRICE_ID_ANNUAL',
-  monthly: 'STRIPE_PRICE_ID_MONTHLY'
-};
+const STRIPE_API_VERSION = '2026-02-25.clover';
 
 function json(data, status = 200) {
   return new Response(JSON.stringify(data), {
@@ -23,10 +20,10 @@ function sameOriginUrl(request, path) {
 }
 
 async function createStripeCheckoutSession(env, request, payload) {
-  const plan = payload.plan === 'monthly' ? 'monthly' : 'annual';
-  const priceId = env[PLAN_PRICE_ENV[plan]] || env.STRIPE_PRICE_ID;
+  const plan = 'annual';
+  const priceId = env.STRIPE_PRICE_ID_ANNUAL || env.STRIPE_PRICE_ID;
   const siteUrl = (env.PUBLIC_SITE_URL || sameOriginUrl(request, '')).replace(/\/$/, '');
-  const successUrl = env.SUBSCRIPTION_SUCCESS_URL || `${siteUrl}/?subscription=success#member-subscribe`;
+  const successUrl = env.SUBSCRIPTION_SUCCESS_URL || `${siteUrl}/?subscription=success&session_id={CHECKOUT_SESSION_ID}#member-subscribe`;
   const cancelUrl = env.SUBSCRIPTION_CANCEL_URL || `${siteUrl}/?subscription=cancel#member-subscribe`;
 
   if (!env.STRIPE_SECRET_KEY || !priceId) {
@@ -37,8 +34,9 @@ async function createStripeCheckoutSession(env, request, payload) {
   }
 
   const body = new URLSearchParams();
-  body.set('mode', 'subscription');
+  body.set('mode', 'payment');
   body.set('customer_email', payload.email);
+  body.set('customer_creation', 'always');
   body.set('client_reference_id', payload.email);
   body.set('line_items[0][price]', priceId);
   body.set('line_items[0][quantity]', '1');
@@ -48,15 +46,16 @@ async function createStripeCheckoutSession(env, request, payload) {
   body.set('metadata[email]', payload.email);
   body.set('metadata[plan]', plan);
   body.set('metadata[source]', payload.source || 'qiaobit-homepage');
-  body.set('subscription_data[metadata][email]', payload.email);
-  body.set('subscription_data[metadata][plan]', plan);
-  body.set('subscription_data[metadata][source]', payload.source || 'qiaobit-homepage');
+  body.set('payment_intent_data[metadata][email]', payload.email);
+  body.set('payment_intent_data[metadata][plan]', plan);
+  body.set('payment_intent_data[metadata][source]', payload.source || 'qiaobit-homepage');
 
   const res = await fetch('https://api.stripe.com/v1/checkout/sessions', {
     method: 'POST',
     headers: {
       authorization: `Bearer ${env.STRIPE_SECRET_KEY}`,
-      'content-type': 'application/x-www-form-urlencoded'
+      'content-type': 'application/x-www-form-urlencoded',
+      'stripe-version': STRIPE_API_VERSION
     },
     body
   });

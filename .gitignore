@@ -5,6 +5,7 @@
 .gstack/
 .playwright-cli/
 .wrangler/
+supabase/.temp/
 output/
 .dev.vars
 .env
