@@ -70,12 +70,14 @@ create table if not exists public.stripe_webhook_events (
   received_at timestamptz not null default now(),
   processed_at timestamptz,
   feishu_notified_at timestamptz,
+  feishu_revenue_recorded_at timestamptz,
   welcome_email_sent_at timestamptz,
   last_error text
 );
 
 alter table public.stripe_webhook_events
   add column if not exists feishu_notified_at timestamptz,
+  add column if not exists feishu_revenue_recorded_at timestamptz,
   add column if not exists welcome_email_sent_at timestamptz,
   add column if not exists last_error text;
 

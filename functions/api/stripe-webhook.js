@@ -84,7 +84,7 @@ async function claimWebhookEvent(env, event) {
   });
   if (!res.ok) throw new Error(`Supabase webhook claim failed: ${await res.text()}`);
   const stateResponse = await fetch(
-    `${base}/rest/v1/stripe_webhook_events?event_id=eq.${encodeURIComponent(event.id)}&select=event_id,processed_at,feishu_notified_at,welcome_email_sent_at`,
+    `${base}/rest/v1/stripe_webhook_events?event_id=eq.${encodeURIComponent(event.id)}&select=event_id,processed_at,feishu_notified_at,feishu_revenue_recorded_at,welcome_email_sent_at`,
     { headers: supabaseHeaders(env) }
   );
   if (!stateResponse.ok) throw new Error(`Supabase webhook state failed: ${await stateResponse.text()}`);
@@ -203,6 +203,98 @@ function shanghaiTime(value) {
   }).format(new Date(value));
 }
 
+function revenueOrderId(event, row) {
+  return row.stripe_checkout_session_id || row.stripe_payment_intent_id || event.id;
+}
+
+function revenueProduct(row) {
+  return row.plan === 'annual' ? 'Tech Bridge 年度会员' : row.plan || 'Tech Bridge 会员';
+}
+
+function toFeishuRevenueFields(event, row) {
+  const currency = String(row.currency || '').toLowerCase();
+  const orderId = revenueOrderId(event, row);
+  const eventTime = Number(event.created || 0) * 1000 || Date.now();
+  const amount = Number(row.amount_total || 0) / 100;
+  const currencyCode = currency.toUpperCase();
+  const supportedCurrencies = new Set(['CNY', 'HKD', 'USD', 'EUR']);
+  const currencyOption = supportedCurrencies.has(currencyCode) ? currencyCode : '其他';
+  const paymentReference = row.stripe_payment_intent_id
+    ? `Stripe payment_intent ${row.stripe_payment_intent_id}`
+    : 'Stripe checkout.session.completed';
+  const conversionNote = currency === 'cny' ? '' : `；${currencyCode || '未知币种'} 待折算人民币`;
+
+  return {
+    '收入事项': `${revenueProduct(row)}收入`,
+    '收入日期': eventTime,
+    '原币金额': amount,
+    '币种': currencyOption,
+    ...(currency === 'cny' ? { '收入金额': amount } : {}),
+    '收款渠道': 'Stripe',
+    '来源渠道': 'Tech Bridge 官网',
+    '收入类型': '会员订阅',
+    '产品/服务': revenueProduct(row),
+    '客户/付款人': row.customer_name || row.email || '未知',
+    '支付状态': '已支付',
+    '订单号': orderId,
+    '备注': `${paymentReference}；事件 ${event.id}${conversionNote}`
+  };
+}
+
+async function recordFeishuRevenue(env, event, row) {
+  if (!env.FEISHU_REVENUE_BASE_TOKEN || !env.FEISHU_REVENUE_TABLE_ID) {
+    console.error(JSON.stringify({
+      event: 'feishu_revenue_skipped',
+      reason: 'missing_feishu_revenue_config',
+      stripeEventId: event.id
+    }));
+    return { skipped: true };
+  }
+
+  const tenantToken = await getFeishuTenantToken(env);
+  const baseToken = encodeURIComponent(env.FEISHU_REVENUE_BASE_TOKEN);
+  const tableId = encodeURIComponent(env.FEISHU_REVENUE_TABLE_ID);
+  const orderId = revenueOrderId(event, row);
+  const endpoint = `https://open.feishu.cn/open-apis/bitable/v1/apps/${baseToken}/tables/${tableId}/records`;
+  const headers = {
+    authorization: `Bearer ${tenantToken}`,
+    'content-type': 'application/json; charset=utf-8'
+  };
+
+  const searchResponse = await fetch(`${endpoint}/search?page_size=1`, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({
+      field_names: ['订单号'],
+      filter: {
+        conjunction: 'and',
+        conditions: [{ field_name: '订单号', operator: 'is', value: [orderId] }]
+      }
+    })
+  });
+  const searchData = await searchResponse.json().catch(() => ({}));
+  if (!searchResponse.ok || searchData.code !== 0) {
+    throw new Error(`feishu_revenue_search_failed:${searchData.code || searchResponse.status}:${String(searchData.msg || '').slice(0, 160)}`);
+  }
+
+  const existingRecord = searchData.data?.items?.[0];
+  if (existingRecord?.record_id) {
+    return { ok: true, duplicate: true, recordId: existingRecord.record_id };
+  }
+
+  const createResponse = await fetch(endpoint, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({ fields: toFeishuRevenueFields(event, row) })
+  });
+  const createData = await createResponse.json().catch(() => ({}));
+  if (!createResponse.ok || createData.code !== 0) {
+    throw new Error(`feishu_revenue_write_failed:${createData.code || createResponse.status}:${String(createData.msg || '').slice(0, 160)}`);
+  }
+
+  return { ok: true, duplicate: false, recordId: createData.data?.record?.record_id };
+}
+
 async function sendFeishuPaymentNotification(env, event, row) {
   if (!env.FEISHU_NOTIFY_OPEN_ID || !env.FEISHU_APP_ID || !env.FEISHU_APP_SECRET) {
     console.error(JSON.stringify({ event: 'payment_notification_skipped', reason: 'missing_feishu_config', stripeEventId: event.id }));
@@ -222,6 +314,9 @@ async function sendFeishuPaymentNotification(env, event, row) {
   ];
   if (row.stripe_payment_intent_id) {
     lines.push('', `Stripe 订单：https://dashboard.stripe.com/payments/${row.stripe_payment_intent_id}`);
+  }
+  if (env.FEISHU_REVENUE_BASE_URL) {
+    lines.push(`收入台账：${env.FEISHU_REVENUE_BASE_URL}`);
   }
 
   const response = await fetch('https://open.feishu.cn/open-apis/im/v1/messages?receive_id_type=open_id', {
@@ -359,6 +454,12 @@ export async function onRequestPost({ request, env }) {
         row.status === 'active' &&
         (event.type === 'checkout.session.completed' || event.type === 'checkout.session.async_payment_succeeded')
       ) {
+        if (!eventState.feishu_revenue_recorded_at) {
+          const revenue = await recordFeishuRevenue(env, event, row);
+          if (revenue.ok) {
+            await markWebhookEvent(env, event.id, { feishu_revenue_recorded_at: new Date().toISOString() });
+          }
+        }
         if (!eventState.feishu_notified_at) {
           const notified = await sendFeishuPaymentNotification(env, event, row);
           if (notified.ok) {
