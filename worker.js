@@ -1,12 +1,14 @@
 import * as contactInquiry from './functions/api/contact-inquiry.js';
 import * as memberSubscription from './functions/api/member-subscription/create.js';
 import * as memberSubscriptionStatus from './functions/api/member-subscription/status.js';
+import * as memberOnboarding from './functions/api/member-onboarding.js';
 import * as stripeWebhook from './functions/api/stripe-webhook.js';
 
 const API_ROUTES = new Map([
   ['/api/contact-inquiry', contactInquiry],
   ['/api/member-subscription/create', memberSubscription],
   ['/api/member-subscription/status', memberSubscriptionStatus],
+  ['/api/member-onboarding', memberOnboarding],
   ['/api/stripe-webhook', stripeWebhook]
 ]);
 

@@ -2146,6 +2146,93 @@ a { text-decoration: none; color: inherit; }
     background: rgba(233, 93, 33, 0.07);
 }
 
+.member-wecom-onboarding[hidden] { display: none; }
+
+.member-wecom-onboarding {
+    margin-top: 22px;
+    padding: 18px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 150px;
+    gap: 20px;
+    align-items: center;
+    border: 1px solid rgba(0, 170, 160, 0.34);
+    background: rgba(5, 15, 14, 0.62);
+}
+
+.member-wecom-copy {
+    display: grid;
+    gap: 8px;
+}
+
+.member-wecom-copy > span {
+    color: var(--green-light);
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0;
+}
+
+.member-wecom-copy > strong {
+    color: var(--text-warm-white);
+    font-family: var(--font-cn-body);
+    font-size: 18px;
+}
+
+.member-wecom-copy > p,
+.member-wecom-status {
+    margin: 0;
+    color: var(--text-warm-grey);
+    font-family: var(--font-cn-body);
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+.member-wecom-status {
+    color: var(--green-light);
+}
+
+.member-wecom-retry {
+    width: fit-content;
+    margin-top: 4px;
+    padding: 8px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: transparent;
+    color: var(--text-warm-white);
+    font: 11px/1 var(--font-cn-body);
+    cursor: pointer;
+}
+
+.member-wecom-qr-shell {
+    width: 150px;
+    aspect-ratio: 1;
+    padding: 8px;
+    display: grid;
+    place-items: center;
+    background: #fff;
+}
+
+.member-wecom-qr-shell img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.member-wecom-qr-loading {
+    color: #202525;
+    font-family: var(--font-cn-body);
+    font-size: 12px;
+}
+
+@media (max-width: 640px) {
+    .member-wecom-onboarding {
+        grid-template-columns: 1fr;
+    }
+
+    .member-wecom-qr-shell {
+        width: min(100%, 220px);
+        justify-self: center;
+    }
+}
+
 .member-payment-next strong {
     font-family: var(--font-cn-body);
     font-size: 13px;

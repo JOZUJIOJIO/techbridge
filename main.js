@@ -469,6 +469,13 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
     var successEmail = document.getElementById('memberSuccessEmail');
     var successAmount = document.getElementById('memberSuccessAmount');
     var successUntil = document.getElementById('memberSuccessUntil');
+    var wecomPanel = document.getElementById('memberWecomOnboarding');
+    var wecomStatus = document.getElementById('memberWecomStatus');
+    var wecomQr = document.getElementById('memberWecomQr');
+    var wecomQrLoading = document.getElementById('memberWecomQrLoading');
+    var wecomRetry = document.getElementById('memberWecomRetry');
+    var currentOnboardingSession = '';
+    var onboardingTimer = 0;
 
     function setStatus(message, tone) {
         if (!statusEl) return;
@@ -525,15 +532,69 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
         }).format(date);
     }
 
-    function showPaymentSuccess(data) {
+    function onboardingMessage(data) {
+        if (data.groupJoined) return '已加入会员群，会员服务已全部激活。';
+        if (data.status === 'group_invite_sent') return '已添加企业微信，会员群入口已经自动发送给你。';
+        if (data.wecomAdded) return '已识别你的会员身份，正在发送会员群入口...';
+        return '请使用微信扫码添加。添加后无需发送订单截图，系统会自动识别。';
+    }
+
+    function showOnboardingError(message) {
+        if (!wecomPanel) return;
+        wecomPanel.hidden = false;
+        if (wecomStatus) wecomStatus.textContent = message || '入口暂时无法生成，请稍后重试。';
+        if (wecomRetry) wecomRetry.hidden = false;
+        if (wecomQrLoading) wecomQrLoading.textContent = '待重试';
+    }
+
+    async function loadMemberOnboarding(sessionId, attempt) {
+        if (!sessionId || !wecomPanel) return;
+        currentOnboardingSession = sessionId;
+        wecomPanel.hidden = false;
+        if (!attempt && wecomStatus) wecomStatus.textContent = '正在生成你的专属入口...';
+        if (wecomRetry) wecomRetry.hidden = true;
+
+        try {
+            var response = await fetch('/api/member-onboarding?session_id=' + encodeURIComponent(sessionId));
+            var data = await response.json().catch(function() { return {}; });
+            if (!response.ok) throw new Error(data.message || '企业微信入口获取失败。');
+
+            if (data.qrCode && wecomQr) {
+                wecomQr.src = data.qrCode;
+                wecomQr.hidden = false;
+                if (wecomQrLoading) wecomQrLoading.hidden = true;
+            }
+            if (wecomStatus) wecomStatus.textContent = onboardingMessage(data);
+
+            window.clearTimeout(onboardingTimer);
+            if (!data.groupJoined && data.status !== 'group_invite_sent' && attempt < 100) {
+                onboardingTimer = window.setTimeout(function() {
+                    loadMemberOnboarding(sessionId, attempt + 1);
+                }, 3000);
+            }
+        } catch (error) {
+            window.clearTimeout(onboardingTimer);
+            showOnboardingError(error.message || '企业微信入口获取失败。');
+        }
+    }
+
+    if (wecomRetry) {
+        wecomRetry.addEventListener('click', function() {
+            if (currentOnboardingSession) loadMemberOnboarding(currentOnboardingSession, 0);
+        });
+    }
+
+    function showPaymentSuccess(data, sessionId) {
         form.hidden = true;
         if (successPanel) successPanel.hidden = false;
         if (successEmail) successEmail.textContent = data.email || '付款邮箱';
         if (successAmount) successAmount.textContent = formatPaymentAmount(data.amountTotal, data.currency);
         if (successUntil) successUntil.textContent = formatMembershipDate(data.membershipUntil);
+        if (sessionId) loadMemberOnboarding(sessionId, 0);
         try {
             window.sessionStorage.setItem('techbridge-member-success', JSON.stringify({
                 savedAt: Date.now(),
+                sessionId: sessionId || data.sessionId || '',
                 email: data.email,
                 amountTotal: data.amountTotal,
                 currency: data.currency,
@@ -553,7 +614,7 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
                 return;
             }
             if (!data.paid) throw new Error('支付仍在处理中，请稍后刷新查看。');
-            showPaymentSuccess(data);
+            showPaymentSuccess(data, sessionId);
             if (window.history && window.history.replaceState) {
                 window.history.replaceState(null, '', window.location.pathname + '#member-subscribe');
             }
@@ -573,7 +634,7 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
         try {
             var cachedSuccess = JSON.parse(window.sessionStorage.getItem('techbridge-member-success') || 'null');
             if (cachedSuccess && Date.now() - cachedSuccess.savedAt < 30 * 60 * 1000) {
-                showPaymentSuccess(cachedSuccess);
+                showPaymentSuccess(cachedSuccess, cachedSuccess.sessionId);
             }
         } catch (_) {}
     }

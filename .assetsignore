@@ -11,7 +11,9 @@
 output
 node_modules
 functions
+server
 supabase
+tests
 worker.js
 wrangler.jsonc
 .dev.vars
