@@ -977,6 +977,22 @@
                 <p class="subscribe-trust">支付将在 Stripe Checkout 完成；本页面不会保存银行卡信息。</p>
                 <p class="subscribe-status" id="paidSubscribeStatus" aria-live="polite"></p>
             </form>
+            <div class="member-payment-success" id="memberPaymentSuccess" hidden aria-live="polite">
+                <div class="member-payment-success-mark" aria-hidden="true">✓</div>
+                <div class="paid-subscribe-kicker">Payment confirmed</div>
+                <h3>支付成功，会员已开通</h3>
+                <p>你的支付和会员资格已记录。后续会员信和资料将发送到付款邮箱。</p>
+                <dl class="member-payment-details">
+                    <div><dt>会员邮箱</dt><dd id="memberSuccessEmail">核验中</dd></div>
+                    <div><dt>成交金额</dt><dd id="memberSuccessAmount">核验中</dd></div>
+                    <div><dt>有效期至</dt><dd id="memberSuccessUntil">核验中</dd></div>
+                </dl>
+                <div class="member-payment-next">
+                    <strong>接下来你会收到</strong>
+                    <span>真实项目复盘、可复用的提示词与 SOP、AI 商业化判断、会员专属更新。</span>
+                </div>
+                <a class="member-payment-home" href="#topics">先浏览精选内容 →</a>
+            </div>
         </div>
     </section>
 

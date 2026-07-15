@@ -3,6 +3,7 @@ create extension if not exists pgcrypto;
 create table if not exists public.paid_subscribers (
   id uuid primary key default gen_random_uuid(),
   email text not null unique,
+  customer_name text,
   status text not null default 'pending' check (status in ('pending', 'active', 'past_due', 'canceled')),
   plan text check (plan = 'annual' or plan is null),
   stripe_customer_id text unique,
@@ -18,6 +19,7 @@ create table if not exists public.paid_subscribers (
 );
 
 alter table public.paid_subscribers
+  add column if not exists customer_name text,
   add column if not exists stripe_payment_intent_id text,
   add column if not exists amount_total integer,
   add column if not exists currency text;
@@ -66,8 +68,16 @@ create table if not exists public.stripe_webhook_events (
   event_id text primary key,
   event_type text not null,
   received_at timestamptz not null default now(),
-  processed_at timestamptz
+  processed_at timestamptz,
+  feishu_notified_at timestamptz,
+  welcome_email_sent_at timestamptz,
+  last_error text
 );
+
+alter table public.stripe_webhook_events
+  add column if not exists feishu_notified_at timestamptz,
+  add column if not exists welcome_email_sent_at timestamptz,
+  add column if not exists last_error text;
 
 alter table public.stripe_webhook_events enable row level security;
 

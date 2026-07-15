@@ -465,6 +465,10 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
     var planInputs = form.querySelectorAll('input[name="plan"]');
     var endpoint = form.getAttribute('data-endpoint') || '/api/member-subscription/create';
     var isLocalPreview = /^(localhost|127\.0\.0\.1)$/.test(window.location.hostname) || window.location.protocol === 'file:';
+    var successPanel = document.getElementById('memberPaymentSuccess');
+    var successEmail = document.getElementById('memberSuccessEmail');
+    var successAmount = document.getElementById('memberSuccessAmount');
+    var successUntil = document.getElementById('memberSuccessUntil');
 
     function setStatus(message, tone) {
         if (!statusEl) return;
@@ -495,6 +499,84 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
         input.addEventListener('change', updatePlanState);
     });
     updatePlanState();
+
+    function formatPaymentAmount(amount, currency) {
+        if (!Number.isFinite(Number(amount))) return '—';
+        try {
+            return new Intl.NumberFormat('zh-CN', {
+                style: 'currency',
+                currency: String(currency || 'CNY').toUpperCase(),
+                maximumFractionDigits: 2
+            }).format(Number(amount) / 100);
+        } catch (_) {
+            return '¥' + (Number(amount) / 100).toFixed(2);
+        }
+    }
+
+    function formatMembershipDate(value) {
+        if (!value) return '—';
+        var date = new Date(value);
+        if (Number.isNaN(date.getTime())) return '—';
+        return new Intl.DateTimeFormat('zh-CN', {
+            timeZone: 'Asia/Shanghai',
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+        }).format(date);
+    }
+
+    function showPaymentSuccess(data) {
+        form.hidden = true;
+        if (successPanel) successPanel.hidden = false;
+        if (successEmail) successEmail.textContent = data.email || '付款邮箱';
+        if (successAmount) successAmount.textContent = formatPaymentAmount(data.amountTotal, data.currency);
+        if (successUntil) successUntil.textContent = formatMembershipDate(data.membershipUntil);
+        try {
+            window.sessionStorage.setItem('techbridge-member-success', JSON.stringify({
+                savedAt: Date.now(),
+                email: data.email,
+                amountTotal: data.amountTotal,
+                currency: data.currency,
+                membershipUntil: data.membershipUntil
+            }));
+        } catch (_) {}
+    }
+
+    async function verifyCompletedPayment(sessionId, attempt) {
+        setStatus(attempt ? '支付结果同步中，请稍候...' : '正在核验支付结果...', '');
+        try {
+            var response = await fetch('/api/member-subscription/status?session_id=' + encodeURIComponent(sessionId));
+            var data = await response.json().catch(function() { return {}; });
+            if (!response.ok) throw new Error(data.message || '支付结果核验失败。');
+            if (!data.paid && attempt < 5) {
+                window.setTimeout(function() { verifyCompletedPayment(sessionId, attempt + 1); }, 1800);
+                return;
+            }
+            if (!data.paid) throw new Error('支付仍在处理中，请稍后刷新查看。');
+            showPaymentSuccess(data);
+            if (window.history && window.history.replaceState) {
+                window.history.replaceState(null, '', window.location.pathname + '#member-subscribe');
+            }
+        } catch (error) {
+            setStatus(error.message || '支付结果核验失败，请联系 Tech Bridge。', 'error');
+        }
+    }
+
+    var returnParams = new URLSearchParams(window.location.search);
+    var returnState = returnParams.get('subscription');
+    var returnSessionId = returnParams.get('session_id');
+    if (returnState === 'success' && returnSessionId) {
+        verifyCompletedPayment(returnSessionId, 0);
+    } else if (returnState === 'cancel') {
+        setStatus('支付已取消，未产生扣款。你可以重新提交。', 'error');
+    } else if (window.location.hash === '#member-subscribe') {
+        try {
+            var cachedSuccess = JSON.parse(window.sessionStorage.getItem('techbridge-member-success') || 'null');
+            if (cachedSuccess && Date.now() - cachedSuccess.savedAt < 30 * 60 * 1000) {
+                showPaymentSuccess(cachedSuccess);
+            }
+        } catch (_) {}
+    }
 
     form.addEventListener('submit', async function(e) {
         e.preventDefault();

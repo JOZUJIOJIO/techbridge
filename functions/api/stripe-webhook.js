@@ -75,7 +75,7 @@ function supabaseHeaders(env, prefer) {
 }
 
 async function claimWebhookEvent(env, event) {
-  if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) return true;
+  if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) return {};
   const base = env.SUPABASE_URL.replace(/\/$/, '');
   const res = await fetch(`${base}/rest/v1/stripe_webhook_events?on_conflict=event_id`, {
     method: 'POST',
@@ -83,28 +83,43 @@ async function claimWebhookEvent(env, event) {
     body: JSON.stringify({ event_id: event.id, event_type: event.type })
   });
   if (!res.ok) throw new Error(`Supabase webhook claim failed: ${await res.text()}`);
-  const rows = await res.json();
-  return rows.length > 0;
+  const stateResponse = await fetch(
+    `${base}/rest/v1/stripe_webhook_events?event_id=eq.${encodeURIComponent(event.id)}&select=event_id,processed_at,feishu_notified_at,welcome_email_sent_at`,
+    { headers: supabaseHeaders(env) }
+  );
+  if (!stateResponse.ok) throw new Error(`Supabase webhook state failed: ${await stateResponse.text()}`);
+  const rows = await stateResponse.json();
+  return rows[0] || {};
 }
 
-async function completeWebhookEvent(env, eventId) {
+async function markWebhookEvent(env, eventId, patch) {
   if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) return;
   const base = env.SUPABASE_URL.replace(/\/$/, '');
   const res = await fetch(`${base}/rest/v1/stripe_webhook_events?event_id=eq.${encodeURIComponent(eventId)}`, {
     method: 'PATCH',
     headers: supabaseHeaders(env),
-    body: JSON.stringify({ processed_at: new Date().toISOString() })
+    body: JSON.stringify(patch)
   });
-  if (!res.ok) throw new Error(`Supabase webhook completion failed: ${await res.text()}`);
+  if (!res.ok) throw new Error(`Supabase webhook update failed: ${await res.text()}`);
 }
 
-async function releaseWebhookEvent(env, eventId) {
-  if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) return;
-  const base = env.SUPABASE_URL.replace(/\/$/, '');
-  await fetch(`${base}/rest/v1/stripe_webhook_events?event_id=eq.${encodeURIComponent(eventId)}`, {
-    method: 'DELETE',
-    headers: supabaseHeaders(env)
+async function completeWebhookEvent(env, eventId) {
+  await markWebhookEvent(env, eventId, {
+    processed_at: new Date().toISOString(),
+    last_error: null
   });
+}
+
+async function recordWebhookError(env, eventId, error) {
+  if (!eventId) return;
+  try {
+    await markWebhookEvent(env, eventId, {
+      processed_at: null,
+      last_error: String(error?.message || error || 'unknown_error').slice(0, 800)
+    });
+  } catch (markError) {
+    console.error(JSON.stringify({ event: 'stripe_webhook_error_record_failed', reason: markError.message }));
+  }
 }
 
 async function retrieveSubscription(env, subscriptionId) {
@@ -154,7 +169,82 @@ async function upsertSubscriber(env, row) {
   return { skipped: true, reason: 'no_identity' };
 }
 
-async function sendWelcomeEmail(env, row) {
+async function getFeishuTenantToken(env) {
+  if (!env.FEISHU_APP_ID || !env.FEISHU_APP_SECRET) return null;
+  const response = await fetch('https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json; charset=utf-8' },
+    body: JSON.stringify({ app_id: env.FEISHU_APP_ID, app_secret: env.FEISHU_APP_SECRET })
+  });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok || data.code !== 0 || !data.tenant_access_token) {
+    throw new Error(`feishu_token_failed:${data.code || response.status}`);
+  }
+  return data.tenant_access_token;
+}
+
+function paymentAmount(amount, currency) {
+  const value = Number(amount || 0) / 100;
+  if (String(currency).toLowerCase() === 'cny') return `¥${value.toFixed(value % 1 ? 2 : 0)}`;
+  return `${String(currency || '').toUpperCase()} ${value.toFixed(2)}`.trim();
+}
+
+function shanghaiTime(value) {
+  if (!value) return '未知';
+  return new Intl.DateTimeFormat('zh-CN', {
+    timeZone: 'Asia/Shanghai',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false
+  }).format(new Date(value));
+}
+
+async function sendFeishuPaymentNotification(env, event, row) {
+  if (!env.FEISHU_NOTIFY_OPEN_ID || !env.FEISHU_APP_ID || !env.FEISHU_APP_SECRET) {
+    console.error(JSON.stringify({ event: 'payment_notification_skipped', reason: 'missing_feishu_config', stripeEventId: event.id }));
+    return { skipped: true };
+  }
+
+  const tenantToken = await getFeishuTenantToken(env);
+  const lines = [
+    '【Tech Bridge 官网新成交】',
+    '',
+    `成交金额：${paymentAmount(row.amount_total, row.currency)}`,
+    `商品：${row.plan === 'annual' ? 'Tech Bridge 年度会员' : row.plan || '会员'}`,
+    `付款用户：${row.customer_name || row.email || '未知'}`,
+    `付款邮箱：${row.email || '未知'}`,
+    `成交时间：${shanghaiTime((event.created || 0) * 1000)}`,
+    `会员有效期：${shanghaiTime(row.current_period_end)}`
+  ];
+  if (row.stripe_payment_intent_id) {
+    lines.push('', `Stripe 订单：https://dashboard.stripe.com/payments/${row.stripe_payment_intent_id}`);
+  }
+
+  const response = await fetch('https://open.feishu.cn/open-apis/im/v1/messages?receive_id_type=open_id', {
+    method: 'POST',
+    headers: {
+      authorization: `Bearer ${tenantToken}`,
+      'content-type': 'application/json; charset=utf-8'
+    },
+    body: JSON.stringify({
+      receive_id: env.FEISHU_NOTIFY_OPEN_ID,
+      msg_type: 'text',
+      content: JSON.stringify({ text: lines.join('\n') }),
+      uuid: event.id.slice(0, 50)
+    })
+  });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok || data.code !== 0) {
+    throw new Error(`feishu_payment_notification_failed:${data.code || response.status}:${String(data.msg || '').slice(0, 160)}`);
+  }
+  return { ok: true };
+}
+
+async function sendWelcomeEmail(env, row, eventId) {
   if (!env.RESEND_API_KEY || !row.email || row.status !== 'active') {
     return { skipped: true };
   }
@@ -174,7 +264,8 @@ async function sendWelcomeEmail(env, row) {
     method: 'POST',
     headers: {
       authorization: `Bearer ${env.RESEND_API_KEY}`,
-      'content-type': 'application/json'
+      'content-type': 'application/json',
+      'idempotency-key': `stripe-${eventId}-welcome`
     },
     body: JSON.stringify({
       from,
@@ -194,6 +285,7 @@ async function rowFromCheckoutSession(env, session) {
   const status = localStatus(stripeStatus);
   return {
     email: String(session.customer_details?.email || session.customer_email || session.metadata?.email || '').toLowerCase() || null,
+    customer_name: session.customer_details?.name || null,
     status,
     plan: session.metadata?.plan || subscription?.metadata?.plan || null,
     stripe_customer_id: session.customer || null,
@@ -212,6 +304,7 @@ async function rowFromCheckoutSession(env, session) {
 function rowFromSubscription(subscription) {
   return {
     email: String(subscription.metadata?.email || '').toLowerCase() || null,
+    customer_name: null,
     status: localStatus(subscription.status),
     plan: subscription.metadata?.plan || null,
     stripe_customer_id: subscription.customer || null,
@@ -245,8 +338,7 @@ export async function onRequestPost({ request, env }) {
   }
 
   try {
-    const claimed = await claimWebhookEvent(env, event);
-    if (!claimed) return json({ received: true, duplicate: true });
+    const eventState = await claimWebhookEvent(env, event);
 
     let row = null;
     if (event.type === 'checkout.session.completed') {
@@ -267,14 +359,25 @@ export async function onRequestPost({ request, env }) {
         row.status === 'active' &&
         (event.type === 'checkout.session.completed' || event.type === 'checkout.session.async_payment_succeeded')
       ) {
-        await sendWelcomeEmail(env, row);
+        if (!eventState.feishu_notified_at) {
+          const notified = await sendFeishuPaymentNotification(env, event, row);
+          if (notified.ok) {
+            await markWebhookEvent(env, event.id, { feishu_notified_at: new Date().toISOString() });
+          }
+        }
+        if (!eventState.welcome_email_sent_at) {
+          const emailed = await sendWelcomeEmail(env, row, event.id);
+          if (emailed.ok) {
+            await markWebhookEvent(env, event.id, { welcome_email_sent_at: new Date().toISOString() });
+          }
+        }
       }
     }
 
     await completeWebhookEvent(env, event.id);
     return json({ received: true });
   } catch (error) {
-    await releaseWebhookEvent(env, event?.id);
+    await recordWebhookError(env, event?.id, error);
     return json({ error: 'webhook_processing_failed', message: error.message }, 500);
   }
 }
