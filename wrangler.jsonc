@@ -9,6 +9,11 @@
   "observability": {
     "enabled": true
   },
+  "vars": {
+    "FEISHU_REVENUE_BASE_TOKEN": "JhsubI59Ua91ALsekSEcl2PSnVd",
+    "FEISHU_REVENUE_TABLE_ID": "tbljOET9HlSE6RLY",
+    "FEISHU_REVENUE_BASE_URL": "https://mwl7eu6k5hr.feishu.cn/wiki/NaZlwbEvwiRWWIkupbIcyja6nFe?from=from_copylink"
+  },
   "assets": {
     "directory": ".",
     "binding": "ASSETS",
