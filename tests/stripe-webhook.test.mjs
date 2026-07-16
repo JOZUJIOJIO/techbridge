@@ -95,6 +95,9 @@ function mockFetch({ existingRecord }) {
     if (href.includes('/rest/v1/paid_subscribers')) {
       return Response.json({}, { status: 201 });
     }
+    if (href.includes('/rest/v1/customer_attributions')) {
+      return new Response(null, { status: 201 });
+    }
     throw new Error(`Unexpected fetch: ${href}`);
   };
 
@@ -114,6 +117,12 @@ test('existing Feishu order is not created twice', async () => {
       env: testEnv()
     });
     assert.equal(response.status, 200);
+
+    const attributionCall = mock.calls.find(({ href, init }) =>
+      href.includes('/customer_attributions') && init.method === 'POST'
+    );
+    assert.ok(attributionCall);
+    assert.equal(JSON.parse(attributionCall.init.body).stage, 'paid');
 
     const createCalls = mock.calls.filter(({ href, init }) =>
       href.endsWith('/records') && init.method === 'POST'
@@ -135,6 +144,12 @@ test('new Stripe order creates a Feishu revenue record', async () => {
     const event = checkoutEvent('evt_new');
     const response = await onRequestPost({ request: await signedRequest(event), env: testEnv() });
     assert.equal(response.status, 200);
+
+    const attributionCall = mock.calls.find(({ href, init }) =>
+      href.includes('/customer_attributions') && init.method === 'POST'
+    );
+    assert.ok(attributionCall);
+    assert.equal(JSON.parse(attributionCall.init.body).rule_key, 'website_stripe_annual_199');
 
     const createCall = mock.calls.find(({ href, init }) =>
       href.endsWith('/records') && init.method === 'POST'

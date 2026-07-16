@@ -136,32 +136,41 @@ export async function createContactWay(env, state) {
   });
 }
 
-export async function getGroupJoinWay(env) {
-  if (!env.WECOM_GROUP_JOIN_CONFIG_ID) return null;
+export async function getGroupJoinWay(env, configId = env.WECOM_GROUP_JOIN_CONFIG_ID) {
+  if (!configId) return null;
   const data = await wecomPost(env, 'externalcontact/groupchat/get_join_way', {
-    config_id: env.WECOM_GROUP_JOIN_CONFIG_ID
+    config_id: configId
   });
   return data.join_way || null;
 }
 
-export async function markMemberTag(env, event) {
-  if (!env.WECOM_MEMBER_TAG_ID) return { skipped: true };
+export async function markTags(env, event, tagIds = []) {
+  const resolvedTagIds = [...new Set(tagIds.filter(Boolean))];
+  if (!resolvedTagIds.length) return { skipped: true };
   return wecomPost(env, 'externalcontact/mark_tag', {
     userid: event.userId,
     external_userid: event.externalUserId,
-    add_tag: [env.WECOM_MEMBER_TAG_ID]
+    add_tag: resolvedTagIds
   });
 }
 
-export async function sendMemberWelcome(env, event, groupJoinWay) {
+export async function markMemberTag(env, event) {
+  return markTags(env, event, env.WECOM_MEMBER_TAG_ID ? [env.WECOM_MEMBER_TAG_ID] : []);
+}
+
+export async function sendMemberWelcome(env, event, groupJoinWay, options = {}) {
   if (!event.welcomeCode) return { skipped: true };
   const groupQr = groupJoinWay?.qr_code || '';
+  const groupName = options.groupName || 'Tech Bridge 会员群';
+  const welcomeMessage = options.welcomeMessage || (
+    groupQr
+      ? '欢迎加入 Tech Bridge 会员。你的付款与会员资格已经自动核验。请点击下方入口，长按识别二维码加入会员群。'
+      : '欢迎加入 Tech Bridge 会员。你的付款与会员资格已经自动核验，会员信会发送到付款邮箱。会员群入口将在配置完成后发送。'
+  );
   const payload = {
     welcome_code: event.welcomeCode,
     text: {
-      content: groupQr
-        ? '欢迎加入 Tech Bridge 会员。你的付款与会员资格已经自动核验。请点击下方入口，长按识别二维码加入会员群。'
-        : '欢迎加入 Tech Bridge 会员。你的付款与会员资格已经自动核验，会员信会发送到付款邮箱。会员群入口将在配置完成后发送。'
+      content: welcomeMessage
     }
   };
 
@@ -169,9 +178,9 @@ export async function sendMemberWelcome(env, event, groupJoinWay) {
     payload.attachments = [{
       msgtype: 'link',
       link: {
-        title: '加入 Tech Bridge 会员群',
+        title: `加入${groupName}`,
         picurl: groupQr,
-        desc: '点击后长按识别二维码加入会员群',
+        desc: `点击后长按识别二维码加入${groupName}`,
         url: groupQr
       }
     }];

@@ -2,10 +2,16 @@ import { createHmac, timingSafeEqual } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { createServer } from 'node:http';
 import {
+  loadAutomationRule,
+  recordAutomationExecution,
+  resolveAutomationResources,
+  upsertCustomerAttribution
+} from './automation.mjs';
+import {
   createContactWay,
   decryptMessage,
   getGroupJoinWay,
-  markMemberTag,
+  markTags,
   parseEventXml,
   sendMemberWelcome,
   verifySignature,
@@ -109,7 +115,7 @@ async function findOnboarding(env, state) {
   const base = env.SUPABASE_URL.replace(/\/$/, '');
   const params = new URLSearchParams({
     state_token: `eq.${state}`,
-    select: 'stripe_checkout_session_id,email,state_token,status'
+    select: 'stripe_checkout_session_id,email,state_token,status,automation_rule_key,welcome_sent_at,tag_applied_at,group_invite_sent_at,created_at'
   });
   const response = await fetch(`${base}/rest/v1/member_wecom_onboarding?${params}`, {
     headers: supabaseHeaders(env)
@@ -135,6 +141,17 @@ async function handleExternalContactAdded(env, event) {
   if (!event.state || !event.externalUserId || !event.userId) return { ignored: true };
   const onboarding = await findOnboarding(env, event.state);
   if (!onboarding) return { ignored: true };
+  const rule = await loadAutomationRule(
+    env,
+    onboarding.automation_rule_key || 'website_stripe_annual_199'
+  );
+  if (!rule) {
+    console.log(JSON.stringify({ event: 'automation_rule_disabled', state: event.state }));
+    return { ignored: true, reason: 'rule_disabled' };
+  }
+  const executionId = `wecom:${event.state}`;
+  const customerKey = `order:${onboarding.stripe_checkout_session_id}`;
+  const startedAt = Date.now();
 
   await updateOnboarding(env, event.state, {
     status: 'wecom_added',
@@ -144,16 +161,138 @@ async function handleExternalContactAdded(env, event) {
     last_error: null
   });
 
-  const groupJoinWay = await getGroupJoinWay(env);
-  const welcome = await sendMemberWelcome(env, event, groupJoinWay);
-  const tag = await markMemberTag(env, event);
-  await updateOnboarding(env, event.state, {
-    status: groupJoinWay?.qr_code ? 'group_invite_sent' : 'wecom_added',
-    welcome_sent_at: welcome?.skipped ? null : new Date().toISOString(),
-    tag_applied_at: tag?.skipped ? null : new Date().toISOString(),
-    group_invite_sent_at: groupJoinWay?.qr_code ? new Date().toISOString() : null,
-    last_error: null
+  await upsertCustomerAttribution(env, onboarding, rule, {
+    stage: 'wecom_added',
+    wecom_external_user_id: event.externalUserId,
+    wecom_user_id: event.userId,
+    wecom_added_at: new Date().toISOString(),
+    last_event: '添加企微'
   });
+
+  const resources = await resolveAutomationResources(env, rule);
+  const errors = [];
+  let groupJoinWay = null;
+  let welcomeSent = Boolean(onboarding.welcome_sent_at);
+  let tagApplied = Boolean(onboarding.tag_applied_at);
+
+  if (rule.send_group_invite && resources.groupConfigId) {
+    try {
+      groupJoinWay = await getGroupJoinWay(env, resources.groupConfigId);
+    } catch (error) {
+      errors.push(`group_join_way:${error.message}`);
+    }
+  }
+
+  if (!welcomeSent && !errors.some((message) => message.startsWith('group_join_way:'))) {
+    const actionStartedAt = Date.now();
+    try {
+      const welcome = await sendMemberWelcome(env, event, groupJoinWay, {
+        welcomeMessage: rule.welcome_message,
+        groupName: rule.group_name
+      });
+      welcomeSent = !welcome?.skipped;
+      await recordAutomationExecution(env, {
+        executionId,
+        idempotencyKey: `${event.state}:welcome`,
+        ruleKey: rule.rule_key,
+        customerKey,
+        sourceChannel: rule.source_channel,
+        eventType: '发送欢迎语',
+        action: '发送欢迎语及群入口',
+        status: welcome?.skipped ? 'skipped' : 'success',
+        durationMs: Date.now() - actionStartedAt,
+        originalEventId: event.state
+      });
+    } catch (error) {
+      errors.push(`welcome:${error.message}`);
+      await recordAutomationExecution(env, {
+        executionId,
+        idempotencyKey: `${event.state}:welcome`,
+        ruleKey: rule.rule_key,
+        customerKey,
+        sourceChannel: rule.source_channel,
+        eventType: '发送欢迎语',
+        action: '发送欢迎语及群入口',
+        status: 'failed',
+        durationMs: Date.now() - actionStartedAt,
+        errorCode: 'wecom_welcome_failed',
+        errorDetail: error.message,
+        originalEventId: event.state
+      });
+    }
+  }
+
+  if (!tagApplied) {
+    const actionStartedAt = Date.now();
+    try {
+      const tag = await markTags(env, event, resources.tagIds);
+      tagApplied = !tag?.skipped;
+      await recordAutomationExecution(env, {
+        executionId,
+        idempotencyKey: `${event.state}:tag`,
+        ruleKey: rule.rule_key,
+        customerKey,
+        sourceChannel: rule.source_channel,
+        eventType: '打标签',
+        action: `添加标签：${(rule.tag_names || []).join('、')}`,
+        status: tag?.skipped ? 'skipped' : 'success',
+        durationMs: Date.now() - actionStartedAt,
+        originalEventId: event.state
+      });
+    } catch (error) {
+      errors.push(`tag:${error.message}`);
+      await recordAutomationExecution(env, {
+        executionId,
+        idempotencyKey: `${event.state}:tag`,
+        ruleKey: rule.rule_key,
+        customerKey,
+        sourceChannel: rule.source_channel,
+        eventType: '打标签',
+        action: `添加标签：${(rule.tag_names || []).join('、')}`,
+        status: 'failed',
+        durationMs: Date.now() - actionStartedAt,
+        errorCode: 'wecom_tag_failed',
+        errorDetail: error.message,
+        originalEventId: event.state
+      });
+    }
+  }
+
+  const groupInviteSent = Boolean(groupJoinWay?.qr_code && welcomeSent);
+  await updateOnboarding(env, event.state, {
+    status: groupInviteSent ? 'group_invite_sent' : 'wecom_added',
+    welcome_sent_at: welcomeSent ? onboarding.welcome_sent_at || new Date().toISOString() : null,
+    tag_applied_at: tagApplied ? onboarding.tag_applied_at || new Date().toISOString() : null,
+    group_invite_sent_at: groupInviteSent ? onboarding.group_invite_sent_at || new Date().toISOString() : null,
+    last_error: errors.length ? errors.join(';').slice(0, 1000) : null
+  });
+
+  await upsertCustomerAttribution(env, onboarding, rule, {
+    stage: groupInviteSent ? 'group_invite_sent' : 'wecom_added',
+    wecom_external_user_id: event.externalUserId,
+    wecom_user_id: event.userId,
+    wecom_added_at: new Date().toISOString(),
+    group_invite_sent_at: groupInviteSent ? new Date().toISOString() : null,
+    last_event: groupInviteSent ? '已发群入口' : '已加企微',
+    last_error: errors.join(';').slice(0, 1000) || null
+  });
+
+  await recordAutomationExecution(env, {
+    executionId,
+    idempotencyKey: `${event.state}:complete`,
+    ruleKey: rule.rule_key,
+    customerKey,
+    sourceChannel: rule.source_channel,
+    eventType: '添加企微',
+    action: '会员私域激活流程',
+    status: errors.length ? 'partial' : 'success',
+    durationMs: Date.now() - startedAt,
+    errorCode: errors.length ? 'partial_failure' : null,
+    errorDetail: errors.join(';'),
+    originalEventId: event.state
+  });
+
+  if (errors.length) throw new Error(`automation_partial_failure:${errors.join(';')}`);
   return { ok: true };
 }
 

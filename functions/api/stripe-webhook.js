@@ -169,6 +169,39 @@ async function upsertSubscriber(env, row) {
   return { skipped: true, reason: 'no_identity' };
 }
 
+async function upsertPaidCustomerAttribution(env, event, row) {
+  if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY || !row.stripe_checkout_session_id) {
+    return { skipped: true };
+  }
+  const base = env.SUPABASE_URL.replace(/\/$/, '');
+  const paidAt = new Date(Number(event.created || 0) * 1000 || Date.now()).toISOString();
+  const response = await fetch(`${base}/rest/v1/customer_attributions?on_conflict=order_id`, {
+    method: 'POST',
+    headers: supabaseHeaders(env, 'resolution=merge-duplicates,return=minimal'),
+    body: JSON.stringify({
+      customer_key: `order:${row.stripe_checkout_session_id}`,
+      customer_name: row.customer_name,
+      email: row.email,
+      rule_key: 'website_stripe_annual_199',
+      source_channel: 'Tech Bridge官网',
+      customer_type: '付费会员',
+      stage: 'paid',
+      tag_names: ['官网来源', '199元付费会员'],
+      order_id: row.stripe_checkout_session_id,
+      amount_total: row.amount_total,
+      currency: row.currency,
+      first_touch_at: paidAt,
+      paid_at: paidAt,
+      last_event: '支付成功',
+      last_error: null,
+      feishu_synced_at: null,
+      updated_at: new Date().toISOString()
+    })
+  });
+  if (!response.ok) throw new Error(`customer_attribution_upsert_failed:${await response.text()}`);
+  return { ok: true };
+}
+
 async function getFeishuTenantToken(env) {
   if (!env.FEISHU_APP_ID || !env.FEISHU_APP_SECRET) return null;
   const response = await fetch('https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal', {
@@ -454,6 +487,7 @@ export async function onRequestPost({ request, env }) {
         row.status === 'active' &&
         (event.type === 'checkout.session.completed' || event.type === 'checkout.session.async_payment_succeeded')
       ) {
+        await upsertPaidCustomerAttribution(env, event, row);
         if (!eventState.feishu_revenue_recorded_at) {
           const revenue = await recordFeishuRevenue(env, event, row);
           if (revenue.ok) {

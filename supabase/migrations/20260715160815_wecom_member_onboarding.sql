@@ -31,4 +31,4 @@ create index if not exists member_wecom_onboarding_status_idx
 alter table public.member_wecom_onboarding enable row level security;
 
 revoke all on table public.member_wecom_onboarding from anon, authenticated;
-grant all on table public.member_wecom_onboarding to service_role;
+grant all on table public.member_wecom_onboarding to service_role;;

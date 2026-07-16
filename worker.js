@@ -3,6 +3,7 @@ import * as memberSubscription from './functions/api/member-subscription/create.
 import * as memberSubscriptionStatus from './functions/api/member-subscription/status.js';
 import * as memberOnboarding from './functions/api/member-onboarding.js';
 import * as stripeWebhook from './functions/api/stripe-webhook.js';
+import { runAutomationSync } from './functions/automation-sync.js';
 
 const API_ROUTES = new Map([
   ['/api/contact-inquiry', contactInquiry],
@@ -40,5 +41,9 @@ export default {
     }
 
     return methodHandler({ request, env, ctx });
+  },
+
+  async scheduled(_controller, env, ctx) {
+    ctx.waitUntil(runAutomationSync(env));
   }
 };

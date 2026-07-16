@@ -1,6 +1,7 @@
 import { createContactWayViaBridge } from '../lib/wecom-bridge-client.js';
 
 const STRIPE_API_VERSION = '2026-02-25.clover';
+const AUTOMATION_RULE_KEY = 'website_stripe_annual_199';
 
 function json(data, status = 200) {
   return new Response(JSON.stringify(data), {
@@ -43,7 +44,7 @@ async function getOnboarding(env, sessionId) {
   const base = env.SUPABASE_URL.replace(/\/$/, '');
   const params = new URLSearchParams({
     stripe_checkout_session_id: `eq.${sessionId}`,
-    select: 'stripe_checkout_session_id,state_token,status,contact_way_config_id,contact_qr_url,wecom_added_at,welcome_sent_at,group_joined_at,last_error'
+    select: 'stripe_checkout_session_id,state_token,status,automation_rule_key,contact_way_config_id,contact_qr_url,wecom_added_at,welcome_sent_at,group_joined_at,last_error,created_at'
   });
   const response = await fetch(`${base}/rest/v1/member_wecom_onboarding?${params}`, {
     headers: supabaseHeaders(env)
@@ -61,7 +62,8 @@ async function createOnboarding(env, session, email) {
       stripe_checkout_session_id: session.id,
       email,
       state_token: stateToken(),
-      status: 'waiting_for_wecom'
+      status: 'waiting_for_wecom',
+      automation_rule_key: AUTOMATION_RULE_KEY
     })
   });
   if (!response.ok) throw new Error(`supabase_onboarding_create_failed:${await response.text()}`);
@@ -86,6 +88,34 @@ async function saveContactWay(env, sessionId, contactWay) {
   );
   if (!response.ok) throw new Error(`supabase_contact_way_save_failed:${await response.text()}`);
   return (await response.json())[0] || null;
+}
+
+async function upsertPaidAttribution(env, session, email) {
+  const base = env.SUPABASE_URL.replace(/\/$/, '');
+  const paidAt = new Date(Number(session.created || 0) * 1000 || Date.now()).toISOString();
+  const response = await fetch(`${base}/rest/v1/customer_attributions?on_conflict=order_id`, {
+    method: 'POST',
+    headers: supabaseHeaders(env, 'resolution=merge-duplicates,return=minimal'),
+    body: JSON.stringify({
+      customer_key: `order:${session.id}`,
+      email,
+      rule_key: AUTOMATION_RULE_KEY,
+      source_channel: 'Tech Bridge官网',
+      customer_type: '付费会员',
+      stage: 'paid',
+      tag_names: ['官网来源', '199元付费会员'],
+      order_id: session.id,
+      amount_total: session.amount_total,
+      currency: session.currency,
+      first_touch_at: paidAt,
+      paid_at: paidAt,
+      last_event: '支付成功',
+      last_error: null,
+      feishu_synced_at: null,
+      updated_at: new Date().toISOString()
+    })
+  });
+  if (!response.ok) throw new Error(`supabase_attribution_save_failed:${await response.text()}`);
 }
 
 export async function onRequestGet({ request, env }) {
@@ -122,6 +152,7 @@ export async function onRequestGet({ request, env }) {
       const contactWay = await createContactWayViaBridge(env, onboarding.state_token);
       onboarding = await saveContactWay(env, sessionId, contactWay);
     }
+    await upsertPaidAttribution(env, session, email);
 
     return json({
       success: true,
