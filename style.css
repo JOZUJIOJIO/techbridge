@@ -629,13 +629,6 @@ a { text-decoration: none; color: inherit; }
 }
 
 /* Language toggle */
-/* 暂时隐藏语言开关：目前全站只有 2 个 data-lang 元素，点击后几乎无变化（假开关伤信任）。
-   做完全站双语覆盖后删除下面这条恢复即可。 */
-.lang-toggle,
-.mobile-lang-toggle {
-    display: none !important;
-}
-
 .lang-toggle {
     font-family: var(--font-mono);
     font-size: 11px;
@@ -2051,6 +2044,13 @@ a { text-decoration: none; color: inherit; }
     color: var(--text-warm-grey);
 }
 
+.subscribe-trust a {
+    color: var(--green-light);
+    text-decoration: underline;
+    text-decoration-color: rgba(32, 178, 170, 0.45);
+    text-underline-offset: 3px;
+}
+
 .subscribe-status {
     min-height: 20px;
     margin-top: 12px;
@@ -2796,6 +2796,25 @@ footer::before {
     color: var(--text-warm-grey);
     opacity: 0.6;
     margin-bottom: 40px;
+}
+
+.footer-policy-links {
+    margin: -14px 0 32px;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px 22px;
+}
+
+.footer-policy-links a {
+    color: var(--text-warm-grey);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    transition: color 0.2s;
+}
+
+.footer-policy-links a:hover {
+    color: var(--green-light);
 }
 
 .footer-copy {
