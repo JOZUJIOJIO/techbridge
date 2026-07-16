@@ -13,11 +13,13 @@ export async function signBridgeRequest(secret, timestamp, body) {
   return hex(await crypto.subtle.sign('HMAC', key, encoder.encode(`${timestamp}.${body}`)));
 }
 
-export async function createContactWayViaBridge(env, state) {
+export async function createContactWayViaBridge(env, state, options = {}) {
   if (!env.WECOM_BRIDGE_SECRET || !env.WECOM_BRIDGE_URL) {
     throw new Error('missing_wecom_bridge_config');
   }
-  const body = JSON.stringify({ state });
+  const payload = { state };
+  if (options.remark) payload.remark = options.remark;
+  const body = JSON.stringify(payload);
   const timestamp = String(Date.now());
   const signature = await signBridgeRequest(env.WECOM_BRIDGE_SECRET, timestamp, body);
   const response = await fetch(`${env.WECOM_BRIDGE_URL.replace(/\/$/, '')}/internal/contact-way`, {

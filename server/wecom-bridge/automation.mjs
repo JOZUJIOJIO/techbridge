@@ -30,6 +30,10 @@ export function defaultMemberRule(env) {
   };
 }
 
+function fallbackRule(env, ruleKey) {
+  return ruleKey === 'website_stripe_annual_199' ? defaultMemberRule(env) : null;
+}
+
 function isActive(rule) {
   if (!rule?.enabled) return false;
   const now = Date.now();
@@ -48,14 +52,14 @@ export async function loadAutomationRule(env, ruleKey) {
     const response = await fetch(`${baseUrl(env)}/rest/v1/automation_rules?${params}`, {
       headers: headers(env)
     });
-    if (response.status === 404) return defaultMemberRule(env);
+    if (response.status === 404) return fallbackRule(env, ruleKey);
     if (!response.ok) throw new Error(`rule_read_failed:${response.status}`);
     const rule = (await response.json())[0];
-    if (!rule) return defaultMemberRule(env);
+    if (!rule) return fallbackRule(env, ruleKey);
     return isActive(rule) ? rule : null;
   } catch (error) {
     console.error(JSON.stringify({ event: 'automation_rule_fallback', reason: error.message }));
-    return defaultMemberRule(env);
+    return fallbackRule(env, ruleKey);
   }
 }
 
@@ -72,19 +76,52 @@ export async function resolveAutomationResources(env, rule) {
     target.set(mapping.resource_key, mapping.external_id);
     target.set(mapping.display_name, mapping.external_id);
   }
-  const tagIds = (rule.tag_names || []).map((name) => tags.get(name)).filter(Boolean);
-  if (!tagIds.length && env.WECOM_MEMBER_TAG_ID) tagIds.push(env.WECOM_MEMBER_TAG_ID);
-  const groupConfigId = groups.get(rule.group_key) || groups.get(rule.group_name) || env.WECOM_GROUP_JOIN_CONFIG_ID || '';
-  return { tagIds: [...new Set(tagIds)], groupConfigId };
+  const missingTagNames = [];
+  const tagIds = [];
+  for (const name of rule.tag_names || []) {
+    const tagId = tags.get(name);
+    if (tagId) tagIds.push(tagId);
+    else missingTagNames.push(name);
+  }
+  if (!tagIds.length && rule.rule_key === 'website_stripe_annual_199' && env.WECOM_MEMBER_TAG_ID) {
+    tagIds.push(env.WECOM_MEMBER_TAG_ID);
+  }
+  const mappedGroupId = groups.get(rule.group_key) || groups.get(rule.group_name) || '';
+  const groupConfigId = mappedGroupId || (
+    rule.rule_key === 'website_stripe_annual_199' ? env.WECOM_GROUP_JOIN_CONFIG_ID || '' : ''
+  );
+  return {
+    tagIds: [...new Set(tagIds)],
+    missingTagNames,
+    groupConfigId,
+    missingGroup: Boolean(rule.send_group_invite && !groupConfigId)
+  };
+}
+
+async function existingAttribution(env, customerKey) {
+  const params = new URLSearchParams({
+    customer_key: `eq.${customerKey}`,
+    select: 'first_touch_at,paid_at',
+    limit: '1'
+  });
+  const response = await fetch(`${baseUrl(env)}/rest/v1/customer_attributions?${params}`, {
+    headers: headers(env)
+  });
+  if (!response.ok) throw new Error(`attribution_read_failed:${response.status}`);
+  return (await response.json())[0] || null;
 }
 
 export async function upsertCustomerAttribution(env, onboarding, rule, patch = {}) {
   if (!rule.write_attribution) return { skipped: true };
   const now = new Date().toISOString();
-  const orderId = onboarding.stripe_checkout_session_id;
+  const orderId = patch.order_id ?? onboarding?.stripe_checkout_session_id ?? null;
+  const customerKey = patch.customer_key || (orderId ? `order:${orderId}` : '');
+  if (!customerKey) throw new Error('missing_customer_attribution_key');
+  const existing = await existingAttribution(env, customerKey);
+  const firstTouchAt = existing?.first_touch_at || patch.first_touch_at || onboarding?.created_at || now;
   const row = {
-    customer_key: `order:${orderId}`,
-    email: onboarding.email || null,
+    customer_key: customerKey,
+    email: patch.email || onboarding?.email || null,
     wecom_external_user_id: patch.wecom_external_user_id || null,
     wecom_user_id: patch.wecom_user_id || rule.wecom_user_id || null,
     rule_key: rule.rule_key,
@@ -93,8 +130,8 @@ export async function upsertCustomerAttribution(env, onboarding, rule, patch = {
     stage: patch.stage || 'paid',
     tag_names: rule.tag_names || [],
     order_id: orderId,
-    first_touch_at: onboarding.created_at || now,
-    paid_at: onboarding.created_at || now,
+    first_touch_at: firstTouchAt,
+    paid_at: existing?.paid_at || patch.paid_at || (orderId ? onboarding?.created_at || now : null),
     wecom_added_at: patch.wecom_added_at || null,
     group_invite_sent_at: patch.group_invite_sent_at || null,
     group_joined_at: patch.group_joined_at || null,
@@ -103,7 +140,7 @@ export async function upsertCustomerAttribution(env, onboarding, rule, patch = {
     feishu_synced_at: null,
     updated_at: now
   };
-  const response = await fetch(`${baseUrl(env)}/rest/v1/customer_attributions?on_conflict=order_id`, {
+  const response = await fetch(`${baseUrl(env)}/rest/v1/customer_attributions?on_conflict=customer_key`, {
     method: 'POST',
     headers: headers(env, 'resolution=merge-duplicates,return=representation'),
     body: JSON.stringify(row)

@@ -10,6 +10,12 @@ import {
   xmlField
 } from '../functions/lib/wecom.js';
 import { signBridgeRequest } from '../functions/lib/wecom-bridge-client.js';
+import {
+  automationEventKey,
+  channelRuleKey,
+  isContactWayState,
+  isMemberState
+} from '../server/wecom-bridge/channel-state.mjs';
 
 const CORP_ID = 'wwb18e676047faa374';
 const TOKEN = 'test-callback-token';
@@ -99,4 +105,16 @@ test('signs bridge requests with timestamp-bound HMAC-SHA256', async () => {
   const body = JSON.stringify({ state: 'm_0123456789abcdef0123456789' });
   const expected = createHmac('sha256', secret).update(`${timestamp}.${body}`).digest('hex');
   assert.equal(await signBridgeRequest(secret, timestamp, body), expected);
+});
+
+test('separates one-time member states from reusable channel states', () => {
+  const memberState = 'm_0123456789abcdef0123456789';
+  const channelState = 'r_oa_content_lead';
+  assert.equal(isMemberState(memberState), true);
+  assert.equal(channelRuleKey(channelState), 'oa_content_lead');
+  assert.equal(isContactWayState(memberState), true);
+  assert.equal(isContactWayState(channelState), true);
+  assert.equal(isContactWayState('r_Invalid-Channel'), false);
+  assert.equal(automationEventKey(channelState, 'wm_reader', true), 'r_oa_content_lead:wm_reader');
+  assert.equal(automationEventKey(memberState, 'wm_member', false), memberState);
 });

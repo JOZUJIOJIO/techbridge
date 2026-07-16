@@ -126,13 +126,13 @@ async function wecomPost(env, path, payload) {
   return data;
 }
 
-export async function createContactWay(env, state) {
+export async function createContactWay(env, state, options = {}) {
   requireConfig(env, ['WECOM_CONTACT_USER_ID']);
   return wecomPost(env, 'externalcontact/add_contact_way', {
     type: 1,
     scene: 2,
     style: 1,
-    remark: 'Tech Bridge 会员激活',
+    remark: String(options.remark || 'Tech Bridge 会员激活').slice(0, 30),
     skip_verify: true,
     state,
     user: [env.WECOM_CONTACT_USER_ID]

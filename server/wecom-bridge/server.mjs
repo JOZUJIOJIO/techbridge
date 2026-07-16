@@ -18,6 +18,12 @@ import {
   verifySignature,
   xmlField
 } from './wecom.js';
+import {
+  automationEventKey,
+  channelRuleKey,
+  isContactWayState,
+  isMemberState
+} from './channel-state.mjs';
 
 const host = process.env.WECOM_BRIDGE_HOST || '127.0.0.1';
 const port = Number(process.env.WECOM_BRIDGE_PORT || 8791);
@@ -112,7 +118,7 @@ function supabaseHeaders(env) {
 }
 
 async function findOnboarding(env, state) {
-  if (!/^m_[a-f0-9]{26}$/.test(state)) return null;
+  if (!isMemberState(state)) return null;
   const base = env.SUPABASE_URL.replace(/\/$/, '');
   const params = new URLSearchParams({
     state_token: `eq.${state}`,
@@ -123,6 +129,21 @@ async function findOnboarding(env, state) {
   });
   if (!response.ok) throw new Error(`supabase_lookup_failed:${response.status}`);
   return (await response.json())[0] || null;
+}
+
+async function completedAutomationAction(env, idempotencyKey) {
+  const base = env.SUPABASE_URL.replace(/\/$/, '');
+  const params = new URLSearchParams({
+    idempotency_key: `eq.${idempotencyKey}`,
+    status: 'in.(success,skipped)',
+    select: 'id',
+    limit: '1'
+  });
+  const response = await fetch(`${base}/rest/v1/automation_execution_logs?${params}`, {
+    headers: supabaseHeaders(env)
+  });
+  if (!response.ok) throw new Error(`automation_log_lookup_failed:${response.status}`);
+  return (await response.json()).length > 0;
 }
 
 async function updateOnboarding(env, state, patch) {
@@ -218,28 +239,35 @@ async function handleExternalChatUpdated(env, event) {
 async function handleExternalContactAdded(env, event) {
   if (!event.state || !event.externalUserId || !event.userId) return { ignored: true };
   const onboarding = await findOnboarding(env, event.state);
-  if (!onboarding) return { ignored: true };
-  const rule = await loadAutomationRule(
-    env,
-    onboarding.automation_rule_key || 'website_stripe_annual_199'
-  );
+  const reusableChannel = !onboarding;
+  const ruleKey = onboarding?.automation_rule_key
+    || channelRuleKey(event.state)
+    || (onboarding ? 'website_stripe_annual_199' : '');
+  if (!ruleKey) return { ignored: true };
+  const rule = await loadAutomationRule(env, ruleKey);
   if (!rule) {
     console.log(JSON.stringify({ event: 'automation_rule_disabled', state: event.state }));
     return { ignored: true, reason: 'rule_disabled' };
   }
-  const executionId = `wecom:${event.state}`;
-  const customerKey = `order:${onboarding.stripe_checkout_session_id}`;
+  const eventKey = automationEventKey(event.state, event.externalUserId, reusableChannel);
+  const executionId = `wecom:${eventKey}`;
+  const customerKey = onboarding
+    ? `order:${onboarding.stripe_checkout_session_id}`
+    : `wecom:${event.externalUserId}:${rule.rule_key}`;
   const startedAt = Date.now();
 
-  await updateOnboarding(env, event.state, {
-    status: 'wecom_added',
-    wecom_external_user_id: event.externalUserId,
-    wecom_user_id: event.userId,
-    wecom_added_at: new Date().toISOString(),
-    last_error: null
-  });
+  if (onboarding) {
+    await updateOnboarding(env, event.state, {
+      status: 'wecom_added',
+      wecom_external_user_id: event.externalUserId,
+      wecom_user_id: event.userId,
+      wecom_added_at: new Date().toISOString(),
+      last_error: null
+    });
+  }
 
   await upsertCustomerAttribution(env, onboarding, rule, {
+    customer_key: customerKey,
     stage: 'wecom_added',
     wecom_external_user_id: event.externalUserId,
     wecom_user_id: event.userId,
@@ -249,9 +277,17 @@ async function handleExternalContactAdded(env, event) {
 
   const resources = await resolveAutomationResources(env, rule);
   const errors = [];
+  if (resources.missingTagNames.length) {
+    errors.push(`tag_mapping_missing:${resources.missingTagNames.join(',')}`);
+  }
+  if (resources.missingGroup) errors.push('group_mapping_missing');
   let groupJoinWay = null;
-  let welcomeSent = Boolean(onboarding.welcome_sent_at);
-  let tagApplied = Boolean(onboarding.tag_applied_at);
+  let welcomeSent = Boolean(onboarding?.welcome_sent_at);
+  let tagApplied = Boolean(onboarding?.tag_applied_at);
+  if (reusableChannel) {
+    welcomeSent = await completedAutomationAction(env, `${eventKey}:welcome`);
+    tagApplied = await completedAutomationAction(env, `${eventKey}:tag`);
+  }
 
   if (rule.send_group_invite && resources.groupConfigId) {
     try {
@@ -271,7 +307,7 @@ async function handleExternalContactAdded(env, event) {
       welcomeSent = !welcome?.skipped;
       await recordAutomationExecution(env, {
         executionId,
-        idempotencyKey: `${event.state}:welcome`,
+        idempotencyKey: `${eventKey}:welcome`,
         ruleKey: rule.rule_key,
         customerKey,
         sourceChannel: rule.source_channel,
@@ -279,13 +315,13 @@ async function handleExternalContactAdded(env, event) {
         action: '发送欢迎语及群入口',
         status: welcome?.skipped ? 'skipped' : 'success',
         durationMs: Date.now() - actionStartedAt,
-        originalEventId: event.state
+        originalEventId: eventKey
       });
     } catch (error) {
       errors.push(`welcome:${error.message}`);
       await recordAutomationExecution(env, {
         executionId,
-        idempotencyKey: `${event.state}:welcome`,
+        idempotencyKey: `${eventKey}:welcome`,
         ruleKey: rule.rule_key,
         customerKey,
         sourceChannel: rule.source_channel,
@@ -295,7 +331,7 @@ async function handleExternalContactAdded(env, event) {
         durationMs: Date.now() - actionStartedAt,
         errorCode: 'wecom_welcome_failed',
         errorDetail: error.message,
-        originalEventId: event.state
+        originalEventId: eventKey
       });
     }
   }
@@ -307,7 +343,7 @@ async function handleExternalContactAdded(env, event) {
       tagApplied = !tag?.skipped;
       await recordAutomationExecution(env, {
         executionId,
-        idempotencyKey: `${event.state}:tag`,
+        idempotencyKey: `${eventKey}:tag`,
         ruleKey: rule.rule_key,
         customerKey,
         sourceChannel: rule.source_channel,
@@ -315,13 +351,13 @@ async function handleExternalContactAdded(env, event) {
         action: `添加标签：${(rule.tag_names || []).join('、')}`,
         status: tag?.skipped ? 'skipped' : 'success',
         durationMs: Date.now() - actionStartedAt,
-        originalEventId: event.state
+        originalEventId: eventKey
       });
     } catch (error) {
       errors.push(`tag:${error.message}`);
       await recordAutomationExecution(env, {
         executionId,
-        idempotencyKey: `${event.state}:tag`,
+        idempotencyKey: `${eventKey}:tag`,
         ruleKey: rule.rule_key,
         customerKey,
         sourceChannel: rule.source_channel,
@@ -331,21 +367,24 @@ async function handleExternalContactAdded(env, event) {
         durationMs: Date.now() - actionStartedAt,
         errorCode: 'wecom_tag_failed',
         errorDetail: error.message,
-        originalEventId: event.state
+        originalEventId: eventKey
       });
     }
   }
 
   const groupInviteSent = Boolean(groupJoinWay?.qr_code && welcomeSent);
-  await updateOnboarding(env, event.state, {
-    status: groupInviteSent ? 'group_invite_sent' : 'wecom_added',
-    welcome_sent_at: welcomeSent ? onboarding.welcome_sent_at || new Date().toISOString() : null,
-    tag_applied_at: tagApplied ? onboarding.tag_applied_at || new Date().toISOString() : null,
-    group_invite_sent_at: groupInviteSent ? onboarding.group_invite_sent_at || new Date().toISOString() : null,
-    last_error: errors.length ? errors.join(';').slice(0, 1000) : null
-  });
+  if (onboarding) {
+    await updateOnboarding(env, event.state, {
+      status: groupInviteSent ? 'group_invite_sent' : 'wecom_added',
+      welcome_sent_at: welcomeSent ? onboarding.welcome_sent_at || new Date().toISOString() : null,
+      tag_applied_at: tagApplied ? onboarding.tag_applied_at || new Date().toISOString() : null,
+      group_invite_sent_at: groupInviteSent ? onboarding.group_invite_sent_at || new Date().toISOString() : null,
+      last_error: errors.length ? errors.join(';').slice(0, 1000) : null
+    });
+  }
 
   await upsertCustomerAttribution(env, onboarding, rule, {
+    customer_key: customerKey,
     stage: groupInviteSent ? 'group_invite_sent' : 'wecom_added',
     wecom_external_user_id: event.externalUserId,
     wecom_user_id: event.userId,
@@ -357,17 +396,17 @@ async function handleExternalContactAdded(env, event) {
 
   await recordAutomationExecution(env, {
     executionId,
-    idempotencyKey: `${event.state}:complete`,
+    idempotencyKey: `${eventKey}:complete`,
     ruleKey: rule.rule_key,
     customerKey,
     sourceChannel: rule.source_channel,
     eventType: '添加企微',
-    action: '会员私域激活流程',
+    action: reusableChannel ? '渠道私域承接流程' : '会员私域激活流程',
     status: errors.length ? 'partial' : 'success',
     durationMs: Date.now() - startedAt,
     errorCode: errors.length ? 'partial_failure' : null,
     errorDetail: errors.join(';'),
-    originalEventId: event.state
+    originalEventId: eventKey
   });
 
   if (errors.length) throw new Error(`automation_partial_failure:${errors.join(';')}`);
@@ -433,9 +472,9 @@ async function handleContactWay(request, response) {
   if (!verifyInternalRequest(request, body)) return jsonReply(response, 403, { error: 'forbidden' });
 
   try {
-    const { state } = JSON.parse(body);
-    if (!/^m_[a-f0-9]{26}$/.test(state)) return jsonReply(response, 400, { error: 'invalid_state' });
-    const contactWay = await createContactWay(integrationConfig(), state);
+    const { state, remark } = JSON.parse(body);
+    if (!isContactWayState(state)) return jsonReply(response, 400, { error: 'invalid_state' });
+    const contactWay = await createContactWay(integrationConfig(), state, { remark });
     return jsonReply(response, 200, {
       config_id: contactWay.config_id,
       qr_code: contactWay.qr_code
