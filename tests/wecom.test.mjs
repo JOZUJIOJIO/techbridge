@@ -69,12 +69,28 @@ test('extracts encrypted and event XML fields', () => {
   assert.deepEqual(event, {
     event: 'change_external_contact',
     changeType: 'add_external_contact',
+    updateDetail: '',
     userId: 'zhengqiao',
     externalUserId: 'wm_external',
     state: 'm_order_state',
     welcomeCode: 'welcome-code',
-    chatId: ''
+    chatId: '',
+    joinScene: '',
+    memberChangeCount: ''
   });
+
+  const groupEvent = parseEventXml(`<xml>
+    <Event><![CDATA[change_external_chat]]></Event>
+    <ChangeType><![CDATA[update]]></ChangeType>
+    <UpdateDetail><![CDATA[add_member]]></UpdateDetail>
+    <ChatId><![CDATA[wr_group]]></ChatId>
+    <JoinScene>3</JoinScene>
+    <MemChangeCnt>1</MemChangeCnt>
+  </xml>`);
+  assert.equal(groupEvent.updateDetail, 'add_member');
+  assert.equal(groupEvent.chatId, 'wr_group');
+  assert.equal(groupEvent.joinScene, '3');
+  assert.equal(groupEvent.memberChangeCount, '1');
 });
 
 test('signs bridge requests with timestamp-bound HMAC-SHA256', async () => {

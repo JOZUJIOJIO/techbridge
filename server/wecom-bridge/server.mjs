@@ -10,6 +10,7 @@ import {
 import {
   createContactWay,
   decryptMessage,
+  getGroupChat,
   getGroupJoinWay,
   markTags,
   parseEventXml,
@@ -135,6 +136,83 @@ async function updateOnboarding(env, state, patch) {
     }
   );
   if (!response.ok) throw new Error(`supabase_update_failed:${response.status}`);
+}
+
+async function findPendingGroupMembers(env, externalUserId) {
+  const base = env.SUPABASE_URL.replace(/\/$/, '');
+  const params = new URLSearchParams({
+    wecom_external_user_id: `eq.${externalUserId}`,
+    group_joined_at: 'is.null',
+    select: 'stripe_checkout_session_id,state_token,automation_rule_key'
+  });
+  const response = await fetch(`${base}/rest/v1/member_wecom_onboarding?${params}`, {
+    headers: supabaseHeaders(env)
+  });
+  if (!response.ok) throw new Error(`supabase_group_member_lookup_failed:${response.status}`);
+  return response.json();
+}
+
+async function markCustomerGroupJoined(env, onboarding, externalUserId, chatId) {
+  const base = env.SUPABASE_URL.replace(/\/$/, '');
+  const joinedAt = new Date().toISOString();
+  await updateOnboarding(env, onboarding.state_token, {
+    status: 'group_joined',
+    group_joined_at: joinedAt,
+    last_error: null
+  });
+
+  const attributionResponse = await fetch(
+    `${base}/rest/v1/customer_attributions?order_id=eq.${encodeURIComponent(onboarding.stripe_checkout_session_id)}`,
+    {
+      method: 'PATCH',
+      headers: supabaseHeaders(env),
+      body: JSON.stringify({
+        stage: 'group_joined',
+        group_joined_at: joinedAt,
+        last_event: '已进会员群',
+        last_error: null,
+        feishu_synced_at: null,
+        updated_at: joinedAt
+      })
+    }
+  );
+  if (!attributionResponse.ok) {
+    throw new Error(`supabase_group_attribution_update_failed:${attributionResponse.status}`);
+  }
+
+  await recordAutomationExecution(env, {
+    executionId: `wecom-group:${chatId}:${externalUserId}`,
+    idempotencyKey: `group:${chatId}:${externalUserId}:joined`,
+    ruleKey: onboarding.automation_rule_key,
+    customerKey: `order:${onboarding.stripe_checkout_session_id}`,
+    eventType: '进入会员群',
+    action: '同步会员群入群状态',
+    status: 'success',
+    originalEventId: chatId
+  });
+}
+
+async function handleExternalChatUpdated(env, event) {
+  if (!event.chatId || (event.updateDetail && event.updateDetail !== 'add_member')) {
+    return { ignored: true };
+  }
+  const group = await getGroupChat(env, event.chatId);
+  const externalMembers = (group?.member_list || []).filter((member) => member.type === 2 && member.userid);
+  let updated = 0;
+  for (const member of externalMembers) {
+    const onboardings = await findPendingGroupMembers(env, member.userid);
+    for (const onboarding of onboardings) {
+      await markCustomerGroupJoined(env, onboarding, member.userid, event.chatId);
+      updated += 1;
+    }
+  }
+  console.log(JSON.stringify({
+    event: 'wecom_group_members_reconciled',
+    chatId: event.chatId,
+    updateDetail: event.updateDetail || '',
+    updated
+  }));
+  return { ok: true, updated };
 }
 
 async function handleExternalContactAdded(env, event) {
@@ -305,6 +383,9 @@ async function processEvent(env, message) {
   }));
   if (event.event === 'change_external_contact' && event.changeType === 'add_external_contact') {
     return handleExternalContactAdded(env, event);
+  }
+  if (event.event === 'change_external_chat' && event.changeType === 'update') {
+    return handleExternalChatUpdated(env, event);
   }
   return { ignored: true };
 }

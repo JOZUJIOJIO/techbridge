@@ -76,11 +76,14 @@ export function parseEventXml(xml) {
   return {
     event: xmlField(xml, 'Event'),
     changeType: xmlField(xml, 'ChangeType'),
+    updateDetail: xmlField(xml, 'UpdateDetail'),
     userId: xmlField(xml, 'UserID'),
     externalUserId: xmlField(xml, 'ExternalUserID'),
     state: xmlField(xml, 'State'),
     welcomeCode: xmlField(xml, 'WelcomeCode'),
-    chatId: xmlField(xml, 'ChatId')
+    chatId: xmlField(xml, 'ChatId'),
+    joinScene: xmlField(xml, 'JoinScene'),
+    memberChangeCount: xmlField(xml, 'MemChangeCnt')
   };
 }
 
@@ -142,6 +145,15 @@ export async function getGroupJoinWay(env, configId = env.WECOM_GROUP_JOIN_CONFI
     config_id: configId
   });
   return data.join_way || null;
+}
+
+export async function getGroupChat(env, chatId) {
+  if (!chatId) return null;
+  const data = await wecomPost(env, 'externalcontact/groupchat/get', {
+    chat_id: chatId,
+    need_name: 1
+  });
+  return data.group_chat || null;
 }
 
 export async function markTags(env, event, tagIds = []) {
