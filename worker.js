@@ -26,6 +26,12 @@ function json(data, status) {
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
+
+    if (url.protocol === 'http:' && (url.hostname === 'qiaobit.com' || url.hostname === 'www.qiaobit.com')) {
+      url.protocol = 'https:';
+      return Response.redirect(url.toString(), 301);
+    }
+
     const handler = API_ROUTES.get(url.pathname);
 
     if (!handler) {
