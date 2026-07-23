@@ -32,6 +32,11 @@ export default {
       return Response.redirect(url.toString(), 301);
     }
 
+    if (url.pathname === '/ByteDanceVerify.html') {
+      url.pathname = '/ByteDanceVerify';
+      return env.ASSETS.fetch(new Request(url, request));
+    }
+
     const handler = API_ROUTES.get(url.pathname);
 
     if (!handler) {
