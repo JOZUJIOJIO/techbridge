@@ -20,8 +20,8 @@ function sameOriginUrl(request, path) {
 }
 
 async function createStripeCheckoutSession(env, request, payload) {
-  const plan = 'annual';
-  const priceId = env.STRIPE_PRICE_ID_ANNUAL || env.STRIPE_PRICE_ID;
+  const plan = 'skill_email_365';
+  const priceId = env.STRIPE_PRICE_ID_SKILL_EMAIL;
   const siteUrl = (env.PUBLIC_SITE_URL || sameOriginUrl(request, '')).replace(/\/$/, '');
   const successUrl = env.SUBSCRIPTION_SUCCESS_URL || `${siteUrl}/?subscription=success&session_id={CHECKOUT_SESSION_ID}#member-subscribe`;
   const cancelUrl = env.SUBSCRIPTION_CANCEL_URL || `${siteUrl}/?subscription=cancel#member-subscribe`;
@@ -29,7 +29,7 @@ async function createStripeCheckoutSession(env, request, payload) {
   if (!env.STRIPE_SECRET_KEY || !priceId) {
     return {
       missingConfig: true,
-      message: '会员支付服务正在配置中，请稍后再试。'
+      message: '技能邮件订阅支付正在配置中，请稍后再试。'
     };
   }
 

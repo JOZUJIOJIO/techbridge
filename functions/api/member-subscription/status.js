@@ -54,7 +54,7 @@ export async function onRequestGet({ request, env }) {
     amountTotal: session.amount_total,
     currency: session.currency,
     email: maskEmail(email),
-    plan: session.metadata?.plan || 'annual',
+    plan: session.metadata?.plan || 'skill_email_365',
     membershipUntil: paid ? annualPeriodEnd(session.created) : null
   });
 }

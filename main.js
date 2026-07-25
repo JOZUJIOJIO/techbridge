@@ -492,7 +492,7 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
 
     function selectedPlan() {
         var checked = form.querySelector('input[name="plan"]:checked');
-        return checked ? checked.value : 'annual';
+        return checked ? checked.value : 'skill_email_365';
     }
 
     function updatePlanState() {

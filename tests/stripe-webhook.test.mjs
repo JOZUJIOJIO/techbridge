@@ -41,11 +41,11 @@ function checkoutEvent(id = 'evt_test') {
         id: `cs_${id}`,
         customer: `cus_${id}`,
         customer_details: { email: 'buyer@example.com', name: '测试用户' },
-        metadata: { plan: 'annual', source: 'qiaobit-homepage' },
+        metadata: { plan: 'skill_email_365', source: 'qiaobit-homepage' },
         payment_intent: `pi_${id}`,
         payment_status: 'paid',
         subscription: null,
-        amount_total: 19900,
+        amount_total: 990,
         currency: 'cny'
       }
     }
@@ -149,18 +149,23 @@ test('new Stripe order creates a Feishu revenue record', async () => {
       href.includes('/customer_attributions') && init.method === 'POST'
     );
     assert.ok(attributionCall);
-    assert.equal(JSON.parse(attributionCall.init.body).rule_key, 'website_stripe_annual_199');
+    const attribution = JSON.parse(attributionCall.init.body);
+    assert.equal(attribution.rule_key, null);
+    assert.equal(attribution.customer_type, '付费订阅');
+    assert.deepEqual(attribution.tag_names, ['官网来源', '9.9元技能邮件订阅']);
 
     const createCall = mock.calls.find(({ href, init }) =>
       href.endsWith('/records') && init.method === 'POST'
     );
     assert.ok(createCall);
     const fields = JSON.parse(createCall.init.body).fields;
-    assert.equal(fields['收入金额'], 199);
-    assert.equal(fields['原币金额'], 199);
+    assert.equal(fields['收入金额'], 9.9);
+    assert.equal(fields['原币金额'], 9.9);
     assert.equal(fields['币种'], 'CNY');
     assert.equal(fields['收款渠道'], 'Stripe');
     assert.equal(fields['来源渠道'], 'Tech Bridge 官网');
+    assert.equal(fields['收入类型'], '内容订阅');
+    assert.equal(fields['产品/服务'], 'Tech Bridge 技能邮件订阅');
     assert.equal(fields['订单号'], 'cs_evt_new');
   } finally {
     mock.restore();

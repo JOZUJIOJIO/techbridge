@@ -1,7 +1,7 @@
 PUBLIC_SITE_URL="https://qiaobit.com"
 STRIPE_SECRET_KEY="sk_live_or_test_xxx"
 STRIPE_WEBHOOK_SECRET="whsec_xxx"
-STRIPE_PRICE_ID_ANNUAL="price_xxx"
+STRIPE_PRICE_ID_SKILL_EMAIL="price_xxx"
 SUPABASE_URL="https://your-project.supabase.co"
 SUPABASE_SERVICE_ROLE_KEY="your-service-role-key"
 RESEND_API_KEY="re_xxx"

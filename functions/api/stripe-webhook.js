@@ -175,6 +175,7 @@ async function upsertPaidCustomerAttribution(env, event, row) {
   }
   const base = env.SUPABASE_URL.replace(/\/$/, '');
   const paidAt = new Date(Number(event.created || 0) * 1000 || Date.now()).toISOString();
+  const skillEmail = row.plan === 'skill_email_365';
   const response = await fetch(`${base}/rest/v1/customer_attributions?on_conflict=order_id`, {
     method: 'POST',
     headers: supabaseHeaders(env, 'resolution=merge-duplicates,return=minimal'),
@@ -182,11 +183,11 @@ async function upsertPaidCustomerAttribution(env, event, row) {
       customer_key: `order:${row.stripe_checkout_session_id}`,
       customer_name: row.customer_name,
       email: row.email,
-      rule_key: 'website_stripe_annual_199',
+      rule_key: skillEmail ? null : 'website_stripe_annual_199',
       source_channel: 'Tech Bridge官网',
-      customer_type: '付费会员',
+      customer_type: skillEmail ? '付费订阅' : '付费会员',
       stage: 'paid',
-      tag_names: ['官网来源', '199元付费会员'],
+      tag_names: skillEmail ? ['官网来源', '9.9元技能邮件订阅'] : ['官网来源', '199元付费会员'],
       order_id: row.stripe_checkout_session_id,
       amount_total: row.amount_total,
       currency: row.currency,
@@ -241,7 +242,8 @@ function revenueOrderId(event, row) {
 }
 
 function revenueProduct(row) {
-  return row.plan === 'annual' ? 'Tech Bridge 年度会员' : row.plan || 'Tech Bridge 会员';
+  if (row.plan === 'skill_email_365') return 'Tech Bridge 技能邮件订阅';
+  return row.plan === 'annual' ? 'Tech Bridge 年度会员' : row.plan || 'Tech Bridge 数字服务';
 }
 
 function toFeishuRevenueFields(event, row) {
@@ -265,7 +267,7 @@ function toFeishuRevenueFields(event, row) {
     ...(currency === 'cny' ? { '收入金额': amount } : {}),
     '收款渠道': 'Stripe',
     '来源渠道': 'Tech Bridge 官网',
-    '收入类型': '会员订阅',
+    '收入类型': row.plan === 'skill_email_365' ? '内容订阅' : '会员订阅',
     '产品/服务': revenueProduct(row),
     '客户/付款人': row.customer_name || row.email || '未知',
     '支付状态': '已支付',
@@ -339,11 +341,11 @@ async function sendFeishuPaymentNotification(env, event, row) {
     '【Tech Bridge 官网新成交】',
     '',
     `成交金额：${paymentAmount(row.amount_total, row.currency)}`,
-    `商品：${row.plan === 'annual' ? 'Tech Bridge 年度会员' : row.plan || '会员'}`,
+    `商品：${revenueProduct(row)}`,
     `付款用户：${row.customer_name || row.email || '未知'}`,
     `付款邮箱：${row.email || '未知'}`,
     `成交时间：${shanghaiTime((event.created || 0) * 1000)}`,
-    `会员有效期：${shanghaiTime(row.current_period_end)}`
+    `${row.plan === 'skill_email_365' ? '订阅有效期' : '会员有效期'}：${shanghaiTime(row.current_period_end)}`
   ];
   if (row.stripe_payment_intent_id) {
     lines.push('', `Stripe 订单：https://dashboard.stripe.com/payments/${row.stripe_payment_intent_id}`);
@@ -378,11 +380,13 @@ async function sendWelcomeEmail(env, row, eventId) {
   }
 
   const from = env.RESEND_FROM || 'Tech Bridge <newsletter@qiaobit.com>';
-  const subject = '欢迎加入 Tech Bridge 会员信';
+  const skillEmail = row.plan === 'skill_email_365';
+  const subject = skillEmail ? '欢迎订阅 Tech Bridge 技能邮件' : '欢迎加入 Tech Bridge 会员信';
   const html = `
     <div style="font-family:Arial,'Noto Sans SC',sans-serif;line-height:1.8;color:#1A1A18">
-      <h2>欢迎加入 Tech Bridge 会员信</h2>
-      <p>你的订阅已开通。后续我会把 AI 产品实战、内容增长复盘、科技商业观察和项目进展内参发到这个邮箱。</p>
+      <h2>${skillEmail ? '欢迎订阅 Tech Bridge 技能邮件' : '欢迎加入 Tech Bridge 会员信'}</h2>
+      <p>你的${skillEmail ? '技能邮件订阅' : '会员订阅'}已开通。后续我会把 AI 产品实战、内容增长复盘、可复用工作流和项目经验发到这个邮箱。</p>
+      ${skillEmail ? '<p>本次为一次性支付，有效期 365 天，不会自动续费。具体栏目与发送节奏以后续邮件为准。</p>' : ''}
       <p>如果你需要更换邮箱或取消订阅，直接回复这封邮件即可。</p>
       <p style="color:#8A8580">Tech Bridge / 桥比特</p>
     </div>

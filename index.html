@@ -921,16 +921,16 @@
 
             <article class="commercial-path commercial-path-member reveal" id="member-subscribe">
                 <div class="commercial-path-index">02</div>
-                <div class="commercial-path-meta">MEMBERSHIP · 持续同行</div>
-                <h3>加入 Tech Bridge 会员</h3>
-                <p>不是泛泛的资讯摘要，而是我在真实项目中验证过、可以直接复用的方法与判断。</p>
+                <div class="commercial-path-meta">SKILL LETTER · 持续更新</div>
+                <h3>订阅 Tech Bridge 技能邮件</h3>
+                <p>输入邮箱，支付 9.9 元，接收我在真实项目中验证过、可以直接复用的技能与方法。</p>
                 <ul>
                     <li>真实项目复盘：关键决策、结果与踩坑</li>
                     <li>可直接使用的提示词、工作流与模板</li>
                     <li>AI 商业化、内容增长与硬件出海判断</li>
                 </ul>
-                <div class="commercial-price"><strong>¥199</strong><span>/ 年 · 会员价</span></div>
-                <button class="commercial-link commercial-link-orange" id="memberCheckoutToggle" type="button" aria-expanded="false" aria-controls="memberCheckout">加入会员 →</button>
+                <div class="commercial-price"><strong>¥9.9</strong><span>/ 365 天 · 一次性</span></div>
+                <button class="commercial-link commercial-link-orange" id="memberCheckoutToggle" type="button" aria-expanded="false" aria-controls="memberCheckout">立即订阅 →</button>
             </article>
 
             <article class="commercial-path commercial-path-work reveal">
@@ -950,60 +950,47 @@
 
         <div class="member-checkout" id="memberCheckout" hidden>
             <div class="member-checkout-copy">
-                <div class="paid-subscribe-kicker">Founder Edition</div>
+                <div class="paid-subscribe-kicker">Skill Letter</div>
                 <h3>你会得到什么</h3>
-                <p>会员信不做新闻搬运。它把我正在验证的产品、方法和商业判断，整理成可以直接使用的内容。</p>
+                <p>技能邮件不做新闻搬运。它把我正在验证的产品、方法和商业判断，整理成可以直接使用的内容。</p>
                 <ul class="member-checkout-benefits">
                     <li><strong>项目复盘</strong><span>产品从 0 到 1、获客、商业化和出海过程</span></li>
                     <li><strong>实用资料</strong><span>提示词、SOP、模板、案例和工具清单</span></li>
                     <li><strong>决策参考</strong><span>重要趋势、机会判断与失败教训</span></li>
-                    <li><strong>会员更新</strong><span>新产品进展与可公开的内测资源</span></li>
+                    <li><strong>持续更新</strong><span>新产品进展与可公开的内测资源</span></li>
                 </ul>
-                <button class="member-checkout-close" id="memberCheckoutClose" type="button" aria-label="关闭会员订阅表单" title="关闭">
+                <button class="member-checkout-close" id="memberCheckoutClose" type="button" aria-label="关闭技能邮件订阅表单" title="关闭">
                     <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                 </button>
             </div>
             <form class="paid-subscribe-card" id="paidSubscribeForm" data-endpoint="/api/member-subscription/create" novalidate>
                 <div class="paid-subscribe-card-head">
-                    <span>Tech Bridge Membership</span>
-                    <strong>¥199 / 年</strong>
+                    <span>Tech Bridge Skill Letter</span>
+                    <strong>¥9.9</strong>
                 </div>
-                <input type="hidden" name="plan" value="annual">
-                <p class="subscribe-single-plan">年度会员 · ¥199 / 年。填写邮箱后，下一步前往 Stripe 安全支付页。</p>
-                <label class="subscribe-email-label" for="paidSubscribeEmail">接收会员信的邮箱</label>
+                <input type="hidden" name="plan" value="skill_email_365">
+                <p class="subscribe-single-plan">一次性支付 ¥9.9，有效期 365 天，不自动续费。填写邮箱后前往 Stripe 安全支付页。</p>
+                <label class="subscribe-email-label" for="paidSubscribeEmail">接收技能邮件的邮箱</label>
                 <div class="subscribe-email-row">
                     <input class="subscribe-email-input" id="paidSubscribeEmail" name="email" type="email" inputmode="email" autocomplete="email" placeholder="your@email.com" required>
                     <button class="subscribe-submit" id="paidSubscribeSubmit" type="submit">前往安全支付 →</button>
                 </div>
-                <p class="subscribe-trust">支付将在 Stripe Checkout 完成；本页面不会保存银行卡信息。继续支付即表示你已阅读<a href="service-policy#delivery" target="_blank" rel="noopener">会员交付</a>、<a href="service-policy#refund" target="_blank" rel="noopener">退款规则</a>和<a href="service-policy#privacy" target="_blank" rel="noopener">隐私说明</a>。</p>
+                <p class="subscribe-trust">支付将在 Stripe Checkout 完成；本页面不会保存银行卡信息。继续支付即表示你已阅读<a href="service-policy#delivery" target="_blank" rel="noopener">订阅交付</a>、<a href="service-policy#refund" target="_blank" rel="noopener">退款规则</a>和<a href="service-policy#privacy" target="_blank" rel="noopener">隐私说明</a>。</p>
                 <p class="subscribe-status" id="paidSubscribeStatus" aria-live="polite"></p>
             </form>
             <div class="member-payment-success" id="memberPaymentSuccess" hidden aria-live="polite">
                 <div class="member-payment-success-mark" aria-hidden="true">✓</div>
                 <div class="paid-subscribe-kicker">Payment confirmed</div>
-                <h3>支付成功，会员已开通</h3>
-                <p>你的支付和会员资格已记录。后续会员信和资料将发送到付款邮箱。</p>
+                <h3>支付成功，邮件订阅已开通</h3>
+                <p>你的支付和订阅资格已记录。后续技能内容将发送到付款邮箱。</p>
                 <dl class="member-payment-details">
-                    <div><dt>会员邮箱</dt><dd id="memberSuccessEmail">核验中</dd></div>
+                    <div><dt>订阅邮箱</dt><dd id="memberSuccessEmail">核验中</dd></div>
                     <div><dt>成交金额</dt><dd id="memberSuccessAmount">核验中</dd></div>
                     <div><dt>有效期至</dt><dd id="memberSuccessUntil">核验中</dd></div>
                 </dl>
                 <div class="member-payment-next">
                     <strong>接下来你会收到</strong>
-                    <span>真实项目复盘、可复用的提示词与 SOP、AI 商业化判断、会员专属更新。</span>
-                </div>
-                <div class="member-wecom-onboarding" id="memberWecomOnboarding" hidden>
-                    <div class="member-wecom-copy">
-                        <span>PRIVATE MEMBER SERVICE</span>
-                        <strong>扫码添加企业微信</strong>
-                        <p>系统会自动核验当前订单、标记会员身份，并把会员群入口发送给你。</p>
-                        <div class="member-wecom-status" id="memberWecomStatus" aria-live="polite">正在生成你的专属入口...</div>
-                        <button class="member-wecom-retry" id="memberWecomRetry" type="button" hidden>重新获取入口</button>
-                    </div>
-                    <div class="member-wecom-qr-shell">
-                        <img id="memberWecomQr" alt="Tech Bridge 会员企业微信二维码" width="260" height="260" hidden>
-                        <div class="member-wecom-qr-loading" id="memberWecomQrLoading">生成中</div>
-                    </div>
+                    <span>真实项目复盘、可复用的提示词与 SOP、AI 商业化判断和技能更新。具体栏目与发送节奏以后续邮件为准。</span>
                 </div>
                 <a class="member-payment-home" href="#topics">先浏览精选内容 →</a>
             </div>
@@ -1047,7 +1034,7 @@
         </div>
         <div class="footer-slogan">Dare Greatly.</div>
         <nav class="footer-policy-links" aria-label="服务与政策">
-            <a href="service-policy#delivery">会员交付</a>
+            <a href="service-policy#delivery">订阅交付</a>
             <a href="service-policy#refund">退款政策</a>
             <a href="service-policy#privacy">隐私说明</a>
             <a href="service-policy#terms">服务条款</a>
@@ -1056,12 +1043,12 @@
     </footer>
 
     <!-- Back to Top -->
-    <a class="floating-subscribe" id="floatingSubscribe" href="#collab" aria-label="查看产品、会员和合作方式">
+    <a class="floating-subscribe" id="floatingSubscribe" href="#collab" aria-label="查看产品、订阅和合作方式">
         <span class="floating-subscribe-glow" aria-hidden="true"></span>
         <span class="floating-subscribe-copy">
             <span class="floating-subscribe-kicker">START HERE</span>
             <strong>一起做点有趣的事</strong>
-            <em>产品 · 会员 · 咨询</em>
+            <em>产品 · 订阅 · 咨询</em>
         </span>
         <span class="floating-subscribe-cta">查看 →</span>
     </a>
@@ -1204,7 +1191,7 @@
         </div>
     </div>
 
-    <script src="main.js?v=13"></script>
+    <script src="main.js?v=14"></script>
     <script src="jarvis-hud.js?v=4"></script>
 
 </body>
