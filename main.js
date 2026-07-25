@@ -721,22 +721,16 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
             actions: [{ label: '浏览产品', action: 'products' }]
         },
         human: {
-            text: '可以转人工。为了减少来回沟通，建议先提交需求；如果只是想直接联系，也可以添加企业微信。',
-            actions: [
-                { label: '提交需求', action: 'inquiry' },
-                { label: '添加企业微信', action: 'wechat' }
-            ]
+            text: '可以转人工。请先说明目标、预算和启动时间，需求会进入合作申请流程，再由人工评估并联系你。这里不会进入付费会员通道。',
+            actions: [{ label: '填写人工咨询', action: 'inquiry' }]
         },
         policy: {
             text: '官网支付通过 Stripe 安全结算，不保存银行卡信息。具体交付、退款、隐私和服务边界以服务政策页面为准。',
             actions: [{ label: '查看服务政策', action: 'policy' }]
         },
         fallback: {
-            text: '这个问题超出了 BTX 当前已确认的官网信息。你可以提交具体需求，或直接转人工处理。',
-            actions: [
-                { label: '提交需求', action: 'inquiry' },
-                { label: '转人工', action: 'wechat' }
-            ]
+            text: '这个问题超出了 BTX 当前已确认的官网信息。请提交具体需求，后续由人工评估并联系你。',
+            actions: [{ label: '提交人工咨询', action: 'inquiry' }]
         }
     };
 
@@ -866,10 +860,6 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
         if (action === 'products') {
             var projects = document.getElementById('projects');
             if (projects) projects.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            return;
-        }
-        if (action === 'wechat') {
-            openExistingFlow('.open-wechat-link');
             return;
         }
         if (action === 'policy') {
