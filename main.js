@@ -691,32 +691,257 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
     });
 })();
 
-// === 6f. Floating commercial hub CTA ===
+// === 6f. BTX intelligent reception ===
 (function() {
     var trigger = document.getElementById('floatingSubscribe');
-    var section = document.getElementById('collab');
-    if (!trigger || !section) return;
+    var layer = document.getElementById('btxChatLayer');
+    var panel = document.getElementById('btxChatPanel');
+    var backdrop = document.getElementById('btxChatBackdrop');
+    var closeButton = document.getElementById('btxChatClose');
+    var messages = document.getElementById('btxChatMessages');
+    var quickActions = document.getElementById('btxQuickActions');
+    var form = document.getElementById('btxChatForm');
+    var input = document.getElementById('btxChatInput');
+    if (!trigger || !layer || !panel || !messages || !form || !input) return;
 
-    trigger.addEventListener('click', function(e) {
+    var previousFocus = null;
+    var responseTimer = null;
+    var currentTyping = null;
+    var routes = {
+        membership: {
+            text: '技能邮件为一次性 ¥9.9，有效期 365 天，不自动续费。内容包括真实项目复盘、提示词、工作流、模板和商业判断。',
+            actions: [{ label: '查看并订阅', action: 'member' }]
+        },
+        cooperation: {
+            text: '可以。先用约 2 分钟说明目标、预算和启动时间，提交后需求会进入合作申请流程，再由人工评估和联系。',
+            actions: [{ label: '提交合作需求', action: 'inquiry' }]
+        },
+        products: {
+            text: '官网集中展示了已上线的 AI 产品、内容项目与智能硬件。你可以先浏览产品，再从具体项目进入体验或联系。',
+            actions: [{ label: '浏览产品', action: 'products' }]
+        },
+        human: {
+            text: '可以转人工。为了减少来回沟通，建议先提交需求；如果只是想直接联系，也可以添加企业微信。',
+            actions: [
+                { label: '提交需求', action: 'inquiry' },
+                { label: '添加企业微信', action: 'wechat' }
+            ]
+        },
+        policy: {
+            text: '官网支付通过 Stripe 安全结算，不保存银行卡信息。具体交付、退款、隐私和服务边界以服务政策页面为准。',
+            actions: [{ label: '查看服务政策', action: 'policy' }]
+        },
+        fallback: {
+            text: '这个问题超出了 BTX 当前已确认的官网信息。你可以提交具体需求，或直接转人工处理。',
+            actions: [
+                { label: '提交需求', action: 'inquiry' },
+                { label: '转人工', action: 'wechat' }
+            ]
+        }
+    };
+
+    function scrollMessages() {
+        window.requestAnimationFrame(function() {
+            messages.scrollTop = messages.scrollHeight;
+        });
+    }
+
+    function appendMessage(sender, text, actions) {
+        var message = document.createElement('div');
+        message.className = 'btx-message btx-message-' + sender;
+
+        var label = document.createElement('span');
+        label.className = 'btx-message-label';
+        label.textContent = sender === 'bot' ? 'BTX' : '你';
+        message.appendChild(label);
+
+        var paragraph = document.createElement('p');
+        paragraph.textContent = text;
+        message.appendChild(paragraph);
+
+        if (actions && actions.length) {
+            var actionGroup = document.createElement('div');
+            actionGroup.className = 'btx-message-actions';
+            actions.forEach(function(item) {
+                var actionButton = document.createElement('button');
+                actionButton.type = 'button';
+                actionButton.dataset.btxAction = item.action;
+                actionButton.textContent = item.label;
+                actionGroup.appendChild(actionButton);
+            });
+            message.appendChild(actionGroup);
+        }
+
+        messages.appendChild(message);
+        scrollMessages();
+        return message;
+    }
+
+    function appendTyping() {
+        var typing = document.createElement('div');
+        typing.className = 'btx-message btx-message-bot btx-message-typing';
+        typing.setAttribute('aria-label', 'BTX 正在回复');
+        typing.innerHTML = '<span></span><span></span><span></span>';
+        messages.appendChild(typing);
+        scrollMessages();
+        return typing;
+    }
+
+    function detectIntent(value) {
+        var text = value.trim();
+        if (/会员|订阅|邮件|9[.。]?9|技能/.test(text)) return 'membership';
+        if (/合作|咨询|培训|品牌|硬件|报价|预算|项目|落地/.test(text)) return 'cooperation';
+        if (/产品|作品|做过|案例|矩阵/.test(text)) return 'products';
+        if (/人工|微信|联系|客服|林雪妮|真人/.test(text)) return 'human';
+        if (/退款|支付|付款|交付|发票|条款|隐私/.test(text)) return 'policy';
+        return 'fallback';
+    }
+
+    function answer(intent) {
+        var route = routes[intent] || routes.fallback;
+        window.clearTimeout(responseTimer);
+        if (currentTyping && currentTyping.parentNode) {
+            currentTyping.parentNode.removeChild(currentTyping);
+        }
+        currentTyping = appendTyping();
+        responseTimer = window.setTimeout(function() {
+            if (currentTyping && currentTyping.parentNode) {
+                currentTyping.parentNode.removeChild(currentTyping);
+            }
+            currentTyping = null;
+            appendMessage('bot', route.text, route.actions);
+        }, 420);
+    }
+
+    function openChat() {
+        if (layer.classList.contains('is-open')) return;
+        previousFocus = document.activeElement;
+        layer.classList.add('is-open');
+        layer.setAttribute('aria-hidden', 'false');
+        trigger.setAttribute('aria-expanded', 'true');
+        document.body.classList.add('btx-chat-open');
+        window.setTimeout(function() {
+            input.focus({ preventScroll: true });
+        }, 220);
+    }
+
+    function closeChat(options) {
+        var settings = options || {};
+        window.clearTimeout(responseTimer);
+        if (currentTyping && currentTyping.parentNode) {
+            currentTyping.parentNode.removeChild(currentTyping);
+        }
+        currentTyping = null;
+        layer.classList.remove('is-open');
+        layer.setAttribute('aria-hidden', 'true');
+        trigger.setAttribute('aria-expanded', 'false');
+        document.body.classList.remove('btx-chat-open');
+        if (settings.restoreFocus !== false && previousFocus && previousFocus.focus) {
+            previousFocus.focus({ preventScroll: true });
+        }
+    }
+
+    function openExistingFlow(selector) {
+        var target = document.querySelector(selector);
+        if (!target) return;
+        window.setTimeout(function() { target.click(); }, 160);
+    }
+
+    function routeTo(action) {
+        closeChat({ restoreFocus: false });
+
+        if (action === 'member') {
+            var memberSection = document.getElementById('member-subscribe');
+            var checkoutToggle = document.getElementById('memberCheckoutToggle');
+            if (memberSection) memberSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            if (checkoutToggle && checkoutToggle.getAttribute('aria-expanded') !== 'true') {
+                window.setTimeout(function() { checkoutToggle.click(); }, 220);
+            }
+            return;
+        }
+        if (action === 'inquiry') {
+            openExistingFlow('.open-inquiry-link');
+            return;
+        }
+        if (action === 'products') {
+            var projects = document.getElementById('projects');
+            if (projects) projects.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            return;
+        }
+        if (action === 'wechat') {
+            openExistingFlow('.open-wechat-link');
+            return;
+        }
+        if (action === 'policy') {
+            window.location.href = 'service-policy#delivery';
+        }
+    }
+
+    trigger.addEventListener('click', openChat);
+    if (backdrop) backdrop.addEventListener('click', function() { closeChat(); });
+    if (closeButton) closeButton.addEventListener('click', function() { closeChat(); });
+
+    quickActions.addEventListener('click', function(e) {
+        var button = e.target.closest('[data-btx-intent]');
+        if (!button) return;
+        appendMessage('user', button.textContent.trim());
+        answer(button.dataset.btxIntent);
+    });
+
+    messages.addEventListener('click', function(e) {
+        var button = e.target.closest('[data-btx-action]');
+        if (!button) return;
+        routeTo(button.dataset.btxAction);
+    });
+
+    form.addEventListener('submit', function(e) {
         e.preventDefault();
-        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        if (window.history && window.history.pushState) {
-            window.history.pushState(null, '', '#collab');
+        var value = input.value.trim();
+        if (!value) {
+            input.focus();
+            return;
+        }
+        appendMessage('user', value);
+        input.value = '';
+        answer(detectIntent(value));
+    });
+
+    document.addEventListener('keydown', function(e) {
+        if (!layer.classList.contains('is-open')) return;
+        if (e.key === 'Escape') {
+            e.preventDefault();
+            closeChat();
+            return;
+        }
+        if (e.key !== 'Tab') return;
+        var focusable = Array.prototype.slice.call(panel.querySelectorAll(
+            'button:not([disabled]), input:not([disabled]), [href], [tabindex]:not([tabindex="-1"])'
+        )).filter(function(element) {
+            return element.offsetParent !== null;
+        });
+        if (!focusable.length) return;
+        var first = focusable[0];
+        var last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
         }
     });
 
-    if ('IntersectionObserver' in window) {
-        var visibleContexts = new Set();
-        var observer = new IntersectionObserver(function(entries) {
-            entries.forEach(function(entry) {
-                if (entry.isIntersecting) visibleContexts.add(entry.target);
-                else visibleContexts.delete(entry.target);
-            });
-            trigger.classList.toggle('is-context-hidden', visibleContexts.size > 0);
-        }, { threshold: 0.04 });
-        [section, document.getElementById('projects')].forEach(function(context) {
-            if (context) observer.observe(context);
-        });
+    var mascot = trigger.querySelector('.floating-subscribe-mascot');
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var finePointer = window.matchMedia('(pointer: fine)').matches;
+    if (mascot && !reduceMotion && finePointer) {
+        window.addEventListener('pointermove', function(e) {
+            var nx = (e.clientX / window.innerWidth) - 0.5;
+            var ny = (e.clientY / window.innerHeight) - 0.5;
+            trigger.style.setProperty('--btx-x', (nx * 8).toFixed(2) + 'px');
+            trigger.style.setProperty('--btx-y', (ny * 6).toFixed(2) + 'px');
+            trigger.style.setProperty('--btx-rotate', (nx * 3).toFixed(2) + 'deg');
+        }, { passive: true });
     }
 })();
 

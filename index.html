@@ -51,7 +51,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <!-- 字重按实际用量裁剪：去掉未使用的 Mono 300、Sans SC 300/900、Serif SC 900，显著减少 CJK 字体加载 -->
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@400;700&family=Noto+Sans+SC:wght@400;700&family=Noto+Serif+SC:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=14">
+    <link rel="stylesheet" href="style.css?v=20">
     <link rel="stylesheet" href="jarvis-hud.css?v=6">
 
     <!-- Structured Data -->
@@ -1042,16 +1042,63 @@
         <div class="footer-copy">&copy; 2026 Tech Bridge. All rights reserved.<br>Designed & Built by Qiaobit.</div>
     </footer>
 
-    <!-- Back to Top -->
-    <a class="floating-subscribe" id="floatingSubscribe" href="#collab" aria-label="查看产品、订阅和合作方式">
-        <span class="floating-subscribe-glow" aria-hidden="true"></span>
+    <!-- BTX floating guide -->
+    <button class="floating-subscribe" id="floatingSubscribe" type="button" aria-label="打开 BTX 智能接待" aria-haspopup="dialog" aria-expanded="false" aria-controls="btxChatPanel">
         <span class="floating-subscribe-copy">
-            <span class="floating-subscribe-kicker">START HERE</span>
-            <strong>一起做点有趣的事</strong>
-            <em>产品 · 订阅 · 咨询</em>
+            <span class="floating-subscribe-kicker">BTX ONLINE</span>
+            <strong>嗨，一起做点有趣的事吗？</strong>
+            <span class="floating-subscribe-meta">
+                <em>产品 · 订阅 · 咨询</em>
+                <span class="floating-subscribe-cta">开始 →</span>
+            </span>
         </span>
-        <span class="floating-subscribe-cta">查看 →</span>
-    </a>
+        <span class="floating-subscribe-mascot" aria-hidden="true">
+            <img src="assets/mascot-btx.webp" alt="" width="720" height="572" loading="eager" decoding="async">
+        </span>
+        <span class="floating-subscribe-mobile-cta">开始 →</span>
+    </button>
+
+    <!-- BTX intelligent reception -->
+    <div class="btx-chat-layer" id="btxChatLayer" aria-hidden="true">
+        <button class="btx-chat-backdrop" id="btxChatBackdrop" type="button" tabindex="-1" aria-label="关闭 BTX 智能接待"></button>
+        <section class="btx-chat-panel" id="btxChatPanel" role="dialog" aria-modal="true" aria-labelledby="btxChatTitle" aria-describedby="btxChatDescription">
+            <header class="btx-chat-header">
+                <span class="btx-chat-avatar" aria-hidden="true">
+                    <img src="assets/mascot-btx.webp" alt="" width="720" height="572" decoding="async">
+                </span>
+                <span class="btx-chat-identity">
+                    <strong id="btxChatTitle">BTX 智能接待</strong>
+                    <span>在线 · 帮你找到正确入口</span>
+                </span>
+                <button class="btx-chat-close" id="btxChatClose" type="button" aria-label="关闭 BTX 智能接待" title="关闭">×</button>
+            </header>
+
+            <div class="btx-chat-body">
+                <p class="visually-hidden" id="btxChatDescription">BTX 可以介绍技能邮件、产品与合作方式，并协助转接人工。</p>
+                <div class="btx-chat-messages" id="btxChatMessages" role="log" aria-live="polite" aria-relevant="additions">
+                    <div class="btx-message btx-message-bot">
+                        <span class="btx-message-label">BTX</span>
+                        <p>你好，我是 BTX。你可以直接问我，也可以选择下面的入口。</p>
+                    </div>
+                </div>
+
+                <div class="btx-quick-actions" id="btxQuickActions" aria-label="快捷咨询">
+                    <button type="button" data-btx-intent="membership">了解技能邮件</button>
+                    <button type="button" data-btx-intent="cooperation">咨询合作</button>
+                    <button type="button" data-btx-intent="products">查看产品</button>
+                    <button type="button" data-btx-intent="human">转人工</button>
+                </div>
+
+                <form class="btx-chat-composer" id="btxChatForm">
+                    <label class="visually-hidden" for="btxChatInput">向 BTX 提问</label>
+                    <input id="btxChatInput" name="message" type="text" maxlength="500" autocomplete="off" placeholder="输入你的问题…">
+                    <button type="submit" aria-label="发送消息" title="发送">↑</button>
+                </form>
+                <p class="btx-chat-note">BTX 会优先使用官网已确认的信息；涉及报价、退款和合同将转交人工。</p>
+            </div>
+        </section>
+    </div>
+
     <button class="back-to-top" id="backToTop" aria-label="回到顶部">
         <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
     </button>
@@ -1191,7 +1238,7 @@
         </div>
     </div>
 
-    <script src="main.js?v=14"></script>
+    <script src="main.js?v=20"></script>
     <script src="jarvis-hud.js?v=4"></script>
 
 </body>
