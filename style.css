@@ -454,12 +454,73 @@ a { text-decoration: none; color: inherit; }
     font-size: 26px;
 }
 
+.about-company-link {
+    width: min(100%, 430px);
+    margin-top: 28px;
+    padding: 14px 0 13px;
+    display: grid;
+    grid-template-columns: auto 1fr auto 20px;
+    align-items: center;
+    gap: 14px;
+    color: var(--text-white);
+    border-top: 1px solid var(--border-dark);
+    border-bottom: 1px solid var(--border-dark);
+    transition: color 0.25s, border-color 0.25s;
+}
+
+.about-company-label,
+.about-company-domain {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.about-company-label {
+    color: var(--orange-main);
+}
+
+.about-company-link strong {
+    font-family: var(--font-display);
+    font-size: 18px;
+    letter-spacing: 0;
+}
+
+.about-company-domain {
+    color: var(--text-warm-grey);
+    text-transform: lowercase;
+}
+
+.about-company-link svg {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: transform 0.25s;
+}
+
+.about-company-link:hover {
+    color: var(--green-light);
+    border-color: rgba(0, 140, 140, 0.65);
+}
+
+.about-company-link:hover svg {
+    transform: translate(2px, -2px);
+}
+
 @media (max-width: 768px) {
     .about-intro-row {
         flex-direction: column;
         gap: 28px;
         text-align: center;
         margin-bottom: 48px;
+    }
+
+    .about-company-link {
+        margin: 28px auto 0;
     }
 }
 
@@ -5177,6 +5238,13 @@ button.connect-btn {
     .stat-number { font-size: 24px; }
     .stat-label { font-size: 9px; letter-spacing: 1px; }
     .about-text { font-size: 18px; line-height: 2; }
+    .about-company-link {
+        grid-template-columns: auto 1fr 18px;
+        gap: 10px;
+        padding-right: 92px;
+        text-align: left;
+    }
+    .about-company-domain { display: none; }
     .about-platforms { flex-wrap: wrap; gap: 16px 24px; justify-content: center; }
     .social-icon-link { font-size: 11px; }
     .social-icon-link svg { width: 16px; height: 16px; }
