@@ -5,11 +5,35 @@
     <id>https://qiaobit.com/</id>
     <link href="https://qiaobit.com/" rel="alternate" type="text/html"/>
     <link href="https://qiaobit.com/feed.xml" rel="self" type="application/atom+xml"/>
-    <updated>2026-08-12T18:30:59+08:00</updated>
+    <updated>2026-08-12T20:53:47+08:00</updated>
     <author>
         <name>桥比特 QiaoBit</name>
         <uri>https://qiaobit.com/about-qiaobit</uri>
     </author>
+    <entry>
+        <title>企业 AI 落地怎么做？从场景选择到自动化闭环</title>
+        <id>https://qiaobit.com/insights/enterprise-ai-implementation</id>
+        <link href="https://qiaobit.com/insights/enterprise-ai-implementation" rel="alternate" type="text/html"/>
+        <published>2026-08-12T20:53:47+08:00</published>
+        <updated>2026-08-12T20:53:47+08:00</updated>
+        <summary>企业 AI 落地的最小单位不是模型，而是一个有明确输入、输出、责任人与结果指标的业务闭环。</summary>
+    </entry>
+    <entry>
+        <title>AI 产品如何从想法走到商业化</title>
+        <id>https://qiaobit.com/insights/ai-product-commercialization</id>
+        <link href="https://qiaobit.com/insights/ai-product-commercialization" rel="alternate" type="text/html"/>
+        <published>2026-08-12T20:53:47+08:00</published>
+        <updated>2026-08-12T20:53:47+08:00</updated>
+        <summary>AI 产品商业化需要稳定完成需求、承诺、支付、交付、结果和再次购买的完整链路。</summary>
+    </entry>
+    <entry>
+        <title>AI 硬件出海怎么做？海外市场验证与落地路径</title>
+        <id>https://qiaobit.com/insights/ai-hardware-globalization</id>
+        <link href="https://qiaobit.com/insights/ai-hardware-globalization" rel="alternate" type="text/html"/>
+        <published>2026-08-12T20:53:47+08:00</published>
+        <updated>2026-08-12T20:53:47+08:00</updated>
+        <summary>AI 硬件出海应先针对一个海外用户的具体任务，重新验证产品、服务与渠道是否共同成立。</summary>
+    </entry>
     <entry>
         <title>桥比特是谁？QiaoBit 官方人物资料</title>
         <id>https://qiaobit.com/about-qiaobit</id>

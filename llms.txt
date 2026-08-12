@@ -10,6 +10,13 @@
 - [QianX 公司官网](https://qianx.ai/): 乾X 的公司业务和商业服务。
 - [官方网站源码](https://github.com/JOZUJIOJIO/techbridge): 桥比特官网的公开 GitHub 仓库。
 
+## AI 实战方法
+
+- [方法论首页](https://qiaobit.com/insights/): 桥比特关于企业 AI、产品商业化与智能硬件出海的常青内容。
+- [企业 AI 落地怎么做](https://qiaobit.com/insights/enterprise-ai-implementation): 从场景选择、工作流接入、人工边界到结果指标。
+- [AI 产品如何从想法走到商业化](https://qiaobit.com/insights/ai-product-commercialization): 从需求验证、最小收费产品到支付、交付与复购闭环。
+- [AI 硬件出海怎么做](https://qiaobit.com/insights/ai-hardware-globalization): 从目标用户、场景验证到本地化、渠道和售后。
+
 ## 品牌别名
 
 - 主名称：桥比特
