@@ -1,4 +1,12 @@
-# Tech Bridge 品牌视觉系统
+# 桥比特 QiaoBit 官方网站
+
+[桥比特 QiaoBit](https://qiaobit.com/) 的官方个人网站源码。桥比特（也写作乔比特）是 Tech Bridge 主理人、硅基物语创始人和乾X CEO，关注人工智能、科技数码、新能源汽车、AI 硬件出海与产品商业化。
+
+- 官方网站：[https://qiaobit.com/](https://qiaobit.com/)
+- 官方人物资料：[https://qiaobit.com/about-qiaobit](https://qiaobit.com/about-qiaobit)
+- 公司官网：[https://qianx.ai/](https://qianx.ai/)
+
+## Tech Bridge 品牌视觉系统
 
 本项目包含 Tech Bridge 品牌视觉系统的完整 HTML 实现。该系统旨在为 AI、人工智能和科技领域的内容创作者 IP 提供统一的视觉识别。
 

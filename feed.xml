@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="zh-CN">
+    <title>桥比特 QiaoBit 官方更新</title>
+    <subtitle>桥比特的人物资料、内容、产品与商业服务更新。</subtitle>
+    <id>https://qiaobit.com/</id>
+    <link href="https://qiaobit.com/" rel="alternate" type="text/html"/>
+    <link href="https://qiaobit.com/feed.xml" rel="self" type="application/atom+xml"/>
+    <updated>2026-08-12T18:30:59+08:00</updated>
+    <author>
+        <name>桥比特 QiaoBit</name>
+        <uri>https://qiaobit.com/about-qiaobit</uri>
+    </author>
+    <entry>
+        <title>桥比特是谁？QiaoBit 官方人物资料</title>
+        <id>https://qiaobit.com/about-qiaobit</id>
+        <link href="https://qiaobit.com/about-qiaobit" rel="alternate" type="text/html"/>
+        <published>2026-08-12T00:00:00+08:00</published>
+        <updated>2026-08-12T18:30:59+08:00</updated>
+        <summary>桥比特（QiaoBit，也写作乔比特）是 Tech Bridge 主理人、硅基物语创始人和乾X CEO，关注人工智能、科技数码、新能源汽车、AI 硬件出海与产品商业化。</summary>
+    </entry>
+</feed>

@@ -5,3 +5,4 @@ User-agent: *
 Allow: /
 
 Sitemap: https://qiaobit.com/sitemap.xml
+Sitemap: https://qiaobit.com/feed.xml
