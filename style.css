@@ -4744,6 +4744,24 @@ body.inquiry-modal-open {
     line-height: 1.8;
 }
 
+.search-identity-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+    color: var(--teal-bright);
+    font-family: var(--font-cn-body);
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: color 0.25s ease, transform 0.25s ease;
+}
+
+.search-identity-link:hover {
+    color: var(--text-warm-white);
+    transform: translateX(4px);
+}
+
 .search-faq-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -4849,6 +4867,10 @@ body.inquiry-modal-open {
         padding: 60px 20px;
     }
     .search-faq-intro {
+        font-size: 13px;
+    }
+    .search-identity-link {
+        margin-top: 16px;
         font-size: 13px;
     }
     .search-faq-grid {

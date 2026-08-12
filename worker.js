@@ -27,7 +27,13 @@ export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
-    if (url.protocol === 'http:' && (url.hostname === 'qiaobit.com' || url.hostname === 'www.qiaobit.com')) {
+    if (url.hostname === 'www.qiaobit.com') {
+      url.protocol = 'https:';
+      url.hostname = 'qiaobit.com';
+      return Response.redirect(url.toString(), 301);
+    }
+
+    if (url.protocol === 'http:' && url.hostname === 'qiaobit.com') {
       url.protocol = 'https:';
       return Response.redirect(url.toString(), 301);
     }
