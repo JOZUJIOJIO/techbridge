@@ -276,6 +276,21 @@ a { text-decoration: none; color: inherit; }
     align-items: center;
 }
 
+.hero-identity {
+    margin-bottom: 18px;
+    color: var(--text-warm-grey);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-decoration: none;
+    text-transform: uppercase;
+    opacity: 0;
+    animation: fadeInUp 1s ease-out 0.05s forwards;
+}
+
+.hero-identity:hover { color: var(--green-light); }
+
 .hero-title {
     font-family: var(--font-en-display);
     font-weight: 800;
@@ -5245,6 +5260,7 @@ button.connect-btn {
     .logo-icon { width: 32px; height: 32px; }
     .logo-text { font-size: 14px; }
     .hero-title { font-size: 52px; }
+    .hero-identity { margin-bottom: 14px; font-size: 10px; }
     .hero-subtitle { font-size: 16px; }
     .hero-subtitle-en { font-size: 12px; }
     /* 移动端：HUD 画布文字会压住副标题，直接隐藏 */
