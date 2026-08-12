@@ -34,7 +34,11 @@
                 "dateModified": "2026-08-12T00:00:00+08:00",
                 "inLanguage": "zh-CN",
                 "mainEntity": { "@id": "https://qiaobit.com/#person" },
-                "isPartOf": { "@id": "https://qiaobit.com/#website" }
+                "isPartOf": { "@id": "https://qiaobit.com/#website" },
+                "citation": [
+                    { "@id": "https://www.toutiao.com/article/7619140200891154944/#coverage" },
+                    { "@id": "https://www.xiaoyuzhoufm.com/podcast/69a40d9f7dca8f3bbc511770#podcast" }
+                ]
             },
             {
                 "@type": "Person",
@@ -57,7 +61,28 @@
                     "https://x.com/QiaoBitX",
                     "https://www.tiktok.com/@techbridgez",
                     "https://space.bilibili.com/516103235"
+                ],
+                "subjectOf": [
+                    { "@id": "https://www.toutiao.com/article/7619140200891154944/#coverage" },
+                    { "@id": "https://www.xiaoyuzhoufm.com/podcast/69a40d9f7dca8f3bbc511770#podcast" }
                 ]
+            },
+            {
+                "@type": "WebPage",
+                "@id": "https://www.toutiao.com/article/7619140200891154944/#coverage",
+                "url": "https://www.toutiao.com/article/7619140200891154944/",
+                "about": { "@id": "https://qiaobit.com/#person" },
+                "isPartOf": { "@type": "WebSite", "name": "今日头条", "url": "https://www.toutiao.com/" },
+                "inLanguage": "zh-CN"
+            },
+            {
+                "@type": "PodcastSeries",
+                "@id": "https://www.xiaoyuzhoufm.com/podcast/69a40d9f7dca8f3bbc511770#podcast",
+                "url": "https://www.xiaoyuzhoufm.com/podcast/69a40d9f7dca8f3bbc511770",
+                "name": "硅基物语的个人播客",
+                "creator": { "@id": "https://qiaobit.com/#person" },
+                "about": ["人工智能", "科技趋势", "产品商业化"],
+                "inLanguage": "zh-CN"
             },
             {
                 "@type": "WebSite",
@@ -147,6 +172,7 @@
                     <a href="https://x.com/QiaoBitX" target="_blank" rel="me noopener noreferrer"><span>X</span><strong>@QiaoBitX</strong></a>
                     <a href="https://www.tiktok.com/@techbridgez" target="_blank" rel="me noopener noreferrer"><span>TikTok</span><strong>@techbridgez</strong></a>
                     <a href="https://space.bilibili.com/516103235" target="_blank" rel="me noopener noreferrer"><span>Bilibili</span><strong>Tech Bridge</strong></a>
+                    <a href="https://www.xiaoyuzhoufm.com/podcast/69a40d9f7dca8f3bbc511770" target="_blank" rel="noopener noreferrer"><span>小宇宙播客</span><strong>硅基物语</strong></a>
                 </div>
             </div>
         </section>
