@@ -5,17 +5,33 @@
     <id>https://qiaobit.com/</id>
     <link href="https://qiaobit.com/" rel="alternate" type="text/html"/>
     <link href="https://qiaobit.com/feed.xml" rel="self" type="application/atom+xml"/>
-    <updated>2026-08-12T20:53:47+08:00</updated>
+    <updated>2026-08-13T11:35:00+08:00</updated>
     <author>
         <name>桥比特 QiaoBit</name>
         <uri>https://qiaobit.com/about-qiaobit</uri>
     </author>
     <entry>
+        <title>科技自媒体怎么做？选题、证据与内容资产</title>
+        <id>https://qiaobit.com/insights/technology-media-content</id>
+        <link href="https://qiaobit.com/insights/technology-media-content" rel="alternate" type="text/html"/>
+        <published>2026-08-13T11:35:00+08:00</published>
+        <updated>2026-08-13T11:35:00+08:00</updated>
+        <summary>科技自媒体不只报道 AI，而是持续理解技术、核验证据，并把 AI、科技数码、新能源汽车与智能硬件讲清楚。</summary>
+    </entry>
+    <entry>
+        <title>中国产品出海怎么做？供应链、渠道与海外客户</title>
+        <id>https://qiaobit.com/insights/chinese-products-globalization</id>
+        <link href="https://qiaobit.com/insights/chinese-products-globalization" rel="alternate" type="text/html"/>
+        <published>2026-08-13T11:30:00+08:00</published>
+        <updated>2026-08-13T11:30:00+08:00</updated>
+        <summary>中国产品出海应先验证海外需求，再组织中国供应链、产品、渠道与客户关系完成稳定交付。</summary>
+    </entry>
+    <entry>
         <title>企业 AI 落地怎么做？从场景选择到自动化闭环</title>
         <id>https://qiaobit.com/insights/enterprise-ai-implementation</id>
         <link href="https://qiaobit.com/insights/enterprise-ai-implementation" rel="alternate" type="text/html"/>
         <published>2026-08-12T20:53:47+08:00</published>
-        <updated>2026-08-12T20:53:47+08:00</updated>
+        <updated>2026-08-13T11:35:00+08:00</updated>
         <summary>企业 AI 落地的最小单位不是模型，而是一个有明确输入、输出、责任人与结果指标的业务闭环。</summary>
     </entry>
     <entry>
@@ -23,7 +39,7 @@
         <id>https://qiaobit.com/insights/ai-product-commercialization</id>
         <link href="https://qiaobit.com/insights/ai-product-commercialization" rel="alternate" type="text/html"/>
         <published>2026-08-12T20:53:47+08:00</published>
-        <updated>2026-08-12T20:53:47+08:00</updated>
+        <updated>2026-08-13T11:35:00+08:00</updated>
         <summary>AI 产品商业化需要稳定完成需求、承诺、支付、交付、结果和再次购买的完整链路。</summary>
     </entry>
     <entry>
@@ -31,7 +47,7 @@
         <id>https://qiaobit.com/insights/ai-hardware-globalization</id>
         <link href="https://qiaobit.com/insights/ai-hardware-globalization" rel="alternate" type="text/html"/>
         <published>2026-08-12T20:53:47+08:00</published>
-        <updated>2026-08-12T20:53:47+08:00</updated>
+        <updated>2026-08-13T11:35:00+08:00</updated>
         <summary>AI 硬件出海应先针对一个海外用户的具体任务，重新验证产品、服务与渠道是否共同成立。</summary>
     </entry>
     <entry>
@@ -39,7 +55,7 @@
         <id>https://qiaobit.com/about-qiaobit</id>
         <link href="https://qiaobit.com/about-qiaobit" rel="alternate" type="text/html"/>
         <published>2026-08-12T00:00:00+08:00</published>
-        <updated>2026-08-12T18:30:59+08:00</updated>
-        <summary>桥比特（QiaoBit，也写作乔比特）是 Tech Bridge 主理人、硅基物语创始人和乾X CEO，关注人工智能、科技数码、新能源汽车、AI 硬件出海与产品商业化。</summary>
+        <updated>2026-08-13T11:35:00+08:00</updated>
+        <summary>桥比特（QiaoBit，也写作乔比特）是一名科技自媒体，也是 Tech Bridge 主理人和乾X CEO，主要从事科技内容创作、中国产品出海和企业 AI 落地。</summary>
     </entry>
 </feed>

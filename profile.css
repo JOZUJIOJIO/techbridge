@@ -62,9 +62,11 @@
 .profile-section p + p { margin-top: 18px; }
 .profile-section p a { color: #7fd4cf; text-decoration: underline; text-underline-offset: 4px; }
 
-.profile-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1px solid rgba(255,255,255,.1); border-left: 1px solid rgba(255,255,255,.1); }
+.profile-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid rgba(255,255,255,.1); border-left: 1px solid rgba(255,255,255,.1); }
 .profile-grid article { min-height: 150px; padding: 26px; border-right: 1px solid rgba(255,255,255,.1); border-bottom: 1px solid rgba(255,255,255,.1); }
 .profile-grid strong { color: #f5f1e8; font-size: 18px; }
+.profile-grid strong a { color: inherit; text-decoration: none; }
+.profile-grid strong a:hover { color: #20b2aa; }
 .profile-grid p { margin-top: 12px; color: #918b82; font-size: 14px; line-height: 1.8; }
 
 .profile-products { margin: 0; padding: 0; list-style: none; border-top: 1px solid rgba(255,255,255,.1); }

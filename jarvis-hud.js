@@ -1454,9 +1454,9 @@ window.jarvisAR = window.jarvisAR || {
     // Reduced motion: keep the static "Dare Greatly." line, skip the rotation.
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const phrases = [
-        '连接科技与人的桥',
-        'AI 硬件出海实践者',
-        '硅基物语创始人'
+        '科技自媒体',
+        '中国产品出海',
+        '企业 AI 落地'
     ];
     let phraseIdx = 0;
     let charIdx = 0;

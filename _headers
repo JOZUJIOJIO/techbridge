@@ -1,0 +1,32 @@
+/*.css
+  Cache-Control: public, max-age=604800, stale-while-revalidate=2592000
+
+/*.js
+  Cache-Control: public, max-age=604800, stale-while-revalidate=2592000
+
+/*.webp
+  Cache-Control: public, max-age=604800, stale-while-revalidate=2592000
+
+/*.jpg
+  Cache-Control: public, max-age=604800, stale-while-revalidate=2592000
+
+/*.png
+  Cache-Control: public, max-age=604800, stale-while-revalidate=2592000
+
+/*.svg
+  Cache-Control: public, max-age=604800, stale-while-revalidate=2592000
+
+/*.mp4
+  Cache-Control: public, max-age=604800, stale-while-revalidate=2592000
+
+/sitemap.xml
+  Cache-Control: public, max-age=0, must-revalidate
+
+/feed.xml
+  Cache-Control: public, max-age=0, must-revalidate
+
+/robots.txt
+  Cache-Control: public, max-age=0, must-revalidate
+
+/llms.txt
+  Cache-Control: public, max-age=0, must-revalidate
