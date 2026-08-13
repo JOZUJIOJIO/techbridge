@@ -1456,8 +1456,7 @@ window.jarvisAR = window.jarvisAR || {
     const phrases = [
         '连接科技与人的桥',
         'AI 硬件出海实践者',
-        '硅基物语创始人',
-        '爱奥创 CEO'
+        '硅基物语创始人'
     ];
     let phraseIdx = 0;
     let charIdx = 0;
