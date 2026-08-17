@@ -3319,24 +3319,27 @@ footer::before {
 
 .floating-subscribe-mascot {
     position: absolute;
-    top: 0;
-    right: 0;
+    top: 2px;
+    right: 2px;
     z-index: 2;
-    width: 164px;
-    height: 132px;
+    width: 146px;
+    height: 146px;
     display: grid;
     place-items: center;
     transform: translate3d(var(--btx-x), var(--btx-y), 0) rotate(var(--btx-rotate));
-    transform-origin: 58% 54%;
+    transform-origin: 50% 50%;
     transition: transform 0.24s ease-out;
     will-change: transform;
 }
 
-.floating-subscribe-mascot img {
+.btx-morph-canvas {
     display: block;
     width: 100%;
-    height: auto;
-    filter: drop-shadow(0 15px 18px rgba(0, 0, 0, 0.38));
+    height: 100%;
+}
+
+.floating-subscribe-mascot .btx-morph-canvas {
+    filter: drop-shadow(0 15px 18px rgba(0, 0, 0, 0.34));
     animation: btx-float 4.6s ease-in-out infinite;
     will-change: transform;
 }
@@ -3407,9 +3410,9 @@ footer::before {
     background: var(--orange-main);
 }
 
-.floating-subscribe:hover .floating-subscribe-mascot img,
-.floating-subscribe:focus-visible .floating-subscribe-mascot img {
-    animation-duration: 2.4s;
+.floating-subscribe:hover .floating-subscribe-mascot .btx-morph-canvas,
+.floating-subscribe:focus-visible .floating-subscribe-mascot .btx-morph-canvas {
+    animation-duration: 2.8s;
     filter:
         drop-shadow(0 16px 20px rgba(0, 0, 0, 0.42))
         drop-shadow(0 0 12px rgba(0, 140, 140, 0.14));
@@ -3417,7 +3420,7 @@ footer::before {
 
 @keyframes btx-float {
     0%, 100% { transform: translateY(1px) rotate(-1deg); }
-    50% { transform: translateY(-8px) rotate(1deg); }
+    50% { transform: translateY(-7px) rotate(1deg); }
 }
 
 /* BTX intelligent reception */
@@ -3500,18 +3503,18 @@ body.btx-chat-open .floating-subscribe {
 }
 
 .btx-chat-avatar {
-    width: 58px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     display: grid;
     place-items: center;
     overflow: hidden;
+    border-radius: 50%;
 }
 
-.btx-chat-avatar img {
+.btx-chat-avatar .btx-morph-canvas {
     display: block;
-    width: 58px;
-    height: auto;
-    filter: drop-shadow(0 7px 8px rgba(0, 0, 0, 0.35));
+    width: 52px;
+    height: 52px;
 }
 
 .btx-chat-identity {
@@ -5465,8 +5468,8 @@ button.connect-btn {
         display: none;
     }
     .floating-subscribe-mascot {
-        width: 108px;
-        height: 88px;
+        width: 96px;
+        height: 96px;
         top: 0;
         right: 0;
     }
@@ -5513,11 +5516,12 @@ button.connect-btn {
         grid-template-columns: 54px minmax(0, 1fr) 38px;
     }
     .btx-chat-avatar {
-        width: 54px;
-        height: 44px;
+        width: 48px;
+        height: 48px;
     }
-    .btx-chat-avatar img {
-        width: 54px;
+    .btx-chat-avatar .btx-morph-canvas {
+        width: 48px;
+        height: 48px;
     }
     .btx-chat-messages {
         padding: 16px 14px;

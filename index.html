@@ -50,7 +50,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <!-- 字重按实际用量裁剪：去掉未使用的 Mono 300、Sans SC 300/900、Serif SC 900，显著减少 CJK 字体加载 -->
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@400;700&family=Noto+Sans+SC:wght@400;700&family=Noto+Serif+SC:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=22">
+    <link rel="stylesheet" href="style.css?v=23">
     <link rel="stylesheet" href="jarvis-hud.css?v=6">
 
     <!-- Structured Data -->
@@ -1165,7 +1165,7 @@
             </span>
         </span>
         <span class="floating-subscribe-mascot" aria-hidden="true">
-            <img src="assets/mascot-btx.webp" alt="" width="720" height="572" loading="eager" decoding="async">
+            <canvas class="btx-morph-canvas" data-btx-morph="floating" width="320" height="320"></canvas>
         </span>
         <span class="floating-subscribe-mobile-cta">开始 →</span>
     </button>
@@ -1176,7 +1176,7 @@
         <section class="btx-chat-panel" id="btxChatPanel" role="dialog" aria-modal="true" aria-labelledby="btxChatTitle" aria-describedby="btxChatDescription">
             <header class="btx-chat-header">
                 <span class="btx-chat-avatar" aria-hidden="true">
-                    <img src="assets/mascot-btx.webp" alt="" width="720" height="572" decoding="async">
+                    <canvas class="btx-morph-canvas" data-btx-morph="avatar" width="128" height="128"></canvas>
                 </span>
                 <span class="btx-chat-identity">
                     <strong id="btxChatTitle">BTX 智能接待</strong>
@@ -1350,7 +1350,7 @@
         </div>
     </div>
 
-    <script src="main.js?v=20"></script>
+    <script src="main.js?v=23"></script>
     <script src="jarvis-hud.js?v=5"></script>
 
 </body>
