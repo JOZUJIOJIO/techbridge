@@ -150,7 +150,7 @@ test('new Stripe order creates a Feishu revenue record', async () => {
     );
     assert.ok(attributionCall);
     const attribution = JSON.parse(attributionCall.init.body);
-    assert.equal(attribution.rule_key, null);
+    assert.equal(attribution.rule_key, 'website_skill_email_9_9');
     assert.equal(attribution.customer_type, '付费订阅');
     assert.deepEqual(attribution.tag_names, ['官网来源', '9.9元技能邮件订阅']);
 

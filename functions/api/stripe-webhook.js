@@ -1,3 +1,9 @@
+import {
+  ANNUAL_MEMBER_PLAN,
+  SKILL_EMAIL_PLAN,
+  automationForPlan
+} from '../../server/wecom-bridge/commerce-rules.mjs';
+
 const STRIPE_API_VERSION = '2026-02-25.clover';
 
 function json(data, status = 200) {
@@ -175,7 +181,8 @@ async function upsertPaidCustomerAttribution(env, event, row) {
   }
   const base = env.SUPABASE_URL.replace(/\/$/, '');
   const paidAt = new Date(Number(event.created || 0) * 1000 || Date.now()).toISOString();
-  const skillEmail = row.plan === 'skill_email_365';
+  const skillEmail = row.plan === SKILL_EMAIL_PLAN;
+  const automation = automationForPlan(skillEmail ? SKILL_EMAIL_PLAN : ANNUAL_MEMBER_PLAN);
   const response = await fetch(`${base}/rest/v1/customer_attributions?on_conflict=order_id`, {
     method: 'POST',
     headers: supabaseHeaders(env, 'resolution=merge-duplicates,return=minimal'),
@@ -183,11 +190,11 @@ async function upsertPaidCustomerAttribution(env, event, row) {
       customer_key: `order:${row.stripe_checkout_session_id}`,
       customer_name: row.customer_name,
       email: row.email,
-      rule_key: skillEmail ? null : 'website_stripe_annual_199',
-      source_channel: 'Tech Bridge官网',
-      customer_type: skillEmail ? '付费订阅' : '付费会员',
+      rule_key: automation.ruleKey,
+      source_channel: automation.sourceChannel,
+      customer_type: automation.customerType,
       stage: 'paid',
-      tag_names: skillEmail ? ['官网来源', '9.9元技能邮件订阅'] : ['官网来源', '199元付费会员'],
+      tag_names: [...automation.tagNames],
       order_id: row.stripe_checkout_session_id,
       amount_total: row.amount_total,
       currency: row.currency,
@@ -242,8 +249,8 @@ function revenueOrderId(event, row) {
 }
 
 function revenueProduct(row) {
-  if (row.plan === 'skill_email_365') return 'Tech Bridge 技能邮件订阅';
-  return row.plan === 'annual' ? 'Tech Bridge 年度会员' : row.plan || 'Tech Bridge 数字服务';
+  if (row.plan === SKILL_EMAIL_PLAN) return 'Tech Bridge 技能邮件订阅';
+  return row.plan === ANNUAL_MEMBER_PLAN ? 'Tech Bridge 年度会员' : row.plan || 'Tech Bridge 数字服务';
 }
 
 function toFeishuRevenueFields(event, row) {
@@ -267,7 +274,7 @@ function toFeishuRevenueFields(event, row) {
     ...(currency === 'cny' ? { '收入金额': amount } : {}),
     '收款渠道': 'Stripe',
     '来源渠道': 'Tech Bridge 官网',
-    '收入类型': row.plan === 'skill_email_365' ? '内容订阅' : '会员订阅',
+    '收入类型': row.plan === SKILL_EMAIL_PLAN ? '内容订阅' : '会员订阅',
     '产品/服务': revenueProduct(row),
     '客户/付款人': row.customer_name || row.email || '未知',
     '支付状态': '已支付',
@@ -345,7 +352,7 @@ async function sendFeishuPaymentNotification(env, event, row) {
     `付款用户：${row.customer_name || row.email || '未知'}`,
     `付款邮箱：${row.email || '未知'}`,
     `成交时间：${shanghaiTime((event.created || 0) * 1000)}`,
-    `${row.plan === 'skill_email_365' ? '订阅有效期' : '会员有效期'}：${shanghaiTime(row.current_period_end)}`
+    `${row.plan === SKILL_EMAIL_PLAN ? '订阅有效期' : '会员有效期'}：${shanghaiTime(row.current_period_end)}`
   ];
   if (row.stripe_payment_intent_id) {
     lines.push('', `Stripe 订单：https://dashboard.stripe.com/payments/${row.stripe_payment_intent_id}`);
@@ -380,7 +387,7 @@ async function sendWelcomeEmail(env, row, eventId) {
   }
 
   const from = env.RESEND_FROM || 'Tech Bridge <newsletter@qiaobit.com>';
-  const skillEmail = row.plan === 'skill_email_365';
+  const skillEmail = row.plan === SKILL_EMAIL_PLAN;
   const subject = skillEmail ? '欢迎订阅 Tech Bridge 技能邮件' : '欢迎加入 Tech Bridge 会员信';
   const html = `
     <div style="font-family:Arial,'Noto Sans SC',sans-serif;line-height:1.8;color:#1A1A18">

@@ -1,3 +1,10 @@
+import {
+  ANNUAL_MEMBER_AUTOMATION,
+  ANNUAL_MEMBER_RULE_KEY,
+  SKILL_EMAIL_AUTOMATION,
+  SKILL_EMAIL_RULE_KEY
+} from './commerce-rules.mjs';
+
 function headers(env, prefer) {
   return {
     apikey: env.SUPABASE_SERVICE_ROLE_KEY,
@@ -11,18 +18,18 @@ function baseUrl(env) {
   return env.SUPABASE_URL.replace(/\/$/, '');
 }
 
-export function defaultMemberRule(env) {
+function defaultRule(env, automation) {
   return {
-    rule_key: 'website_stripe_annual_199',
-    name: '官网¥199年度会员',
+    rule_key: automation.ruleKey,
+    name: automation.name,
     enabled: true,
-    source_channel: 'Tech Bridge官网',
-    customer_type: '付费会员',
+    source_channel: automation.sourceChannel,
+    customer_type: automation.customerType,
     wecom_user_id: env.WECOM_CONTACT_USER_ID,
-    tag_names: ['官网来源', '199元付费会员'],
-    welcome_message: '欢迎加入 Tech Bridge 会员。你的付款与会员资格已经自动核验。请点击下方入口，长按识别二维码加入会员群。',
-    group_key: 'member-core',
-    group_name: '比特自媒体核心群',
+    tag_names: [...automation.tagNames],
+    welcome_message: automation.welcomeMessage,
+    group_key: automation.groupKey,
+    group_name: automation.groupName,
     send_group_invite: true,
     notify_feishu: true,
     write_attribution: true,
@@ -30,8 +37,18 @@ export function defaultMemberRule(env) {
   };
 }
 
+export function defaultSkillEmailRule(env) {
+  return defaultRule(env, SKILL_EMAIL_AUTOMATION);
+}
+
+export function defaultMemberRule(env) {
+  return defaultRule(env, ANNUAL_MEMBER_AUTOMATION);
+}
+
 function fallbackRule(env, ruleKey) {
-  return ruleKey === 'website_stripe_annual_199' ? defaultMemberRule(env) : null;
+  if (ruleKey === SKILL_EMAIL_RULE_KEY) return defaultSkillEmailRule(env);
+  if (ruleKey === ANNUAL_MEMBER_RULE_KEY) return defaultMemberRule(env);
+  return null;
 }
 
 function isActive(rule) {
@@ -83,13 +100,15 @@ export async function resolveAutomationResources(env, rule) {
     if (tagId) tagIds.push(tagId);
     else missingTagNames.push(name);
   }
-  if (!tagIds.length && rule.rule_key === 'website_stripe_annual_199' && env.WECOM_MEMBER_TAG_ID) {
+  if (!tagIds.length && rule.rule_key === SKILL_EMAIL_RULE_KEY && env.WECOM_SKILL_EMAIL_TAG_ID) {
+    tagIds.push(env.WECOM_SKILL_EMAIL_TAG_ID);
+  }
+  if (!tagIds.length && rule.rule_key === ANNUAL_MEMBER_RULE_KEY && env.WECOM_MEMBER_TAG_ID) {
     tagIds.push(env.WECOM_MEMBER_TAG_ID);
   }
   const mappedGroupId = groups.get(rule.group_key) || groups.get(rule.group_name) || '';
-  const groupConfigId = mappedGroupId || (
-    rule.rule_key === 'website_stripe_annual_199' ? env.WECOM_GROUP_JOIN_CONFIG_ID || '' : ''
-  );
+  const isWebsitePaidRule = rule.rule_key === SKILL_EMAIL_RULE_KEY || rule.rule_key === ANNUAL_MEMBER_RULE_KEY;
+  const groupConfigId = mappedGroupId || (isWebsitePaidRule ? env.WECOM_GROUP_JOIN_CONFIG_ID || '' : '');
   return {
     tagIds: [...new Set(tagIds)],
     missingTagNames,

@@ -50,7 +50,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <!-- 字重按实际用量裁剪：去掉未使用的 Mono 300、Sans SC 300/900、Serif SC 900，显著减少 CJK 字体加载 -->
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@400;700&family=Noto+Sans+SC:wght@400;700&family=Noto+Serif+SC:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=23">
+    <link rel="stylesheet" href="style.css?v=24">
     <link rel="stylesheet" href="jarvis-hud.css?v=6">
 
     <!-- Structured Data -->
@@ -526,24 +526,48 @@
     </section>
 
     <!-- As Seen In -->
-    <div class="seen-in reveal">
-        <div class="seen-in-label">As Seen In</div>
-        <div class="seen-in-list">
-            <a href="https://finance.youth.cn/finance_gdxw/202303/t20230324_14408657.htm" target="_blank" rel="noopener noreferrer"><span>中国青年报</span></a>
-            <span class="seen-in-dot"></span>
-            <a href="https://mp.weixin.qq.com/s/vLTNpyqTPXa6OlOpQbfyfQ" target="_blank" rel="noopener noreferrer"><span>每人 Auto</span></a>
-            <span class="seen-in-dot"></span>
-            <a href="https://mp.weixin.qq.com/s/dfn91P50LYvBa1tWsrhd2A" target="_blank" rel="noopener noreferrer"><span>码客人生</span></a>
-            <span class="seen-in-dot"></span>
-            <span>北京车展 SEEDS</span>
-            <span class="seen-in-dot"></span>
-            <a href="https://app.nio.com/app/radio/share/?item_type=1&item_id=76987&container_id=707&wv=lg" target="_blank" rel="noopener noreferrer"><span>NIO Radio</span></a>
-            <span class="seen-in-dot"></span>
-            <span>PEC AI 创新者大会</span>
-            <span class="seen-in-dot"></span>
-            <span>HICOOL 大会</span>
+    <section id="press" class="seen-in reveal" aria-labelledby="seenInTitle">
+        <div class="seen-in-heading">
+            <span>PRESS &amp; APPEARANCES</span>
+            <h2 id="seenInTitle" data-lang="zh">媒体报道与公开活动</h2>
+            <h2 data-lang="en" style="display:none;">Press &amp; Public Appearances</h2>
         </div>
-    </div>
+        <div class="seen-in-list">
+            <a class="seen-in-item seen-in-item-link" href="https://finance.youth.cn/finance_gdxw/202303/t20230324_14408657.htm" target="_blank" rel="noopener noreferrer" aria-label="查看中国青年报报道">
+                <span class="seen-in-item-kind">媒体报道</span>
+                <strong>中国青年报</strong>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+            </a>
+            <a class="seen-in-item seen-in-item-link" href="https://mp.weixin.qq.com/s/vLTNpyqTPXa6OlOpQbfyfQ" target="_blank" rel="noopener noreferrer" aria-label="查看每人 Auto 报道">
+                <span class="seen-in-item-kind">媒体报道</span>
+                <strong>每人 Auto</strong>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+            </a>
+            <a class="seen-in-item seen-in-item-link" href="https://mp.weixin.qq.com/s/dfn91P50LYvBa1tWsrhd2A" target="_blank" rel="noopener noreferrer" aria-label="查看码客人生报道">
+                <span class="seen-in-item-kind">媒体报道</span>
+                <strong>码客人生</strong>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+            </a>
+            <a class="seen-in-item seen-in-item-link" href="https://app.nio.com/app/radio/share/?item_type=1&amp;item_id=76987&amp;container_id=707&amp;wv=lg" target="_blank" rel="noopener noreferrer" aria-label="打开 NIO Radio 节目">
+                <span class="seen-in-item-kind">音频节目</span>
+                <strong>NIO Radio</strong>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+            </a>
+            <a class="seen-in-item seen-in-item-link" href="https://www.pec.asia/2024/conference" target="_blank" rel="noopener noreferrer" aria-label="访问 PEC AI 创新者大会官网">
+                <span class="seen-in-item-kind">大会活动</span>
+                <strong>PEC AI 创新者大会</strong>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+            </a>
+            <span class="seen-in-item seen-in-item-static">
+                <span class="seen-in-item-kind">公开活动</span>
+                <strong>北京车展 SEEDS</strong>
+            </span>
+            <span class="seen-in-item seen-in-item-static">
+                <span class="seen-in-item-kind">公开活动</span>
+                <strong>HICOOL 大会</strong>
+            </span>
+        </div>
+    </section>
 
     <div class="section-divider"></div>
 
@@ -1350,7 +1374,7 @@
         </div>
     </div>
 
-    <script src="main.js?v=23"></script>
+    <script src="main.js?v=24"></script>
     <script src="jarvis-hud.js?v=5"></script>
 
 </body>

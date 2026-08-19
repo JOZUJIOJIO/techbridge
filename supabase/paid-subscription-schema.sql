@@ -5,7 +5,7 @@ create table if not exists public.paid_subscribers (
   email text not null unique,
   customer_name text,
   status text not null default 'pending' check (status in ('pending', 'active', 'past_due', 'canceled')),
-  plan text check (plan = 'annual' or plan is null),
+  plan text check (plan in ('annual', 'skill_email_365') or plan is null),
   stripe_customer_id text unique,
   stripe_subscription_id text unique,
   stripe_payment_intent_id text unique,
@@ -51,7 +51,7 @@ begin
   ) then
     alter table public.paid_subscribers
     add constraint paid_subscribers_plan_check
-    check (plan = 'annual' or plan is null);
+    check (plan in ('annual', 'skill_email_365') or plan is null);
   end if;
 end $$;
 
@@ -92,6 +92,7 @@ create table if not exists public.member_wecom_onboarding (
   stripe_checkout_session_id text not null unique,
   email text not null,
   state_token text not null unique,
+  automation_rule_key text not null default 'website_skill_email_9_9',
   status text not null default 'waiting_for_wecom' check (
     status in ('waiting_for_wecom', 'wecom_added', 'group_invite_sent', 'group_joined', 'active', 'error')
   ),

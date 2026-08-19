@@ -1,7 +1,11 @@
 import { createContactWayViaBridge } from '../lib/wecom-bridge-client.js';
+import {
+  ANNUAL_MEMBER_PLAN,
+  SKILL_EMAIL_PLAN,
+  automationForPlan
+} from '../../server/wecom-bridge/commerce-rules.mjs';
 
 const STRIPE_API_VERSION = '2026-02-25.clover';
-const AUTOMATION_RULE_KEY = 'website_stripe_annual_199';
 
 function json(data, status = 200) {
   return new Response(JSON.stringify(data), {
@@ -53,7 +57,16 @@ async function getOnboarding(env, sessionId) {
   return (await response.json())[0] || null;
 }
 
-async function createOnboarding(env, session, email) {
+export function automationFromSession(session) {
+  const explicitPlan = String(session.metadata?.plan || '');
+  if (explicitPlan) return automationForPlan(explicitPlan);
+  const inferredPlan = Number(session.amount_total || 0) === 19_900
+    ? ANNUAL_MEMBER_PLAN
+    : SKILL_EMAIL_PLAN;
+  return automationForPlan(inferredPlan);
+}
+
+async function createOnboarding(env, session, email, automation) {
   const base = env.SUPABASE_URL.replace(/\/$/, '');
   const response = await fetch(`${base}/rest/v1/member_wecom_onboarding?on_conflict=stripe_checkout_session_id`, {
     method: 'POST',
@@ -63,7 +76,7 @@ async function createOnboarding(env, session, email) {
       email,
       state_token: stateToken(),
       status: 'waiting_for_wecom',
-      automation_rule_key: AUTOMATION_RULE_KEY
+      automation_rule_key: automation.ruleKey
     })
   });
   if (!response.ok) throw new Error(`supabase_onboarding_create_failed:${await response.text()}`);
@@ -90,7 +103,7 @@ async function saveContactWay(env, sessionId, contactWay) {
   return (await response.json())[0] || null;
 }
 
-async function upsertPaidAttribution(env, session, email) {
+async function upsertPaidAttribution(env, session, email, automation) {
   const base = env.SUPABASE_URL.replace(/\/$/, '');
   const paidAt = new Date(Number(session.created || 0) * 1000 || Date.now()).toISOString();
   const response = await fetch(`${base}/rest/v1/customer_attributions?on_conflict=order_id`, {
@@ -99,11 +112,11 @@ async function upsertPaidAttribution(env, session, email) {
     body: JSON.stringify({
       customer_key: `order:${session.id}`,
       email,
-      rule_key: AUTOMATION_RULE_KEY,
-      source_channel: 'Tech Bridge官网',
-      customer_type: '付费会员',
+      rule_key: automation.ruleKey,
+      source_channel: automation.sourceChannel,
+      customer_type: automation.customerType,
       stage: 'paid',
-      tag_names: ['官网来源', '199元付费会员'],
+      tag_names: [...automation.tagNames],
       order_id: session.id,
       amount_total: session.amount_total,
       currency: session.currency,
@@ -129,7 +142,7 @@ export async function onRequestGet({ request, env }) {
   if (required.some((key) => !env[key])) {
     return json({
       error: 'missing_config',
-      message: '企业微信会员服务正在配置中。',
+      message: '企业微信订阅服务正在配置中。',
       configured: false
     }, 503);
   }
@@ -146,13 +159,14 @@ export async function onRequestGet({ request, env }) {
     }
 
     const email = String(session.customer_details?.email || session.customer_email || session.metadata?.email || '').toLowerCase();
+    const automation = automationFromSession(session);
     let onboarding = await getOnboarding(env, sessionId);
-    if (!onboarding) onboarding = await createOnboarding(env, session, email);
+    if (!onboarding) onboarding = await createOnboarding(env, session, email, automation);
     if (!onboarding.contact_qr_url) {
       const contactWay = await createContactWayViaBridge(env, onboarding.state_token);
       onboarding = await saveContactWay(env, sessionId, contactWay);
     }
-    await upsertPaidAttribution(env, session, email);
+    await upsertPaidAttribution(env, session, email, automation);
 
     return json({
       success: true,
@@ -167,7 +181,7 @@ export async function onRequestGet({ request, env }) {
     console.error(JSON.stringify({ event: 'member_onboarding_failed', reason: error.message }));
     return json({
       error: 'onboarding_failed',
-      message: '企业微信会员入口暂时无法生成，请稍后重试。'
+      message: '企业微信订阅入口暂时无法生成，请稍后重试。'
     }, 502);
   }
 }

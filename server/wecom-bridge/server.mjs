@@ -1,6 +1,7 @@
 import { createHmac, timingSafeEqual } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { createServer } from 'node:http';
+import { SKILL_EMAIL_RULE_KEY } from './commerce-rules.mjs';
 import {
   loadAutomationRule,
   recordAutomationExecution,
@@ -54,10 +55,18 @@ function integrationConfig() {
     WECOM_CUSTOMER_SECRET: readSecret('customer-secret'),
     WECOM_GROUP_JOIN_CONFIG_ID: readSecret('group-join-config-id', true),
     WECOM_MEMBER_TAG_ID: readSecret('member-tag-id', true),
+    WECOM_SKILL_EMAIL_TAG_ID: readSecret('skill-email-tag-id', true),
     SUPABASE_URL: readSecret('supabase-url'),
     SUPABASE_SERVICE_ROLE_KEY: readSecret('supabase-service-role-key')
   };
-  if (Object.values(env).some((value) => !value)) throw new Error('invalid_integration_config');
+  const required = [
+    env.WECOM_CORP_ID,
+    env.WECOM_CONTACT_USER_ID,
+    env.WECOM_CUSTOMER_SECRET,
+    env.SUPABASE_URL,
+    env.SUPABASE_SERVICE_ROLE_KEY
+  ];
+  if (required.some((value) => !value)) throw new Error('invalid_integration_config');
   return env;
 }
 
@@ -242,7 +251,7 @@ async function handleExternalContactAdded(env, event) {
   const reusableChannel = !onboarding;
   const ruleKey = onboarding?.automation_rule_key
     || channelRuleKey(event.state)
-    || (onboarding ? 'website_stripe_annual_199' : '');
+    || (onboarding ? SKILL_EMAIL_RULE_KEY : '');
   if (!ruleKey) return { ignored: true };
   const rule = await loadAutomationRule(env, ruleKey);
   if (!rule) {

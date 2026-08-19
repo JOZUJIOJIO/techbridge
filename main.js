@@ -533,9 +533,9 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
     }
 
     function onboardingMessage(data) {
-        if (data.groupJoined) return '已加入会员群，会员服务已全部激活。';
-        if (data.status === 'group_invite_sent') return '已添加企业微信，会员群入口已经自动发送给你。';
-        if (data.wecomAdded) return '已识别你的会员身份，正在发送会员群入口...';
+        if (data.groupJoined) return '已加入订阅用户群，技能邮件服务已全部激活。';
+        if (data.status === 'group_invite_sent') return '已添加企业微信，订阅用户群入口已经自动发送给你。';
+        if (data.wecomAdded) return '已识别你的订阅身份，正在发送订阅用户群入口...';
         return '请使用微信扫码添加。添加后无需发送订单截图，系统会自动识别。';
     }
 

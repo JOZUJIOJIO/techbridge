@@ -1,4 +1,5 @@
 import { createDecipheriv, createHash } from 'node:crypto';
+import { SKILL_EMAIL_AUTOMATION } from '../../server/wecom-bridge/commerce-rules.mjs';
 
 let tokenCache = null;
 
@@ -165,15 +166,15 @@ export async function markMemberTag(env, event) {
   });
 }
 
-export async function sendMemberWelcome(env, event, groupJoinWay) {
+export async function sendMemberWelcome(env, event, groupJoinWay, options = {}) {
   if (!event.welcomeCode) return { skipped: true };
   const groupQr = groupJoinWay?.qr_code || '';
+  const groupName = options.groupName || SKILL_EMAIL_AUTOMATION.groupName;
+  const welcomeMessage = options.welcomeMessage || SKILL_EMAIL_AUTOMATION.welcomeMessage;
   const payload = {
     welcome_code: event.welcomeCode,
     text: {
-      content: groupQr
-        ? '欢迎加入 Tech Bridge 会员。你的付款与会员资格已经自动核验。请点击下方入口，长按识别二维码加入会员群。'
-        : '欢迎加入 Tech Bridge 会员。你的付款与会员资格已经自动核验，会员信会发送到付款邮箱。会员群入口将在配置完成后发送。'
+      content: welcomeMessage
     }
   };
 
@@ -181,9 +182,9 @@ export async function sendMemberWelcome(env, event, groupJoinWay) {
     payload.attachments = [{
       msgtype: 'link',
       link: {
-        title: '加入 Tech Bridge 会员群',
+        title: `加入${groupName}`,
         picurl: groupQr,
-        desc: '点击后长按识别二维码加入会员群',
+        desc: `点击后长按识别二维码加入${groupName}`,
         url: groupQr
       }
     }];
