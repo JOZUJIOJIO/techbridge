@@ -698,6 +698,8 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
     var panel = document.getElementById('btxChatPanel');
     var backdrop = document.getElementById('btxChatBackdrop');
     var closeButton = document.getElementById('btxChatClose');
+    var grabber = document.getElementById('btxSheetGrabber');
+    var header = panel && panel.querySelector('.btx-chat-header');
     var messages = document.getElementById('btxChatMessages');
     var quickActions = document.getElementById('btxQuickActions');
     var form = document.getElementById('btxChatForm');
@@ -707,6 +709,14 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
     var previousFocus = null;
     var responseTimer = null;
     var currentTyping = null;
+    var closeTimer = null;
+    var sheetFrame = 0;
+    var sheetY = 0;
+    var sheetVelocity = 0;
+    var dragState = null;
+    var heroIsVisible = true;
+    var mobileSheetQuery = window.matchMedia('(max-width: 768px)');
+    var reduceMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     var routes = {
         membership: {
             text: '技能邮件为一次性 ¥9.9，有效期 365 天，不自动续费。内容包括真实项目复盘、提示词、工作流、模板和商业判断。',
@@ -719,6 +729,10 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
         products: {
             text: '官网集中展示了已上线的 AI 产品、内容项目与智能硬件。你可以先浏览产品，再从具体项目进入体验或联系。',
             actions: [{ label: '浏览产品', action: 'products' }]
+        },
+        jarvis: {
+            text: 'Jarvis 是 Tech Bridge 的独立视觉 HUD 体验。它会在新页面开启，并在你同意后请求摄像头权限。',
+            actions: [{ label: '启动 Jarvis', action: 'jarvis' }]
         },
         human: {
             text: '可以转人工。请先说明目标、预算和启动时间，需求会进入合作申请流程，再由人工评估并联系你。这里不会进入付费会员通道。',
@@ -783,6 +797,7 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
 
     function detectIntent(value) {
         var text = value.trim();
+        if (/jarvis|hud|手势|视线|摄像头/i.test(text)) return 'jarvis';
         if (/会员|订阅|邮件|9[.。]?9|技能/.test(text)) return 'membership';
         if (/合作|咨询|培训|品牌|硬件|报价|预算|项目|落地/.test(text)) return 'cooperation';
         if (/产品|作品|做过|案例|矩阵/.test(text)) return 'products';
@@ -807,16 +822,110 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
         }, 420);
     }
 
+    function isMobileSheet() {
+        return mobileSheetQuery.matches;
+    }
+
+    function setSheetY(value) {
+        sheetY = Math.max(-72, Number.isFinite(value) ? value : 0);
+        panel.style.setProperty('--btx-sheet-y', sheetY.toFixed(2) + 'px');
+    }
+
+    function cancelSheetAnimation() {
+        if (sheetFrame) window.cancelAnimationFrame(sheetFrame);
+        sheetFrame = 0;
+    }
+
+    function springSheetTo(target, initialVelocity, onComplete) {
+        cancelSheetAnimation();
+        if (reduceMotionQuery.matches) {
+            setSheetY(target);
+            if (onComplete) onComplete();
+            return;
+        }
+
+        var position = sheetY;
+        var velocity = Number.isFinite(initialVelocity) ? initialVelocity : sheetVelocity;
+        var lastTime = performance.now();
+        var stiffness = 420;
+        var damping = 36;
+
+        function step(now) {
+            var delta = Math.min((now - lastTime) / 1000, 0.032);
+            lastTime = now;
+            var acceleration = (-stiffness * (position - target)) - (damping * velocity);
+            velocity += acceleration * delta;
+            position += velocity * delta;
+            sheetVelocity = velocity;
+            setSheetY(position);
+
+            if (Math.abs(position - target) < 0.5 && Math.abs(velocity) < 8) {
+                setSheetY(target);
+                sheetVelocity = 0;
+                sheetFrame = 0;
+                if (onComplete) onComplete();
+                return;
+            }
+            sheetFrame = window.requestAnimationFrame(step);
+        }
+
+        sheetFrame = window.requestAnimationFrame(step);
+    }
+
+    function syncTriggerVisibility() {
+        var shouldHide = heroIsVisible || layer.classList.contains('is-open') || layer.classList.contains('is-closing');
+        var wasHidden = trigger.classList.contains('is-context-hidden');
+        trigger.classList.toggle('is-context-hidden', shouldHide);
+        if (wasHidden && !shouldHide) trigger.dispatchEvent(new CustomEvent('btx:reveal'));
+    }
+
+    function restorePreviousFocus(shouldRestore) {
+        if (shouldRestore !== false && previousFocus && previousFocus.focus) {
+            previousFocus.focus({ preventScroll: true });
+        }
+    }
+
+    function finalizeClose(settings) {
+        window.clearTimeout(closeTimer);
+        closeTimer = null;
+        cancelSheetAnimation();
+        layer.classList.remove('is-open', 'is-closing');
+        layer.setAttribute('aria-hidden', 'true');
+        trigger.setAttribute('aria-expanded', 'false');
+        document.body.classList.remove('btx-chat-open');
+        panel.classList.remove('is-dragging');
+        setSheetY(0);
+        syncTriggerVisibility();
+        restorePreviousFocus(settings.restoreFocus);
+    }
+
     function openChat() {
         if (layer.classList.contains('is-open')) return;
+        window.clearTimeout(closeTimer);
+        closeTimer = null;
+        cancelSheetAnimation();
+        layer.classList.remove('is-closing');
         previousFocus = document.activeElement;
+
+        if (isMobileSheet()) {
+            setSheetY(Math.min(window.innerHeight * 0.88, 780) + 32);
+        } else {
+            setSheetY(0);
+        }
+
         layer.classList.add('is-open');
         layer.setAttribute('aria-hidden', 'false');
         trigger.setAttribute('aria-expanded', 'true');
         document.body.classList.add('btx-chat-open');
-        window.setTimeout(function() {
-            input.focus({ preventScroll: true });
-        }, 220);
+        syncTriggerVisibility();
+
+        if (isMobileSheet()) {
+            window.requestAnimationFrame(function() { springSheetTo(0, 0); });
+        } else {
+            window.setTimeout(function() {
+                input.focus({ preventScroll: true });
+            }, 220);
+        }
     }
 
     function closeChat(options) {
@@ -826,12 +935,27 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
             currentTyping.parentNode.removeChild(currentTyping);
         }
         currentTyping = null;
+
+        if (settings.immediate || reduceMotionQuery.matches) {
+            finalizeClose(settings);
+            return;
+        }
+
+        layer.classList.add('is-closing');
         layer.classList.remove('is-open');
         layer.setAttribute('aria-hidden', 'true');
         trigger.setAttribute('aria-expanded', 'false');
-        document.body.classList.remove('btx-chat-open');
-        if (settings.restoreFocus !== false && previousFocus && previousFocus.focus) {
-            previousFocus.focus({ preventScroll: true });
+        syncTriggerVisibility();
+
+        if (isMobileSheet()) {
+            var dismissTarget = Math.max(panel.offsetHeight, window.innerHeight * 0.86) + 40;
+            springSheetTo(dismissTarget, settings.velocity || sheetVelocity, function() {
+                finalizeClose(settings);
+            });
+        } else {
+            closeTimer = window.setTimeout(function() {
+                finalizeClose(settings);
+            }, 360);
         }
     }
 
@@ -842,7 +966,7 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
     }
 
     function routeTo(action) {
-        closeChat({ restoreFocus: false });
+        closeChat({ restoreFocus: false, immediate: true });
 
         if (action === 'member') {
             var memberSection = document.getElementById('member-subscribe');
@@ -864,6 +988,10 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
         }
         if (action === 'policy') {
             window.location.href = 'service-policy#delivery';
+            return;
+        }
+        if (action === 'jarvis') {
+            window.location.href = 'jarvis-hud.html';
         }
     }
 
@@ -896,6 +1024,85 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
         answer(detectIntent(value));
     });
 
+    function rubberband(distance, dimension, constant) {
+        return (distance * dimension * constant) / (dimension + constant * Math.abs(distance));
+    }
+
+    function beginSheetDrag(e) {
+        if (!isMobileSheet() || !layer.classList.contains('is-open') || e.button > 0) return;
+        if (e.target.closest('button, input, a')) return;
+        cancelSheetAnimation();
+        panel.classList.add('is-dragging');
+        panel.setPointerCapture(e.pointerId);
+        dragState = {
+            pointerId: e.pointerId,
+            startY: e.clientY,
+            startSheetY: sheetY,
+            history: [{ y: e.clientY, time: performance.now() }]
+        };
+    }
+
+    function moveSheetDrag(e) {
+        if (!dragState || dragState.pointerId !== e.pointerId) return;
+        var next = dragState.startSheetY + (e.clientY - dragState.startY);
+        if (next < 0) next = rubberband(next, Math.max(panel.offsetHeight, 1), 0.42);
+        setSheetY(next);
+        dragState.history.push({ y: e.clientY, time: performance.now() });
+        if (dragState.history.length > 5) dragState.history.shift();
+        e.preventDefault();
+    }
+
+    function endSheetDrag(e) {
+        if (!dragState || dragState.pointerId !== e.pointerId) return;
+        var history = dragState.history;
+        var first = history[0];
+        var last = history[history.length - 1];
+        var elapsed = Math.max(last.time - first.time, 16);
+        var velocity = ((last.y - first.y) / elapsed) * 1000;
+        var projected = sheetY + (velocity / 1000) * 0.99 / (1 - 0.99);
+        var threshold = panel.offsetHeight * 0.34;
+
+        dragState = null;
+        panel.classList.remove('is-dragging');
+        if (panel.hasPointerCapture(e.pointerId)) panel.releasePointerCapture(e.pointerId);
+
+        if (projected > threshold || velocity > 760) {
+            closeChat({ velocity: velocity });
+        } else {
+            springSheetTo(0, velocity);
+        }
+    }
+
+    if (grabber) grabber.addEventListener('pointerdown', beginSheetDrag);
+    if (header) header.addEventListener('pointerdown', beginSheetDrag);
+    panel.addEventListener('pointermove', moveSheetDrag);
+    panel.addEventListener('pointerup', endSheetDrag);
+    panel.addEventListener('pointercancel', endSheetDrag);
+
+    var hero = document.getElementById('hero');
+    if (hero && 'IntersectionObserver' in window) {
+        var heroObserver = new IntersectionObserver(function(entries) {
+            heroIsVisible = entries[0] ? entries[0].isIntersecting : false;
+            syncTriggerVisibility();
+        }, { threshold: 0.01 });
+        heroObserver.observe(hero);
+    } else {
+        var updateHeroVisibility = function() {
+            heroIsVisible = window.scrollY < Math.max(window.innerHeight * 0.8, 480);
+            syncTriggerVisibility();
+        };
+        window.addEventListener('scroll', updateHeroVisibility, { passive: true });
+        updateHeroVisibility();
+    }
+
+    var syncSheetMode = function() {
+        if (!layer.classList.contains('is-open')) return;
+        cancelSheetAnimation();
+        setSheetY(0);
+    };
+    if (mobileSheetQuery.addEventListener) mobileSheetQuery.addEventListener('change', syncSheetMode);
+    else mobileSheetQuery.addListener(syncSheetMode);
+
     document.addEventListener('keydown', function(e) {
         if (!layer.classList.contains('is-open')) return;
         if (e.key === 'Escape') {
@@ -922,7 +1129,7 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
     });
 
     var mascot = trigger.querySelector('.floating-subscribe-mascot');
-    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var reduceMotion = reduceMotionQuery.matches;
     var finePointer = window.matchMedia('(pointer: fine)').matches;
     if (mascot && !reduceMotion && finePointer) {
         window.addEventListener('pointermove', function(e) {
@@ -945,6 +1152,7 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
     var dpr = Math.min(window.devicePixelRatio || 1, 2);
     var startedAt = performance.now();
     var animationFrame = 0;
+    var activeUntil = 0;
 
     function clamp(value, min, max) {
         return Math.max(min, Math.min(max, value));
@@ -1193,21 +1401,62 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
 
     function render(now) {
         animationFrame = 0;
-        canvases.forEach(function(canvas) { draw(canvas, now); });
-        if (!reduceMotion && document.visibilityState !== 'hidden') start();
+        var isActive = !reduceMotion && now < activeUntil;
+        var frameTime = isActive ? now : startedAt + 800;
+        canvases.forEach(function(canvas) { draw(canvas, frameTime); });
+        if (isActive && document.visibilityState !== 'hidden') start();
     }
 
     function start() {
         if (!animationFrame) animationFrame = requestAnimationFrame(render);
     }
 
+    function wake(duration) {
+        if (reduceMotion || document.visibilityState === 'hidden') return;
+        var now = performance.now();
+        if (now >= activeUntil) startedAt = now;
+        activeUntil = Math.max(activeUntil, now + (duration || 1800));
+        start();
+    }
+
     window.addEventListener('pointermove', function(event) {
         pointer.x = clamp((event.clientX / window.innerWidth - 0.5) * 2, -1, 1);
         pointer.y = clamp((event.clientY / window.innerHeight - 0.5) * 2, -1, 1);
+        var trigger = document.getElementById('floatingSubscribe');
+        if (!trigger || trigger.classList.contains('is-context-hidden')) return;
+        var rect = trigger.getBoundingClientRect();
+        var nearestX = Math.max(rect.left, Math.min(event.clientX, rect.right));
+        var nearestY = Math.max(rect.top, Math.min(event.clientY, rect.bottom));
+        var distance = Math.hypot(event.clientX - nearestX, event.clientY - nearestY);
+        if (distance < 220) wake(650);
     }, { passive: true });
 
+    var trigger = document.getElementById('floatingSubscribe');
+    var layer = document.getElementById('btxChatLayer');
+    if (trigger) {
+        trigger.addEventListener('btx:reveal', function() { wake(2400); });
+        ['pointerenter', 'pointerdown', 'focus'].forEach(function(eventName) {
+            trigger.addEventListener(eventName, function() { wake(2600); });
+        });
+        if ('IntersectionObserver' in window) {
+            var mascotObserver = new IntersectionObserver(function(entries) {
+                if (entries[0] && entries[0].isIntersecting && !trigger.classList.contains('is-context-hidden')) {
+                    wake(2400);
+                }
+            }, { threshold: 0.2 });
+            mascotObserver.observe(trigger);
+        }
+    }
+    if (layer && 'MutationObserver' in window) {
+        var chatObserver = new MutationObserver(function() {
+            if (layer.classList.contains('is-open')) wake(7200);
+        });
+        chatObserver.observe(layer, { attributes: true, attributeFilter: ['class'] });
+        layer.addEventListener('pointerdown', function() { wake(2200); }, { passive: true });
+    }
+
     document.addEventListener('visibilitychange', function() {
-        if (document.visibilityState !== 'hidden' && !reduceMotion) start();
+        if (document.visibilityState !== 'hidden' && !reduceMotion && performance.now() < activeUntil) start();
     });
 
     if (reduceMotion) render(startedAt + 1200);

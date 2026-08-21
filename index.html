@@ -344,7 +344,7 @@
         </div>
 
         <!-- AR tracking opt-in -->
-        <button class="ar-trigger" id="arTrigger">
+        <button class="ar-trigger ar-trigger-merged" id="arTrigger" aria-hidden="true" tabindex="-1">
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7S2 12 2 12z"/></svg>
             <span>开启 Jarvis 交互</span>
         </button>
@@ -1179,7 +1179,7 @@
     </footer>
 
     <!-- BTX floating guide -->
-    <button class="floating-subscribe" id="floatingSubscribe" type="button" aria-label="打开 BTX 智能接待" aria-haspopup="dialog" aria-expanded="false" aria-controls="btxChatPanel">
+    <button class="floating-subscribe is-context-hidden" id="floatingSubscribe" type="button" aria-label="打开 BTX 智能接待" aria-haspopup="dialog" aria-expanded="false" aria-controls="btxChatPanel">
         <span class="floating-subscribe-copy">
             <span class="floating-subscribe-kicker">BTX ONLINE</span>
             <strong>嗨，一起做点有趣的事吗？</strong>
@@ -1198,6 +1198,7 @@
     <div class="btx-chat-layer" id="btxChatLayer" aria-hidden="true">
         <button class="btx-chat-backdrop" id="btxChatBackdrop" type="button" tabindex="-1" aria-label="关闭 BTX 智能接待"></button>
         <section class="btx-chat-panel" id="btxChatPanel" role="dialog" aria-modal="true" aria-labelledby="btxChatTitle" aria-describedby="btxChatDescription">
+            <div class="btx-sheet-grabber" id="btxSheetGrabber" aria-hidden="true"><span></span></div>
             <header class="btx-chat-header">
                 <span class="btx-chat-avatar" aria-hidden="true">
                     <canvas class="btx-morph-canvas" data-btx-morph="avatar" width="128" height="128"></canvas>
@@ -1222,6 +1223,7 @@
                     <button type="button" data-btx-intent="membership">了解技能邮件</button>
                     <button type="button" data-btx-intent="cooperation">咨询合作</button>
                     <button type="button" data-btx-intent="products">查看产品</button>
+                    <button type="button" data-btx-intent="jarvis">体验 Jarvis</button>
                     <button type="button" data-btx-intent="human">转人工</button>
                 </div>
 
