@@ -15,6 +15,12 @@ var TBScroll = (function() {
     return { add: function(cb) { cbs.push(cb); cb(window.scrollY); } };
 })();
 
+function TBTrack(eventName, metadata) {
+    if (window.TBAnalytics && typeof window.TBAnalytics.track === 'function') {
+        window.TBAnalytics.track(eventName, metadata || {});
+    }
+}
+
 // Scroll Reveal (also observe dividers)
 const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
@@ -299,6 +305,7 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
 
     toggle.addEventListener('click', function() {
         if (panel.hidden) {
+            TBTrack('subscription_expand', { source: 'commercial_card' });
             openCheckout({ scroll: true, focus: true, updateHash: true });
         } else {
             closeCheckout();
@@ -313,6 +320,80 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
     if (window.location.hash === '#member-subscribe') {
         openCheckout({ scroll: false, focus: false, updateHash: false });
     }
+})();
+
+// === 6d-2. Skill Letter sample preview ===
+(function() {
+    var modal = document.getElementById('skillSampleModal');
+    if (!modal) return;
+    var panel = modal.querySelector('.skill-sample-panel');
+    var openers = document.querySelectorAll('.open-skill-sample');
+    var closeButton = document.getElementById('skillSampleClose');
+    var backdrop = document.getElementById('skillSampleBackdrop');
+    var checkoutButton = document.getElementById('sampleToCheckout');
+    var previousFocus = null;
+
+    function openModal() {
+        previousFocus = document.activeElement;
+        modal.classList.add('is-open');
+        modal.setAttribute('aria-hidden', 'false');
+        document.body.classList.add('skill-sample-open');
+        window.setTimeout(function() {
+            if (closeButton) closeButton.focus({ preventScroll: true });
+        }, 120);
+    }
+
+    function closeModal(options) {
+        var settings = options || {};
+        modal.classList.remove('is-open');
+        modal.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('skill-sample-open');
+        if (settings.restoreFocus !== false && previousFocus && previousFocus.focus) {
+            previousFocus.focus({ preventScroll: true });
+        }
+    }
+
+    openers.forEach(function(opener) {
+        opener.addEventListener('click', openModal);
+    });
+    if (closeButton) closeButton.addEventListener('click', function() { closeModal(); });
+    if (backdrop) backdrop.addEventListener('click', function() { closeModal(); });
+
+    if (checkoutButton) {
+        checkoutButton.addEventListener('click', function() {
+            closeModal({ restoreFocus: false });
+            var checkout = document.getElementById('memberCheckout');
+            var toggle = document.getElementById('memberCheckoutToggle');
+            if (checkout && checkout.hidden && toggle) toggle.click();
+            else if (checkout) checkout.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+    }
+
+    if (new URLSearchParams(window.location.search).get('sample') === 'skill-letter') {
+        window.setTimeout(openModal, 180);
+    }
+
+    modal.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            event.preventDefault();
+            closeModal();
+            return;
+        }
+        if (event.key !== 'Tab' || !panel) return;
+        var focusable = Array.prototype.slice.call(panel.querySelectorAll(
+            'button:not([disabled]), [href], input:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        )).filter(function(element) { return element.offsetParent !== null; });
+        if (!focusable.length) return;
+        var first = focusable[0];
+        var last = focusable[focusable.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+            event.preventDefault();
+            last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+            event.preventDefault();
+            first.focus();
+        }
+    });
 })();
 
 // === 6e. Cooperation inquiry ===
@@ -355,6 +436,7 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
         form.hidden = true;
         success.hidden = false;
         dialog.classList.add('is-success');
+        TBTrack('collab_success');
         var heading = success.querySelector('h3');
         if (heading) heading.focus({ preventScroll: true });
     }
@@ -430,6 +512,7 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
         status.className = 'inquiry-status';
 
         try {
+            TBTrack('collab_submit', { cooperationType: payload.cooperationType });
             if (isLocalPreview()) {
                 await new Promise(function(resolve) { window.setTimeout(resolve, 420); });
                 showSuccess();
@@ -591,6 +674,7 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
         if (successAmount) successAmount.textContent = formatPaymentAmount(data.amountTotal, data.currency);
         if (successUntil) successUntil.textContent = formatMembershipDate(data.membershipUntil);
         if (sessionId) loadMemberOnboarding(sessionId, 0);
+        TBTrack('checkout_success', { amount: data.amountTotal || '', currency: data.currency || '' });
         try {
             window.sessionStorage.setItem('techbridge-member-success', JSON.stringify({
                 savedAt: Date.now(),
@@ -650,6 +734,7 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
 
         setLoading(true);
         setStatus('正在连接 Stripe 安全支付...', '');
+        TBTrack('checkout_start', { plan: selectedPlan() });
 
         try {
             var res = await fetch(endpoint, {
@@ -669,6 +754,7 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
 
             if (data.checkoutUrl) {
                 setStatus('订单已创建，正在跳转到 Stripe Checkout...', 'success');
+                TBTrack('checkout_redirect', { plan: selectedPlan() });
                 window.location.href = data.checkoutUrl;
                 return;
             }
@@ -917,6 +1003,7 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
         layer.setAttribute('aria-hidden', 'false');
         trigger.setAttribute('aria-expanded', 'true');
         document.body.classList.add('btx-chat-open');
+        TBTrack('btx_open');
         syncTriggerVisibility();
 
         if (isMobileSheet()) {
@@ -1002,6 +1089,7 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
     quickActions.addEventListener('click', function(e) {
         var button = e.target.closest('[data-btx-intent]');
         if (!button) return;
+        TBTrack('btx_intent', { intent: button.dataset.btxIntent });
         appendMessage('user', button.textContent.trim());
         answer(button.dataset.btxIntent);
     });
@@ -1009,6 +1097,7 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
     messages.addEventListener('click', function(e) {
         var button = e.target.closest('[data-btx-action]');
         if (!button) return;
+        TBTrack('btx_action', { action: button.dataset.btxAction });
         routeTo(button.dataset.btxAction);
     });
 

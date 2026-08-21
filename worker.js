@@ -3,6 +3,7 @@ import * as memberSubscription from './functions/api/member-subscription/create.
 import * as memberSubscriptionStatus from './functions/api/member-subscription/status.js';
 import * as memberOnboarding from './functions/api/member-onboarding.js';
 import * as stripeWebhook from './functions/api/stripe-webhook.js';
+import * as analytics from './functions/api/analytics.js';
 import { runAutomationSync } from './functions/automation-sync.js';
 
 const API_ROUTES = new Map([
@@ -10,6 +11,7 @@ const API_ROUTES = new Map([
   ['/api/member-subscription/create', memberSubscription],
   ['/api/member-subscription/status', memberSubscriptionStatus],
   ['/api/member-onboarding', memberOnboarding],
+  ['/api/analytics', analytics],
   ['/api/stripe-webhook', stripeWebhook]
 ]);
 

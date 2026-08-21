@@ -50,7 +50,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <!-- 字重按实际用量裁剪：去掉未使用的 Mono 300、Sans SC 300/900、Serif SC 900，显著减少 CJK 字体加载 -->
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@400;700&family=Noto+Sans+SC:wght@400;700&family=Noto+Serif+SC:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=24">
+    <link rel="stylesheet" href="style.css?v=25">
     <link rel="stylesheet" href="jarvis-hud.css?v=6">
 
     <!-- Structured Data -->
@@ -333,8 +333,8 @@
 
             <div class="hero-bar"></div>
             <div class="hero-actions">
-                <a href="#projects" class="hero-action hero-action-primary">查看我造的产品</a>
-                <a href="#collab" class="hero-action hero-action-secondary">商务 / 产品合作</a>
+                <a href="#projects" class="hero-action hero-action-primary" data-analytics-event="hero_products">查看我造的产品</a>
+                <a href="#collab" class="hero-action hero-action-secondary" data-analytics-event="hero_collab">商务 / 产品合作</a>
             </div>
         </div>
 
@@ -399,7 +399,7 @@
         <div class="about-intro-row reveal">
             <div class="portrait-wrapper">
                 <div class="portrait-ring">
-                    <img src="portrait.webp" alt="桥比特" class="portrait">
+                    <img src="portrait.webp" alt="桥比特" class="portrait" width="569" height="682" loading="lazy" decoding="async">
                 </div>
             </div>
             <div class="about-intro-text">
@@ -443,10 +443,17 @@
                 <p>提供场景诊断、培训咨询、流程改造、产品部署与自动化实施。</p>
             </article>
         </div>
-        <div class="intro-video-wrapper reveal">
-            <video controls playsinline preload="none">
-                <source src="intro-video.mp4" type="video/mp4">
-            </video>
+        <div class="about-profile-film reveal">
+            <div class="about-profile-film-copy">
+                <span>PROFILE FILM · 00:44</span>
+                <h3>44 秒认识桥比特.</h3>
+                <p>从科技内容、中国产品出海到企业 AI 落地，看我如何把三件事连成一套完整能力。</p>
+            </div>
+            <div class="intro-video-wrapper">
+                <video controls playsinline preload="none">
+                    <source src="intro-video.mp4" type="video/mp4">
+                </video>
+            </div>
         </div>
         <div class="stats-bar reveal">
             <div class="stat-item">
@@ -656,7 +663,7 @@
                 <p data-lang="zh">一档科技与商业播客。用大白话讲清科技趋势，看透产品与商业逻辑。</p>
                 <p data-lang="en" style="display:none">A podcast about technology and business, making complex trends and product logic clear.</p>
                 <div class="podcast-actions">
-                    <a class="podcast-primary" href="https://www.xiaoyuzhoufm.com/podcast/69a40d9f7dca8f3bbc511770" target="_blank" rel="noopener noreferrer">
+                    <a class="podcast-primary" href="https://www.xiaoyuzhoufm.com/podcast/69a40d9f7dca8f3bbc511770" target="_blank" rel="noopener noreferrer" data-analytics-event="podcast_open">
                         <span data-lang="zh">在小宇宙收听 →</span>
                         <span data-lang="en" style="display:none">Listen on Xiaoyuzhou →</span>
                     </a>
@@ -665,7 +672,7 @@
                 </div>
             </div>
 
-            <a class="podcast-latest" href="https://www.xiaoyuzhoufm.com/podcast/69a40d9f7dca8f3bbc511770" target="_blank" rel="noopener noreferrer">
+            <a class="podcast-latest" href="https://www.xiaoyuzhoufm.com/podcast/69a40d9f7dca8f3bbc511770" target="_blank" rel="noopener noreferrer" data-analytics-event="podcast_open">
                 <span data-lang="zh">近期节目 · 06:18</span>
                 <span data-lang="en" style="display:none">RECENT EPISODE · 06:18</span>
                 <strong data-lang="zh">EP17｜行业预警：你的脸正在被偷走，中国全面叫停 AI 换脸</strong>
@@ -687,7 +694,7 @@
         <div class="latest-grid latest-grid-2x2">
             <div class="latest-card latest-card-video reveal">
                 <div class="latest-video-wrap latest-cover-wrap" data-bvid="BV1BKKAzqENK">
-                    <img src="cover-ai-freedom.webp" alt="AI解放时间">
+                    <img src="cover-ai-freedom.webp" alt="AI解放时间" width="1600" height="901" loading="lazy" decoding="async">
                     <div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="8,5 19,12 8,19"/></svg></div>
                 </div>
                 <div class="latest-info">
@@ -987,7 +994,7 @@
         <div class="brand-promo-video reveal">
             <!-- 懒加载：进入视口才由 main.js 播放，避免首屏就下载整条视频 -->
             <video muted loop playsinline preload="none" poster="poster-brand-promo.webp" data-lazy-autoplay>
-                <source src="brand-promo.mp4" type="video/mp4">
+                <source src="brand-promo-optimized.mp4" type="video/mp4">
             </video>
         </div>
     </section>
@@ -1061,8 +1068,16 @@
                     <li>可直接使用的提示词、工作流与模板</li>
                     <li>AI 商业化、内容增长与中国产品出海判断</li>
                 </ul>
+                <div class="skill-letter-delivery" aria-label="技能邮件交付说明">
+                    <span><strong>每月 2 封</strong><small>计划节奏</small></span>
+                    <span><strong>自动确认</strong><small>付款成功后</small></span>
+                    <span><strong>365 天</strong><small>一次性开通</small></span>
+                </div>
                 <div class="commercial-price"><strong>¥9.9</strong><span>/ 365 天 · 一次性</span></div>
-                <button class="commercial-link commercial-link-orange" id="memberCheckoutToggle" type="button" aria-expanded="false" aria-controls="memberCheckout">立即订阅 →</button>
+                <div class="commercial-member-actions">
+                    <button class="commercial-link commercial-link-orange" id="memberCheckoutToggle" type="button" aria-expanded="false" aria-controls="memberCheckout">立即订阅 →</button>
+                    <button class="skill-letter-sample-link open-skill-sample" type="button" data-analytics-event="skill_sample_open">先看一份样刊</button>
+                </div>
             </article>
 
             <article class="commercial-path commercial-path-work reveal">
@@ -1091,6 +1106,7 @@
                     <li><strong>决策参考</strong><span>重要趋势、机会判断与失败教训</span></li>
                     <li><strong>持续更新</strong><span>新产品进展与可公开的内测资源</span></li>
                 </ul>
+                <button class="member-sample-inline open-skill-sample" type="button" data-analytics-event="skill_sample_open">预览样刊结构 <span>↗</span></button>
                 <button class="member-checkout-close" id="memberCheckoutClose" type="button" aria-label="关闭技能邮件订阅表单" title="关闭">
                     <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                 </button>
@@ -1122,12 +1138,57 @@
                 </dl>
                 <div class="member-payment-next">
                     <strong>接下来你会收到</strong>
-                    <span>真实项目复盘、可复用的提示词与 SOP、AI 商业化判断和技能更新。具体栏目与发送节奏以后续邮件为准。</span>
+                    <span>系统会先发送开通确认。后续计划每月 2 封，内容包括项目复盘、提示词与 SOP、AI 商业化判断和技能更新。</span>
                 </div>
                 <a class="member-payment-home" href="#topics">先浏览精选内容 →</a>
             </div>
         </div>
     </section>
+
+    <!-- Skill Letter sample preview -->
+    <div class="skill-sample-modal" id="skillSampleModal" aria-hidden="true">
+        <button class="skill-sample-backdrop" id="skillSampleBackdrop" type="button" tabindex="-1" aria-label="关闭样刊预览"></button>
+        <article class="skill-sample-panel" role="dialog" aria-modal="true" aria-labelledby="skillSampleTitle" aria-describedby="skillSampleDescription">
+            <header class="skill-sample-head">
+                <div>
+                    <span>SKILL LETTER · SAMPLE 01</span>
+                    <strong>TECH BRIDGE</strong>
+                </div>
+                <button class="skill-sample-close" id="skillSampleClose" type="button" aria-label="关闭样刊预览" title="关闭">×</button>
+            </header>
+            <div class="skill-sample-body">
+                <p class="skill-sample-eyebrow">样刊结构示例 · 约 6 分钟读完</p>
+                <h2 id="skillSampleTitle">如何把一个模糊需求，变成可以执行的 AI 工作流</h2>
+                <p id="skillSampleDescription">不讲泛泛的趋势，只拆一个真实项目中可以复用的决策和做法。</p>
+
+                <section class="skill-sample-section">
+                    <span>01 · DECISION</span>
+                    <h3>先定义验收结果，再谈模型</h3>
+                    <p>把“做一个 AI 助手”改写为：谁在什么时候，用什么输入，需要系统返回什么可检查结果。</p>
+                </section>
+
+                <section class="skill-sample-section">
+                    <span>02 · WORKFLOW</span>
+                    <h3>拆成三个不能混在一起的环节</h3>
+                    <ol>
+                        <li><strong>收集</strong>只负责获得原始信息，不急着判断。</li>
+                        <li><strong>决策</strong>把规则、模型和人工审批分层。</li>
+                        <li><strong>交付</strong>输出可追踪的结果，而不是一段聊天文字。</li>
+                    </ol>
+                </section>
+
+                <section class="skill-sample-template">
+                    <span>03 · COPYABLE TEMPLATE</span>
+                    <code>目标 / 用户 / 输入 / 约束 / 输出 / 验收条件 / 人工介入点</code>
+                    <p>正式邮件会继续给出完整提示词、SOP、失败案例和工具清单。</p>
+                </section>
+            </div>
+            <footer class="skill-sample-footer">
+                <span>计划每月 2 封 · 重大项目节点加更</span>
+                <button id="sampleToCheckout" type="button" data-analytics-event="sample_to_checkout">¥9.9 开通 365 天 →</button>
+            </footer>
+        </article>
+    </div>
 
     <!-- Connect -->
     <div class="newsletter reveal">
@@ -1143,7 +1204,7 @@
                 <strong>Tech Bridge</strong>
                 <p>扫码关注，获取 AI、科技数码、新能源汽车和产品进展。</p>
             </div>
-            <img src="public-account-qr.png" alt="Tech Bridge 公众号二维码" class="public-account-qr" width="360" height="360" loading="eager" decoding="async">
+            <img src="public-account-qr.png" alt="Tech Bridge 公众号二维码" class="public-account-qr" width="360" height="360" loading="lazy" decoding="async">
         </div>
     </div>
 
@@ -1248,7 +1309,7 @@
                 <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
             <div class="wechat-modal-title">添加企业微信</div>
-            <div class="wechat-modal-qr"><img src="wechat-qr.png?v=20260716-linxueni-new" alt="林雪妮企业微信二维码" class="wechat-qr-img"></div>
+            <div class="wechat-modal-qr"><img src="wechat-qr.png?v=20260716-linxueni-new" alt="林雪妮企业微信二维码" class="wechat-qr-img" width="636" height="1280" loading="lazy" decoding="async"></div>
             <div class="wechat-modal-hint">扫码添加我的企业微信</div>
         </div>
     </div>
@@ -1260,7 +1321,7 @@
                 <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
             <div class="wechat-modal-title">电商AI素材通</div>
-            <div class="wechat-modal-qr"><img src="sucaitong-miniapp-qr.png" alt="电商AI素材通小程序二维码" class="wechat-qr-img"></div>
+            <div class="wechat-modal-qr"><img src="sucaitong-miniapp-qr.png" alt="电商AI素材通小程序二维码" class="wechat-qr-img" width="430" height="430" loading="lazy" decoding="async"></div>
             <div class="wechat-modal-hint">微信扫码进入电商AI素材通小程序</div>
         </div>
     </div>
@@ -1376,8 +1437,54 @@
         </div>
     </div>
 
-    <script src="main.js?v=24"></script>
-    <script src="jarvis-hud.js?v=5"></script>
+    <script src="analytics.js?v=1"></script>
+    <script src="main.js?v=25"></script>
+    <script>
+    (function() {
+        var loading = false;
+        var ready = false;
+        var callbacks = [];
+        function loadJarvis(callback) {
+            if (ready) {
+                if (callback) callback();
+                return;
+            }
+            if (callback) callbacks.push(callback);
+            if (loading) return;
+            loading = true;
+            var script = document.createElement('script');
+            script.src = 'jarvis-hud.js?v=6';
+            script.async = true;
+            script.onload = function() {
+                ready = true;
+                callbacks.splice(0).forEach(function(run) { run(); });
+            };
+            document.body.appendChild(script);
+        }
+
+        function queuePalette(event) {
+            if (ready) return;
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            loadJarvis(function() {
+                if (window.openCommandPalette) window.openCommandPalette();
+            });
+        }
+
+        document.addEventListener('keydown', function(event) {
+            if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') queuePalette(event);
+        }, true);
+        var commandTrigger = document.getElementById('cmdkTrigger');
+        var mobileCommandTrigger = document.getElementById('cmdkTriggerMobile');
+        if (commandTrigger) {
+            commandTrigger.addEventListener('pointerenter', function() { loadJarvis(); }, { once: true });
+            commandTrigger.addEventListener('click', queuePalette, true);
+        }
+        if (mobileCommandTrigger) mobileCommandTrigger.addEventListener('click', queuePalette, true);
+        if ('requestIdleCallback' in window) requestIdleCallback(loadJarvis, { timeout: 1800 });
+        else window.setTimeout(loadJarvis, 1200);
+    })();
+    </script>
 
 </body>
 </html>

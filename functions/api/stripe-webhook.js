@@ -393,7 +393,7 @@ async function sendWelcomeEmail(env, row, eventId) {
     <div style="font-family:Arial,'Noto Sans SC',sans-serif;line-height:1.8;color:#1A1A18">
       <h2>${skillEmail ? '欢迎订阅 Tech Bridge 技能邮件' : '欢迎加入 Tech Bridge 会员信'}</h2>
       <p>你的${skillEmail ? '技能邮件订阅' : '会员订阅'}已开通。后续我会把 AI 产品实战、内容增长复盘、可复用工作流和项目经验发到这个邮箱。</p>
-      ${skillEmail ? '<p>本次为一次性支付，有效期 365 天，不会自动续费。具体栏目与发送节奏以后续邮件为准。</p>' : ''}
+      ${skillEmail ? '<p>本次为一次性支付，有效期 365 天，不会自动续费。计划每月发送 2 封，重大项目节点会不定期加更。</p><p><a href="https://qiaobit.com/?sample=skill-letter#member-subscribe" style="color:#008C8C">查看技能邮件样刊结构</a></p>' : ''}
       <p>如果你需要更换邮箱或取消订阅，直接回复这封邮件即可。</p>
       <p style="color:#8A8580">Tech Bridge / 桥比特</p>
     </div>
