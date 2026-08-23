@@ -784,6 +784,7 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
     var panel = document.getElementById('btxChatPanel');
     var backdrop = document.getElementById('btxChatBackdrop');
     var closeButton = document.getElementById('btxChatClose');
+    var backToTopButton = document.getElementById('backToTop');
     var grabber = document.getElementById('btxSheetGrabber');
     var header = panel && panel.querySelector('.btx-chat-header');
     var messages = document.getElementById('btxChatMessages');
@@ -801,6 +802,7 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
     var sheetVelocity = 0;
     var dragState = null;
     var heroIsVisible = true;
+    var quietZoneIsVisible = false;
     var mobileSheetQuery = window.matchMedia('(max-width: 768px)');
     var reduceMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     var routes = {
@@ -959,9 +961,10 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
     }
 
     function syncTriggerVisibility() {
-        var shouldHide = heroIsVisible || layer.classList.contains('is-open') || layer.classList.contains('is-closing');
+        var shouldHide = heroIsVisible || quietZoneIsVisible || layer.classList.contains('is-open') || layer.classList.contains('is-closing');
         var wasHidden = trigger.classList.contains('is-context-hidden');
         trigger.classList.toggle('is-context-hidden', shouldHide);
+        if (backToTopButton) backToTopButton.classList.toggle('is-context-hidden', quietZoneIsVisible);
         if (wasHidden && !shouldHide) trigger.dispatchEvent(new CustomEvent('btx:reveal'));
     }
 
@@ -1182,6 +1185,15 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
         };
         window.addEventListener('scroll', updateHeroVisibility, { passive: true });
         updateHeroVisibility();
+    }
+
+    var quietZone = document.getElementById('capabilities');
+    if (quietZone && 'IntersectionObserver' in window) {
+        var quietZoneObserver = new IntersectionObserver(function(entries) {
+            quietZoneIsVisible = Boolean(entries[0] && entries[0].isIntersecting);
+            syncTriggerVisibility();
+        }, { threshold: 0.08 });
+        quietZoneObserver.observe(quietZone);
     }
 
     var syncSheetMode = function() {

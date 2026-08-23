@@ -50,7 +50,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <!-- 字重按实际用量裁剪：去掉未使用的 Mono 300、Sans SC 300/900、Serif SC 900，显著减少 CJK 字体加载 -->
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@400;700&family=Noto+Sans+SC:wght@400;700&family=Noto+Serif+SC:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=25">
+    <link rel="stylesheet" href="style.css?v=29">
     <link rel="stylesheet" href="jarvis-hud.css?v=6">
 
     <!-- Structured Data -->
@@ -394,7 +394,7 @@
     <div class="section-divider"></div>
 
     <!-- Screen 2: About -->
-    <section id="about" class="section-about">
+    <section id="about" class="section-about section-about-profile">
         <span class="section-label reveal">01 — About</span>
         <div class="about-intro-row reveal">
             <div class="portrait-wrapper">
@@ -455,6 +455,83 @@
                 </video>
             </div>
         </div>
+    </section>
+
+    <!-- Capability Stack -->
+    <section class="section-capabilities" id="capabilities" aria-labelledby="capabilitiesTitle">
+        <div class="capabilities-heading reveal">
+            <div>
+                <span class="section-label">CAPABILITY STACK</span>
+                <h2 id="capabilitiesTitle">把 AI 变成可交付的结果.</h2>
+            </div>
+            <p>不是停留在会用工具，而是用 Agent 完成开发、研究、交付和业务自动化。</p>
+        </div>
+
+        <div class="capabilities-list">
+            <article class="capability-row reveal">
+                <span class="capability-index">01</span>
+                <h3>AI Native Development<small>AI 原生开发</small></h3>
+                <p>完成需求拆解、编码、测试、部署和持续迭代，让多个 Coding Agent 协同交付。</p>
+                <div class="capability-tools" aria-label="工具：Claude Code、Codex、CodeBuddy、GitHub">
+                    <span class="capability-tool" title="Claude Code"><img src="assets/skill-icons/anthropic.svg" alt="" aria-hidden="true"></span>
+                    <span class="capability-tool capability-tool-mark" title="OpenAI Codex" aria-hidden="true">CX</span>
+                    <span class="capability-tool capability-tool-mark" title="CodeBuddy" aria-hidden="true">CB</span>
+                    <span class="capability-tool" title="GitHub"><img src="assets/skill-icons/github.svg" alt="" aria-hidden="true"></span>
+                </div>
+            </article>
+
+            <article class="capability-row reveal">
+                <span class="capability-index">02</span>
+                <h3>Agent Engineering<small>Agent 系统工程</small></h3>
+                <p>设计多 Agent 协作、MCP / Skills、工具调用、权限边界、记忆和长期自动任务。</p>
+                <div class="capability-tools" aria-label="工具：WorkBuddy、n8n、Codex、GitHub">
+                    <span class="capability-tool capability-tool-mark" title="WorkBuddy" aria-hidden="true">WB</span>
+                    <span class="capability-tool" title="n8n"><img src="assets/skill-icons/n8n.svg" alt="" aria-hidden="true"></span>
+                    <span class="capability-tool capability-tool-mark" title="MCP" aria-hidden="true">MCP</span>
+                    <span class="capability-tool" title="GitHub"><img src="assets/skill-icons/github.svg" alt="" aria-hidden="true"></span>
+                </div>
+            </article>
+
+            <article class="capability-row reveal">
+                <span class="capability-index">03</span>
+                <h3>AI Application Delivery<small>AI 应用交付</small></h3>
+                <p>交付网站、App、小程序、数据库、支付、Webhook、云端部署和生产监控。</p>
+                <div class="capability-tools" aria-label="工具：Cloudflare、Supabase、Stripe、Vercel">
+                    <span class="capability-tool" title="Cloudflare"><img src="assets/skill-icons/cloudflare.svg" alt="" aria-hidden="true"></span>
+                    <span class="capability-tool" title="Supabase"><img src="assets/skill-icons/supabase.svg" alt="" aria-hidden="true"></span>
+                    <span class="capability-tool" title="Stripe"><img src="assets/skill-icons/stripe.svg" alt="" aria-hidden="true"></span>
+                    <span class="capability-tool" title="Vercel"><img src="assets/skill-icons/vercel.svg" alt="" aria-hidden="true"></span>
+                </div>
+            </article>
+
+            <article class="capability-row reveal">
+                <span class="capability-index">04</span>
+                <h3>Frontier Intelligence<small>一线技术情报</small></h3>
+                <p>追踪全球一线技术信号，完成多源检索、事实核验、趋势判断和内容转化。</p>
+                <div class="capability-tools" aria-label="工具：X、GitHub、arXiv、RSS">
+                    <span class="capability-tool" title="X"><img src="assets/skill-icons/x.svg" alt="" aria-hidden="true"></span>
+                    <span class="capability-tool" title="GitHub"><img src="assets/skill-icons/github.svg" alt="" aria-hidden="true"></span>
+                    <span class="capability-tool" title="arXiv"><img src="assets/skill-icons/arxiv.svg" alt="" aria-hidden="true"></span>
+                    <span class="capability-tool" title="RSS"><img src="assets/skill-icons/rss.svg" alt="" aria-hidden="true"></span>
+                </div>
+            </article>
+
+            <article class="capability-row reveal">
+                <span class="capability-index">05</span>
+                <h3>AI Business Automation<small>AI 业务自动化</small></h3>
+                <p>打通客户、订单、通知和服务流程，把 AI 接入飞书、企业微信和真实业务系统。</p>
+                <div class="capability-tools" aria-label="工具：飞书、企业微信、n8n、WorkBuddy">
+                    <span class="capability-tool capability-tool-mark" title="飞书" aria-hidden="true">FS</span>
+                    <span class="capability-tool" title="企业微信"><img src="assets/skill-icons/wechat.svg" alt="" aria-hidden="true"></span>
+                    <span class="capability-tool" title="n8n"><img src="assets/skill-icons/n8n.svg" alt="" aria-hidden="true"></span>
+                    <span class="capability-tool capability-tool-mark" title="WorkBuddy" aria-hidden="true">WB</span>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <!-- Proof points -->
+    <section class="section-about-proof" aria-label="Tech Bridge 公开数据与信念">
         <div class="stats-bar reveal">
             <div class="stat-item">
                 <div class="stat-number"><span class="stat-accent">5500+</span></div>
@@ -1438,7 +1515,7 @@
     </div>
 
     <script src="analytics.js?v=1"></script>
-    <script src="main.js?v=25"></script>
+    <script src="main.js?v=28"></script>
     <script>
     (function() {
         var loading = false;
@@ -1449,15 +1526,17 @@
                 if (callback) callback();
                 return;
             }
-            if (callback) callbacks.push(callback);
+            if (typeof callback === 'function') callbacks.push(callback);
             if (loading) return;
             loading = true;
             var script = document.createElement('script');
-            script.src = 'jarvis-hud.js?v=6';
+            script.src = 'jarvis-hud.js?v=7';
             script.async = true;
             script.onload = function() {
                 ready = true;
-                callbacks.splice(0).forEach(function(run) { run(); });
+                callbacks.splice(0).forEach(function(run) {
+                    if (typeof run === 'function') run();
+                });
             };
             document.body.appendChild(script);
         }
@@ -1481,8 +1560,8 @@
             commandTrigger.addEventListener('click', queuePalette, true);
         }
         if (mobileCommandTrigger) mobileCommandTrigger.addEventListener('click', queuePalette, true);
-        if ('requestIdleCallback' in window) requestIdleCallback(loadJarvis, { timeout: 1800 });
-        else window.setTimeout(loadJarvis, 1200);
+        if ('requestIdleCallback' in window) requestIdleCallback(function() { loadJarvis(); }, { timeout: 1800 });
+        else window.setTimeout(function() { loadJarvis(); }, 1200);
     })();
     </script>
 
