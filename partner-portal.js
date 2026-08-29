@@ -1,5 +1,6 @@
 const demoVariant = new URLSearchParams(location.search).get('demo') || '';
-const demoMode = demoVariant === '1' || demoVariant === 'bind';
+const demoMode = ['127.0.0.1', 'localhost'].includes(location.hostname)
+  && (demoVariant === '1' || demoVariant === 'bind');
 const tokenKey = 'techbridge_partner_portal_token';
 
 function tokenFromLocation() {
