@@ -34,7 +34,7 @@ export async function partnerPortalSession(env, request) {
     token_hash: `eq.${portalTokenHash(token)}`,
     revoked_at: 'is.null',
     expires_at: `gt.${new Date().toISOString()}`,
-    select: 'id,partner_id,expires_at,distribution_partners!inner(id,partner_code,display_name,partner_tier,commission_amount,payout_delay_days,payout_method,portal_enabled,wechat_openid,wechat_appid,wechat_bound_at,minimum_payout_amount,status)',
+    select: 'id,partner_id,expires_at,distribution_partners!inner(id,partner_code,display_name,partner_tier,commission_amount,payout_delay_days,payout_method,portal_enabled,wechat_openid,wechat_appid,wechat_bound_at,minimum_payout_amount,profit_sharing_receiver_status,status)',
     limit: '1'
   });
   const response = await fetch(`${baseUrl(env)}/rest/v1/partner_portal_sessions?${params}`, {
@@ -58,13 +58,14 @@ export function payoutBillNumber(date = new Date()) {
 }
 
 export function money(amount, currency = 'cny') {
+  const fractionDigits = Number(amount || 0) % 100 === 0 ? 0 : 2;
   return {
     amount: Number(amount || 0),
     currency: String(currency || 'cny').toLowerCase(),
     display: new Intl.NumberFormat('zh-CN', {
       style: 'currency',
       currency: String(currency || 'cny').toUpperCase(),
-      minimumFractionDigits: 0,
+      minimumFractionDigits: fractionDigits,
       maximumFractionDigits: 2
     }).format(Number(amount || 0) / 100)
   };

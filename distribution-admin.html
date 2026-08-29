@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Tech Bridge 分销管理后台</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/distribution-admin.css?v=1">
+</head>
+<body>
+  <header class="da-top"><div class="da-brand"><span>Q</span><strong>TECH BRIDGE</strong><small>分销管理后台</small></div><button id="daLogout" type="button" hidden>退出</button></header>
+  <main>
+    <section class="da-login" id="daLogin">
+      <span>OWNER ACCESS</span><h1>分销管理后台</h1>
+      <form id="daLoginForm"><label for="daKey">管理员访问码</label><div><input id="daKey" type="password" autocomplete="current-password" required><button type="submit">进入后台</button></div><p id="daLoginStatus"></p></form>
+    </section>
+
+    <div id="daApp" hidden>
+      <section class="da-heading"><div><span>DISTRIBUTION OS</span><h1>收益与渠道总览</h1></div><button class="primary" id="newInvite" type="button">新建邀请</button></section>
+      <section class="da-metrics">
+        <article><span>总营收</span><strong id="mRevenue">¥0</strong></article>
+        <article><span>付款订单</span><strong id="mPayments">0</strong></article>
+        <article><span>活跃渠道</span><strong id="mChannels">0</strong></article>
+        <article><span>客户总数</span><strong id="mCustomers">0</strong></article>
+        <article><span>渠道成交</span><strong id="mChannelRevenue">¥0</strong></article>
+        <article><span>累计提现</span><strong id="mPaidOut">¥0</strong></article>
+      </section>
+
+      <nav class="da-tabs" aria-label="分销数据视图">
+        <button class="active" data-tab="invites" type="button">邀请</button>
+        <button data-tab="channels" type="button">渠道</button>
+        <button data-tab="orders" type="button">订单</button>
+        <button data-tab="customers" type="button">客户</button>
+        <button data-tab="products" type="button">产品</button>
+      </nav>
+
+      <section class="da-panel active" data-panel="invites"><header><div><h2>邀请记录</h2><p>每个链接对应一个明确接收人。</p></div></header><div class="table-wrap"><table><thead><tr><th>接收人</th><th>渠道码</th><th>状态</th><th>创建时间</th><th>邀请链接</th></tr></thead><tbody id="inviteRows"></tbody></table></div></section>
+      <section class="da-panel" data-panel="channels"><header><div><h2>渠道人员</h2><p>微信登录、成交与结算状态。</p></div></header><div class="table-wrap"><table><thead><tr><th>渠道</th><th>渠道码</th><th>微信</th><th>状态</th><th>加入时间</th></tr></thead><tbody id="channelRows"></tbody></table></div></section>
+      <section class="da-panel" data-panel="orders"><header><div><h2>分销订单</h2><p>有效成交、佣金和提现进度。</p></div></header><div class="table-wrap"><table><thead><tr><th>订单</th><th>渠道码</th><th>成交金额</th><th>渠道收入</th><th>状态</th><th>时间</th></tr></thead><tbody id="orderRows"></tbody></table></div></section>
+      <section class="da-panel" data-panel="customers"><header><div><h2>客户数据</h2><p>订单邮箱、产品和有效期。</p></div></header><div class="table-wrap"><table><thead><tr><th>客户邮箱</th><th>产品</th><th>金额</th><th>来源</th><th>状态</th><th>付款时间</th></tr></thead><tbody id="customerRows"></tbody></table></div></section>
+      <section class="da-panel" data-panel="products"><header><div><h2>可分销产品</h2><p>产品价格与默认渠道收入。</p></div><button class="secondary" id="newProduct" type="button">新增产品</button></header><div class="product-grid" id="productRows"></div></section>
+    </div>
+  </main>
+
+  <dialog id="inviteDialog"><form method="dialog" id="inviteForm"><header><h2>新建渠道邀请</h2><button value="cancel" aria-label="关闭" type="submit">×</button></header><label for="inviteLabel">接收人或渠道名称</label><input id="inviteLabel" maxlength="80" placeholder="例如：张三 / 未来科技社群" required><footer><button value="cancel" class="secondary" type="submit">取消</button><button value="default" class="primary" id="createInvite" type="button">生成随机邀请</button></footer><p id="inviteStatus"></p></form></dialog>
+  <dialog id="productDialog"><form method="dialog" id="productForm"><header><h2>新增可分销产品</h2><button value="cancel" aria-label="关闭" type="submit">×</button></header><div class="form-grid"><label>产品名称<input id="productName" required></label><label>产品 slug<input id="productSlug" placeholder="ai-product"></label><label>落地页路径<input id="productPath" placeholder="/product"></label><label>价格（元）<input id="productPrice" type="number" min="1"></label><label>渠道收入（元）<input id="productCommission" type="number" min="1"></label><label class="full">产品简介<textarea id="productSummary" rows="3"></textarea></label></div><footer><button value="cancel" class="secondary" type="submit">取消</button><button value="default" class="primary" id="createProduct" type="button">创建产品</button></footer><p id="productStatus"></p></form></dialog>
+  <script type="module" src="/distribution-admin.js?v=1"></script>
+</body>
+</html>

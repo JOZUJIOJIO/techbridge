@@ -3,73 +3,151 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <title>Tech Bridge AI Skills｜年度技能买手服务</title>
-  <meta name="description" content="每月精选 5-10 个经过审计与实测的 AI Skills，全年至少 12 期，附中文买手笔记、组合工作流、原创 Skill Pack 与进阶社群。">
+  <title>AI Skills 年度买手服务｜每月替你筛出真正值得用的 Skill</title>
+  <meta name="description" content="每月从全网精选 5-10 个经过审计与实测的 AI Skills，全年至少 12 期，附中文买手笔记、组合工作流与原创 Skill Pack。">
   <meta name="robots" content="index,follow">
-  <link rel="canonical" href="https://qiaobit.com/skill-letter">
+  <link rel="canonical" href="https://skills.siliconstory.cn/">
   <link rel="icon" href="favicon.svg">
-  <link rel="stylesheet" href="skill-letter.css?v=1">
+  <link rel="stylesheet" href="skill-letter.css?v=2">
+  <link rel="stylesheet" href="skill-letter-v2.css?v=1">
 </head>
 <body>
   <header class="sl-nav">
-    <a class="sl-brand" href="/"><img src="favicon.svg" width="34" height="34" alt=""><strong>TECH BRIDGE</strong></a>
-    <a class="sl-back" href="/">返回官网</a>
+    <div class="sl-brand"><img src="favicon.svg" width="34" height="34" alt=""><strong>AI SKILLS</strong></div>
+    <span class="sl-back">年度买手服务</span>
   </header>
 
   <main>
-    <section class="sl-hero">
-      <img class="sl-hero-image" src="skill-letter-001-preview.webp" alt="Tech Bridge Skill Letter 第 001 期内容预览">
+    <section class="sl-hero sl-hero-v2" id="checkout">
+      <img class="sl-hero-image" src="skill-letter-001-preview.webp" alt="AI Skills 第 001 期内容预览">
       <div class="sl-hero-shade"></div>
-      <div class="sl-hero-content">
-        <div class="sl-partner-badge" id="slPartnerBadge" hidden>场景合伙人专属入口</div>
-        <span class="sl-eyebrow">AI SKILLS BUYER SERVICE · FOUNDING EDITION</span>
-        <h1>信息不缺。<br>你缺的是有人替你筛。</h1>
-        <p>每月从全网 AI Skills 中做一次判断、淘汰、实测与封装。不是给你更多收藏，而是给你真正能进入工作流的能力。</p>
-        <div class="sl-hero-actions">
-          <button class="sl-primary" type="button" data-scroll-checkout>¥666 创始价加入</button>
-          <a href="#issue001">先看第 001 期</a>
+      <div class="sl-hero-content sl-hero-content-v2">
+        <div class="sl-partner-badge" id="slPartnerBadge" hidden>渠道专属入口</div>
+        <div class="sl-hero-grid">
+          <div class="sl-hero-copy">
+            <span class="sl-eyebrow">AI SKILLS BUYER SERVICE · FOUNDING EDITION</span>
+            <h1>一年，只跟真正值得用的<br>AI Skills。</h1>
+            <p class="sl-hero-lead">你不需要收藏更多工具。你需要有人持续替你搜索、淘汰、实测，再把真正能进入工作流的 Skill 交到你手上。</p>
+            <div class="sl-price-line"><strong>¥666</strong><span>创始价 · 公开价 ¥999<br>一次支付，服务 365 天，不自动续费</span></div>
+          </div>
+
+          <div class="sl-hero-checkout">
+            <ol class="sl-buy-steps" aria-label="订阅只需三步">
+              <li><b>01</b><span>填写邮箱</span></li>
+              <li><b>02</b><span>安全付款</span></li>
+              <li><b>03</b><span>享受一年买手服务</span></li>
+            </ol>
+            <form id="slCheckoutForm" data-endpoint="/api/skill-store/order" novalidate>
+              <label for="slEmail">你的接收邮箱</label>
+              <div class="sl-checkout-row">
+                <input id="slEmail" name="email" type="email" autocomplete="email" inputmode="email" placeholder="your@email.com" required>
+                <button id="slSubmit" type="submit">微信支付 ¥666 →</button>
+              </div>
+              <p id="slStatus" aria-live="polite"></p>
+              <small>微信内直接调起支付，电脑端将生成扫码入口。支付成功后立即获得第 001 期；后续内容发送至该邮箱。继续支付即表示你已阅读<a href="skill-service-policy#delivery">订阅交付</a>、<a href="skill-service-policy#refund">退款规则</a>和<a href="skill-service-policy#privacy">隐私说明</a>。</small>
+            </form>
+            <div class="sl-wechat-panel" id="slWechatPanel" hidden>
+              <div class="sl-wechat-qr"><img id="slWechatQr" alt="微信扫码支付二维码"></div>
+              <div>
+                <span>WECHAT PAY</span>
+                <h3 id="slWechatTitle">请使用微信扫码支付</h3>
+                <p id="slWechatMessage">扫码后将在微信内完成 ¥666 支付。支付成功后，本页面会自动更新。</p>
+                <a id="slWechatOpen" href="#">在微信中打开支付页 →</a>
+                <button id="slWechatReset" type="button">重新填写邮箱</button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <a class="sl-next" href="#promise">查看完整服务 ↓</a>
+      <a class="sl-next" href="#why">为什么值得订阅 ↓</a>
     </section>
 
-    <section class="sl-band" id="promise">
-      <div class="sl-container sl-intro">
-        <div><span class="sl-eyebrow">THE PROMISE</span><h2>你买的不是 Skill，<br>是持续一年的判断服务。</h2></div>
-        <div class="sl-intro-copy"><p>AI 世界的变化速度已经超过普通人的筛选能力。我们负责持续扫描、验证来源、检查权限、跑真实任务，并把值得留下的 Skills 组织成可执行的交付链。</p><p>社群只讨论 Skill 组合、Agent 工作流和生产实践，不提供基础安装教学、无限技术支持、私人咨询或定制开发。</p></div>
+    <section class="sl-band sl-why" id="why">
+      <div class="sl-container sl-intro sl-intro-v2">
+        <div>
+          <span class="sl-eyebrow">WHY SUBSCRIBE</span>
+          <h2>信息越来越多，<br>判断反而越来越贵。</h2>
+        </div>
+        <div class="sl-intro-copy">
+          <p>AI 工具每天都在变化。真正稀缺的不是链接，而是知道什么值得安装、什么存在风险、什么能进入真实业务，以及它们应该如何组合。</p>
+          <p>这不是一份资讯摘要，而是一项持续一年的买手服务：替你承担搜索成本、试错成本和判断成本，只把经过筛选的结果交给你。</p>
+        </div>
       </div>
     </section>
 
-    <section class="sl-stats sl-container" aria-label="服务交付数据">
-      <div><strong>12+</strong><span>全年期数</span></div><div><strong>5–10</strong><span>每期精选</span></div><div><strong>365</strong><span>服务天数</span></div><div><strong>1</strong><span>进阶社群</span></div>
-    </section>
-
-    <section class="sl-band sl-issue" id="issue001">
-      <div class="sl-container sl-issue-grid">
-        <div class="sl-issue-copy"><span class="sl-eyebrow">ISSUE 001 · READY NOW</span><h2>把 Agent 从「会聊天」升级成「会交付」</h2><p>第一期不是 8 个平行工具，而是一条完整能力链：发现、审计、创建、设计、执行、调试、验证与业务落地。</p><ol><li>8 个全球精选 Skills</li><li>3 套组合工作流</li><li>45 分钟安装顺序</li><li>7 天实战路线</li><li>原创 skill-supply-chain-audit</li></ol></div>
-        <img src="skill-letter-001-preview.webp" alt="第 001 期买手信完整页面预览" loading="lazy">
+    <section class="sl-delivery">
+      <div class="sl-container">
+        <div class="sl-section-head sl-section-head-wide">
+          <span class="sl-eyebrow">WHAT YOU RECEIVE</span>
+          <h2>每个月，一套可以直接开始用的 Skill 能力包。</h2>
+        </div>
+        <div class="sl-delivery-grid">
+          <article><b>01</b><h3>5–10 个精选 Skills</h3><p>从全球工具与仓库中筛选，不凑数，不做无效堆叠。</p></article>
+          <article><b>02</b><h3>中文买手笔记</h3><p>说清适用场景、来源、风险、权限和真实价值。</p></article>
+          <article><b>03</b><h3>组合工作流</h3><p>告诉你如何把单个 Skill 组合成完整交付链。</p></article>
+          <article><b>04</b><h3>原创 Skill Pack</h3><p>提供经实践封装的原创能力与持续更新。</p></article>
+        </div>
+        <div class="sl-delivery-proof">
+          <div><strong>12+</strong><span>全年至少 12 期</span></div>
+          <div><strong>60–120</strong><span>全年精选 Skills</span></div>
+          <div><strong>365</strong><span>天持续服务</span></div>
+        </div>
       </div>
     </section>
 
-    <section class="sl-container sl-method">
-      <div class="sl-section-head"><span class="sl-eyebrow">BUYER FILTER</span><h2>每个候选都要过四道关。</h2></div>
-      <div class="sl-method-grid"><article><b>01</b><h3>来源</h3><p>官方或可追溯仓库，固定版本与许可清楚。</p></article><article><b>02</b><h3>权限</h3><p>检查脚本、网络、凭证、会话与对外写入。</p></article><article><b>03</b><h3>交付</h3><p>必须改善真实成果，而不是只增加仪式。</p></article><article><b>04</b><h3>验证</h3><p>必须有现场证据证明它确实有效。</p></article></div>
+    <section class="sl-band sl-skills" id="selected-skills">
+      <div class="sl-container">
+        <div class="sl-section-head sl-section-head-wide">
+          <span class="sl-eyebrow">SELECTED SKILLS</span>
+          <h2>精选不是列清单，而是构建一条交付链。</h2>
+          <p>第一期从发现、审计、执行到验证，已经把 Agent 真正完成工作的关键环节串在一起。</p>
+        </div>
+        <div class="sl-skill-grid">
+          <article class="featured"><span>DISCOVER</span><h3>find-skills</h3><p>发现当前任务真正需要的能力，而不是盲目安装。</p><small>Vercel Labs</small></article>
+          <article><span>AUDIT</span><h3>skill-supply-chain-audit</h3><p>安装前检查来源、脚本、权限和供应链风险。</p><small>Tech Bridge Original</small></article>
+          <article><span>DEBUG</span><h3>systematic-debugging</h3><p>建立可复现、可验证的系统调试路径。</p><small>obra / superpowers</small></article>
+          <article><span>VERIFY</span><h3>verification-before-completion</h3><p>在宣告完成之前，用现场证据验证真实结果。</p><small>obra / superpowers</small></article>
+          <article><span>EXECUTE</span><h3>agent-browser</h3><p>让 Agent 在浏览器中执行、观察并完成真实流程。</p><small>Vercel Labs</small></article>
+          <article><span>OPERATE</span><h3>lark-base</h3><p>把业务信息落进可持续维护的飞书数据系统。</p><small>Feishu Official</small></article>
+        </div>
+      </div>
     </section>
 
-    <section class="sl-checkout" id="checkout">
-      <div class="sl-container sl-checkout-grid">
-        <div><span class="sl-eyebrow">FOUNDING PRICE</span><h2>公开价 <s>¥999</s><br>创始价 ¥666</h2><p>一次性支付，有效期 365 天，不自动续费。付款成功后立即获得第 001 期、Skill Pack 和进阶社群入口。</p></div>
-        <form id="slCheckoutForm" data-endpoint="/api/member-subscription/create" novalidate>
-          <label for="slEmail">接收买手信与 Skill Pack 的邮箱</label>
-          <input id="slEmail" name="email" type="email" autocomplete="email" inputmode="email" placeholder="your@email.com" required>
-          <button id="slSubmit" type="submit">前往 Stripe 安全支付 →</button>
-          <p id="slStatus" aria-live="polite"></p>
-          <small>继续支付即表示你已阅读<a href="service-policy#delivery">订阅交付</a>、<a href="service-policy#refund">退款规则</a>和<a href="service-policy#privacy">隐私说明</a>。</small>
-        </form>
+    <section class="sl-issue" id="issue001">
+      <div class="sl-container sl-issue-grid sl-issue-grid-v2">
+        <div class="sl-issue-copy">
+          <span class="sl-eyebrow">ISSUE 001 · READY NOW</span>
+          <h2>第 001 期：把 Agent 从「会聊天」升级成「会交付」</h2>
+          <p>这不是 8 个平行工具，而是一条完整能力链：发现、审计、创建、设计、执行、调试、验证与业务落地。</p>
+          <ol><li>8 个全球精选 Skills</li><li>3 套组合工作流</li><li>45 分钟安装顺序</li><li>7 天实战路线</li><li>原创 skill-supply-chain-audit</li></ol>
+        </div>
+        <img src="skill-letter-001-preview.webp" alt="第 001 期 AI Skills 买手信完整页面预览" loading="lazy">
+      </div>
+    </section>
+
+    <section class="sl-band sl-method">
+      <div class="sl-container">
+        <div class="sl-section-head">
+          <span class="sl-eyebrow">BUYER FILTER</span>
+          <h2>每个候选，都要过四道关。</h2>
+        </div>
+        <div class="sl-method-grid"><article><b>01</b><h3>来源</h3><p>官方或可追溯仓库，固定版本与许可清楚。</p></article><article><b>02</b><h3>权限</h3><p>检查脚本、网络、凭证、会话与对外写入。</p></article><article><b>03</b><h3>交付</h3><p>必须改善真实成果，而不是只增加仪式。</p></article><article><b>04</b><h3>验证</h3><p>必须有现场证据证明它确实有效。</p></article></div>
+      </div>
+    </section>
+
+    <section class="sl-final-cta">
+      <div class="sl-container">
+        <div>
+          <span class="sl-eyebrow">365 DAYS · ¥666</span>
+          <h2>把筛选交给我们，<br>把时间留给真正的工作。</h2>
+          <p>一次支付，不自动续费。立即获得第 001 期，并开始一整年的 AI Skills 买手服务。</p>
+        </div>
+        <button class="sl-primary" type="button" data-scroll-checkout>填写邮箱，开始订阅 →</button>
       </div>
     </section>
   </main>
-  <footer><a href="/">TECH BRIDGE</a><span>AI Skills Buyer Service</span></footer>
-  <script src="skill-letter.js?v=1" defer></script>
+
+  <footer><strong>AI SKILLS</strong><span>Annual Buyer Service</span></footer>
+  <script src="skill-letter.js?v=2" defer></script>
 </body>
 </html>

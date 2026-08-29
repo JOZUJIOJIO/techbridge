@@ -27,7 +27,7 @@ create table if not exists public.partner_order_commissions (
   stripe_checkout_session_id text not null unique,
   stripe_payment_intent_id text,
   gross_amount integer not null check (gross_amount > 0),
-  commission_amount integer not null check (commission_amount in (20000, 40000)),
+  commission_amount integer not null check (commission_amount in (19980, 20000, 40000)),
   platform_gross_amount integer not null check (platform_gross_amount >= 0),
   currency text not null default 'cny',
   status text not null default 'pending' check (

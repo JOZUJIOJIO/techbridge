@@ -2,13 +2,17 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 
 import {
+  createPaymentOauthState,
   createOauthState,
   createPayoutHubHandler,
   verifyOauthState,
+  verifyPaymentOauthState,
+  wechatPaymentAuthorizeUrl,
   wechatAuthorizeUrl
 } from '../server/payout-hub/index.mjs';
 
 const ticket = `wbt_${'a'.repeat(43)}`;
+const paymentTicket = `wpo_${'b'.repeat(43)}`;
 const env = {
   PUBLIC_SITE_URL: 'https://qiaobit.com',
   WECHAT_APP_ID: 'wxaab68c7822881159',
@@ -31,6 +35,18 @@ test('OAuth state is short-lived, signed and bound to a one-time channel ticket'
   assert.equal(url.searchParams.get('redirect_uri'), 'https://siliconstory.cn/techbridge/oauth/callback');
 });
 
+test('payment OAuth state is compact, short-lived and separate from channel binding', () => {
+  const now = Date.UTC(2026, 7, 29);
+  const state = createPaymentOauthState(env.OAUTH_STATE_SECRET, paymentTicket, now);
+  assert.ok(state.length < 128);
+  assert.equal(verifyPaymentOauthState(env.OAUTH_STATE_SECRET, state, now + 1000).ticket, paymentTicket);
+  assert.equal(verifyPaymentOauthState(env.OAUTH_STATE_SECRET, `${state}x`, now + 1000), null);
+  assert.equal(verifyPaymentOauthState(env.OAUTH_STATE_SECRET, state, now + 11 * 60 * 1000), null);
+  const url = new URL(wechatPaymentAuthorizeUrl(env, state));
+  assert.equal(url.searchParams.get('scope'), 'snsapi_base');
+  assert.equal(url.searchParams.get('redirect_uri'), 'https://siliconstory.cn/techbridge/pay/callback');
+});
+
 test('OAuth callback binds the exact invited channel and redirects to its channel center', async () => {
   const calls = [];
   const fetchFn = async (url, init = {}) => {
@@ -48,7 +64,7 @@ test('OAuth callback binds the exact invited channel and redirects to its channe
   const state = authorize.searchParams.get('state');
   const callback = await handler(new Request(`https://siliconstory.cn/techbridge/oauth/callback?code=oauth-code&state=${encodeURIComponent(state)}`));
   assert.equal(callback.status, 302);
-  assert.equal(callback.headers.get('location'), 'https://qiaobit.com/channel?wechat=bound');
+  assert.equal(callback.headers.get('location'), 'https://qiaobit.com/earnings?wechat=bound');
   const bind = calls.find(({ href }) => href.endsWith('/rpc/bind_channel_wechat_identity'));
   const body = JSON.parse(bind.init.body);
   assert.equal(body.p_appid, 'wxaab68c7822881159');

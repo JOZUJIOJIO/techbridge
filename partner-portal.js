@@ -16,17 +16,18 @@ function tokenFromLocation() {
 
 const demoData = {
   success: true,
-  partner: { displayName: '未来科技社群', tier: 'standard', commission: { display: '¥200' }, payoutDelayDays: 8, payoutMethod: 'wechat_balance', minimumPayout: { amount: 10000, display: '¥100' }, wechatBound: true },
-  promotion: { link: 'https://qiaobit.com/s/future-tech', qr: '/internal/sample-partner-qr.svg' },
-  balance: { available: { amount: 40000, display: '¥400' }, pending: { display: '¥200' }, withdrawn: { display: '¥600' }, nextPayout: { amount: 20000, display: '¥200' } },
+  partner: { displayName: '未来科技社群', tier: 'standard', commission: { display: '¥199.80' }, payoutDelayDays: 1, payoutMethod: 'wechat_profit_sharing', autoSettlement: true, profitSharingReceiverReady: true, minimumPayout: { amount: 10000, display: '¥100' }, wechatBound: true },
+  promotion: { link: 'https://skills.siliconstory.cn/p/ai-skills-annual?ref=4827', qr: '/internal/sample-partner-qr.svg' },
+  products: [{ id:'p1',slug:'ai-skills-annual',name:'AI Skills 年度买手服务',summary:'全年至少12期，每期精选5到10个高价值AI Skills。',price:{amount:66600,display:'¥666'},commission:{amount:19980,display:'¥199.80'},posterEyebrow:'AI SKILLS BUYER SERVICE',posterTitle:'AI Skills 年度买手服务',posterSubtitle:'持续一年的高价值能力筛选',link:'https://skills.siliconstory.cn/p/ai-skills-annual?ref=4827',qr:'/internal/sample-partner-qr.svg'}],
+  balance: { available: { amount: 0, display: '¥0' }, pending: { display: '¥199.80' }, withdrawn: { display: '¥599.40' }, nextPayout: { amount: 0, display: '¥0' } },
   orders: [
-    { id: 'TB-26082921', createdAt: '2026-08-29T01:20:00Z', gross: { display: '¥666' }, commission: { display: '¥200' }, status: 'pending' },
-    { id: 'TB-26082011', createdAt: '2026-08-20T06:08:00Z', gross: { display: '¥666' }, commission: { display: '¥200' }, status: 'available' },
-    { id: 'TB-26081206', createdAt: '2026-08-12T10:32:00Z', gross: { display: '¥666' }, commission: { display: '¥200' }, status: 'withdrawn' }
+    { id: 'TB-26082921', createdAt: '2026-08-29T01:20:00Z', gross: { display: '¥666' }, commission: { display: '¥199.80' }, status: 'pending' },
+    { id: 'TB-26082011', createdAt: '2026-08-20T06:08:00Z', gross: { display: '¥666' }, commission: { display: '¥199.80' }, status: 'settling' },
+    { id: 'TB-26081206', createdAt: '2026-08-12T10:32:00Z', gross: { display: '¥666' }, commission: { display: '¥199.80' }, status: 'settled' }
   ]
 };
 
-const statusLabels = { pending: 'T+8 待结算', available: '可提现', withdrawing: '提现中', withdrawn: '已提现', cancelled: '已取消' };
+const statusLabels = { attention: '待人工处理', settling: '分账中', settled: '已到账', cancelled: '已取消' };
 const $ = (id) => document.getElementById(id);
 let portalData = null;
 let bindingStarted = false;
@@ -47,7 +48,8 @@ function imageFrom(src) {
 async function buildChannelPoster(data) {
   const canvas = $('channelPoster');
   const context = canvas.getContext('2d');
-  const qr = await imageFrom(data.promotion.qr);
+  const product = data.selectedProduct || data.products?.[0];
+  const qr = await imageFrom(product?.qr || data.promotion.qr);
   context.fillStyle = '#151513';
   context.fillRect(0, 0, canvas.width, canvas.height);
   context.fillStyle = '#f15d22';
@@ -67,11 +69,13 @@ async function buildChannelPoster(data) {
 
   context.fillStyle = '#f4f1eb';
   context.font = '700 76px system-ui';
-  context.fillText('AI Skills', 76, 280);
-  context.fillText('年度买手服务', 76, 378);
+  const title = String(product?.posterTitle || product?.name || 'AI Skills 年度买手服务');
+  const titleParts = title.includes(' ') ? title.split(' ') : [title.slice(0, 12), title.slice(12)];
+  context.fillText(titleParts[0] || title, 76, 280);
+  context.fillText(titleParts.slice(1).join(' ') || '年度精选服务', 76, 378);
   context.fillStyle = '#aaa39a';
   context.font = '400 30px system-ui';
-  context.fillText('不是信息堆砌，而是持续一年的高价值筛选', 76, 442);
+  context.fillText(String(product?.posterSubtitle || product?.summary || '持续一年的高价值筛选').slice(0, 28), 76, 442);
 
   context.fillStyle = '#20201d';
   context.fillRect(76, 520, 928, 300);
@@ -89,7 +93,7 @@ async function buildChannelPoster(data) {
   context.drawImage(qr, 100, 908, 382, 382);
   context.fillStyle = '#f4f1eb';
   context.font = '700 54px system-ui';
-  context.fillText('¥666', 582, 984);
+  context.fillText(product?.price?.display || '¥666', 582, 984);
   context.fillStyle = '#aaa39a';
   context.font = '400 28px system-ui';
   context.fillText('创始版 · 一年', 582, 1034);
@@ -99,8 +103,18 @@ async function buildChannelPoster(data) {
   context.fillStyle = '#777169';
   context.font = '400 22px system-ui';
   context.fillText(data.partner.displayName, 582, 1192);
-  context.fillText('qiaobit.com', 582, 1234);
+  context.fillText('skills.siliconstory.cn', 582, 1234);
   $('posterPreview').src = canvas.toDataURL('image/png');
+}
+
+function selectProduct(slug) {
+  const product = portalData?.products?.find((item) => item.slug === slug) || portalData?.products?.[0];
+  if (!product) return;
+  portalData.selectedProduct = product;
+  $('partnerLink').textContent = product.link;
+  $('partnerQr').src = product.qr;
+  $('openProduct').href = product.link;
+  buildChannelPoster(portalData).catch(() => { $('posterPreview').alt = '海报生成失败，请刷新重试'; });
 }
 
 async function beginWechatLogin() {
@@ -136,14 +150,17 @@ async function beginWechatLogin() {
 
 function render(data) {
   portalData = data;
+  const autoSettlement = data.partner.autoSettlement || data.partner.payoutMethod === 'wechat_profit_sharing';
   $('partnerName').textContent = `${data.partner.displayName}，你好。`;
   $('partnerTier').textContent = `${data.partner.tier === 'strategic' ? '战略渠道' : '标准渠道'} · ${data.partner.commission.display} / 单`;
   $('availableAmount').textContent = data.balance.available.display;
   $('pendingAmount').textContent = data.balance.pending.display;
   $('withdrawnAmount').textContent = data.balance.withdrawn.display;
-  $('partnerLink').textContent = data.promotion.link;
-  $('partnerQr').src = data.promotion.qr;
-  $('openProduct').href = data.promotion.link;
+  const products = data.products?.length ? data.products : [{ slug:'default',name:'当前产品',link:data.promotion.link,qr:data.promotion.qr }];
+  $('productSelect').replaceChildren(...products.map((product) => {
+    const option = document.createElement('option'); option.value = product.slug; option.textContent = `${product.name} · ${product.commission?.display || data.partner.commission.display}`; return option;
+  }));
+  data.products = products;
   const nextPayout = confirmRequestId
     ? { amount: 20_000, display: '¥200' }
     : (data.balance.nextPayout || data.balance.available);
@@ -158,6 +175,19 @@ function render(data) {
     : '微信登录中';
   if (!data.partner.wechatBound) {
     $('withdrawHint').textContent = '首次微信登录会自动绑定当前渠道身份，其他微信不能覆盖。';
+  }
+  if (autoSettlement) {
+    $('availableLabel').textContent = '待人工处理';
+    $('pendingLabel').textContent = '待微信结算';
+    $('settledLabel').textContent = '累计已到账';
+    $('settlementTitle').textContent = '自动分账';
+    $('settlementDescription').textContent = '订单达到微信结算条件后，每单 ¥199.80 直接分到当前微信零钱。';
+    $('walletMode').textContent = '微信支付官方订单分账';
+    $('wechatWithdraw').hidden = true;
+    $('withdrawAmount').closest('.withdraw-row').hidden = true;
+    $('withdrawHint').textContent = data.partner.profitSharingReceiverReady
+      ? '已登记为分账接收方，无需手动提现。'
+      : '微信身份绑定后，系统将自动登记分账接收关系。';
   }
   if (new URLSearchParams(location.search).get('wechat') === 'bound') {
     $('withdrawStatus').textContent = data.partner.wechatBound ? '微信身份绑定成功。' : '微信绑定正在同步，请稍后刷新。';
@@ -178,7 +208,9 @@ function render(data) {
     status.dataset.label = '状态';
     const badge = document.createElement('span');
     badge.className = `badge ${order.status}`;
-    badge.textContent = statusLabels[order.status] || order.status;
+    badge.textContent = order.status === 'pending'
+      ? '待微信结算'
+      : (statusLabels[order.status] || order.status);
     status.append(badge);
     row.append(status);
     return row;
@@ -186,7 +218,7 @@ function render(data) {
   $('ordersEmpty').hidden = data.orders.length > 0;
   $('portal').setAttribute('aria-busy', 'false');
   $('portalContent').hidden = false;
-  buildChannelPoster(data).catch(() => { $('posterPreview').alt = '海报生成失败，请刷新重试'; });
+  selectProduct(products[0].slug);
   if (!data.partner.wechatBound) setTimeout(beginWechatLogin, 80);
 }
 
@@ -233,6 +265,8 @@ $('copyLink').addEventListener('click', async (event) => {
   event.currentTarget.textContent = '已复制';
   setTimeout(() => { event.currentTarget.textContent = '复制链接'; }, 1200);
 });
+
+$('productSelect').addEventListener('change', (event) => selectProduct(event.currentTarget.value));
 
 $('saveQr').addEventListener('click', () => {
   const link = document.createElement('a');

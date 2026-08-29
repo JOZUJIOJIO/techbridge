@@ -1,0 +1,12 @@
+{
+  "name": "ai-skills-domestic-service",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "qrcode": "1.5.4"
+  },
+  "devDependencies": {
+    "esbuild": "0.25.9"
+  }
+}

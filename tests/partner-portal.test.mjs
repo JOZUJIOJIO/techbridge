@@ -28,9 +28,9 @@ test('summary scopes commissions to the authenticated partner and returns no cus
         expires_at: '2026-12-01T00:00:00Z',
         distribution_partners: {
           id: 'partner-id', partner_code: 'future-tech', display_name: '未来科技社群', partner_tier: 'standard',
-          commission_amount: 20000, payout_delay_days: 8, payout_method: 'wechat_balance', portal_enabled: true,
+          commission_amount: 20000, payout_delay_days: 8, payout_method: 'wechat_profit_sharing', portal_enabled: true,
           wechat_openid: 'o12345678901234567890', wechat_appid: 'wx_app', wechat_bound_at: '2026-08-29T00:00:00Z',
-          minimum_payout_amount: 10000, status: 'active'
+          minimum_payout_amount: 10000, profit_sharing_receiver_status: 'ready', status: 'active'
         }
       }]);
     }
@@ -38,10 +38,16 @@ test('summary scopes commissions to the authenticated partner and returns no cus
       assert.match(href, /partner_id=eq\.partner-id/);
       return Response.json([{
         id: 'commission-id', stripe_checkout_session_id: 'cs_live_TESTORDER123', gross_amount: 66600,
-        commission_amount: 20000, currency: 'cny', status: 'eligible', eligible_at: '2026-08-20T00:00:00Z',
+        commission_amount: 19980, currency: 'cny', status: 'eligible', eligible_at: '2026-08-20T00:00:00Z',
         transferred_at: null, created_at: '2026-08-12T00:00:00Z'
       }]);
     }
+    if (href.includes('/distribution_products?')) return Response.json([{
+      id: 'product-id', slug: 'ai-skills-annual', name: 'AI Skills 年度买手服务', summary: '年度精选',
+      landing_path: '/skills', price_amount: 66600, currency: 'cny', default_commission_amount: 19980,
+      poster_eyebrow: 'AI SKILLS', poster_title: 'AI Skills 年度买手服务', poster_subtitle: '年度精选'
+    }]);
+    if (href.includes('/distribution_product_commissions?')) return Response.json([{ product_id: 'product-id', commission_amount: 19980 }]);
     if (href.includes('/partner_portal_sessions?id=eq.session-id') && init.method === 'PATCH') return new Response(null, { status: 204 });
     throw new Error(`Unexpected fetch: ${href}`);
   };
@@ -54,9 +60,11 @@ test('summary scopes commissions to the authenticated partner and returns no cus
     });
     assert.equal(response.status, 200);
     const data = await response.json();
-    assert.equal(data.balance.available.amount, 20000);
-    assert.equal(data.balance.nextPayout.amount, 20000);
-    assert.equal(data.orders[0].commission.display, '¥200');
+    assert.equal(data.balance.available.amount, 19980);
+    assert.equal(data.balance.nextPayout.amount, 19980);
+    assert.equal(data.partner.commission.display, '¥199.80');
+    assert.equal(data.orders[0].commission.display, '¥199.80');
+    assert.equal(data.products[0].link, 'https://qiaobit.com/p/ai-skills-annual?ref=future-tech');
     assert.equal(JSON.stringify(data).includes('@'), false);
     await Promise.all(background);
   } finally {

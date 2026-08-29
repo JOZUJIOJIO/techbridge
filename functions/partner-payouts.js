@@ -70,6 +70,7 @@ export async function runPartnerPayouts(env) {
   }
   const now = new Date().toISOString();
   const params = new URLSearchParams({
+    order_provider: 'eq.stripe',
     status: 'in.(pending,eligible)',
     eligible_at: `lte.${now}`,
     select: 'id,partner_id,partner_code,partner_tier,stripe_checkout_session_id,stripe_payment_intent_id,commission_amount,currency,status,distribution_partners!inner(status,payout_method,payouts_enabled,connect_account_id)',
