@@ -56,6 +56,13 @@ begin
 end $$;
 
 create index if not exists paid_subscribers_status_idx on public.paid_subscribers(status);
+
+alter table public.paid_subscribers
+  add column if not exists partner_id uuid,
+  add column if not exists partner_code text,
+  add column if not exists partner_tier text,
+  add column if not exists partner_commission_amount integer,
+  add column if not exists partner_payout_delay_days integer;
 create index if not exists paid_subscribers_current_period_end_idx on public.paid_subscribers(current_period_end);
 
 alter table public.paid_subscribers enable row level security;
@@ -78,6 +85,7 @@ create table if not exists public.stripe_webhook_events (
 alter table public.stripe_webhook_events
   add column if not exists feishu_notified_at timestamptz,
   add column if not exists feishu_revenue_recorded_at timestamptz,
+  add column if not exists resend_contact_synced_at timestamptz,
   add column if not exists welcome_email_sent_at timestamptz,
   add column if not exists last_error text;
 
@@ -92,7 +100,7 @@ create table if not exists public.member_wecom_onboarding (
   stripe_checkout_session_id text not null unique,
   email text not null,
   state_token text not null unique,
-  automation_rule_key text not null default 'website_skill_email_9_9',
+  automation_rule_key text not null default 'website_skill_letter_annual',
   status text not null default 'waiting_for_wecom' check (
     status in ('waiting_for_wecom', 'wecom_added', 'group_invite_sent', 'group_joined', 'active', 'error')
   ),

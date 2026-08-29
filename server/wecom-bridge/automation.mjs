@@ -1,6 +1,7 @@
 import {
   ANNUAL_MEMBER_AUTOMATION,
   ANNUAL_MEMBER_RULE_KEY,
+  LEGACY_SKILL_EMAIL_RULE_KEY,
   SKILL_EMAIL_AUTOMATION,
   SKILL_EMAIL_RULE_KEY
 } from './commerce-rules.mjs';
@@ -46,7 +47,7 @@ export function defaultMemberRule(env) {
 }
 
 function fallbackRule(env, ruleKey) {
-  if (ruleKey === SKILL_EMAIL_RULE_KEY) return defaultSkillEmailRule(env);
+  if (ruleKey === SKILL_EMAIL_RULE_KEY || ruleKey === LEGACY_SKILL_EMAIL_RULE_KEY) return defaultSkillEmailRule(env);
   if (ruleKey === ANNUAL_MEMBER_RULE_KEY) return defaultMemberRule(env);
   return null;
 }
@@ -60,8 +61,9 @@ function isActive(rule) {
 }
 
 export async function loadAutomationRule(env, ruleKey) {
+  const canonicalRuleKey = ruleKey === LEGACY_SKILL_EMAIL_RULE_KEY ? SKILL_EMAIL_RULE_KEY : ruleKey;
   const params = new URLSearchParams({
-    rule_key: `eq.${ruleKey}`,
+    rule_key: `eq.${canonicalRuleKey}`,
     select: '*',
     limit: '1'
   });
@@ -69,14 +71,14 @@ export async function loadAutomationRule(env, ruleKey) {
     const response = await fetch(`${baseUrl(env)}/rest/v1/automation_rules?${params}`, {
       headers: headers(env)
     });
-    if (response.status === 404) return fallbackRule(env, ruleKey);
+    if (response.status === 404) return fallbackRule(env, canonicalRuleKey);
     if (!response.ok) throw new Error(`rule_read_failed:${response.status}`);
     const rule = (await response.json())[0];
-    if (!rule) return fallbackRule(env, ruleKey);
+    if (!rule) return fallbackRule(env, canonicalRuleKey);
     return isActive(rule) ? rule : null;
   } catch (error) {
     console.error(JSON.stringify({ event: 'automation_rule_fallback', reason: error.message }));
-    return fallbackRule(env, ruleKey);
+    return fallbackRule(env, canonicalRuleKey);
   }
 }
 

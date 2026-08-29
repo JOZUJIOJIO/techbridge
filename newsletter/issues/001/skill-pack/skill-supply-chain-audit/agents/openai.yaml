@@ -1,0 +1,4 @@
+interface:
+  display_name: "Skill Supply Chain Audit"
+  short_description: "Audit an Agent Skill before installation"
+  default_prompt: "Audit this Agent Skill package before I install it."

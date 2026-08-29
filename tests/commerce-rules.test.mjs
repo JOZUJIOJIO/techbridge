@@ -16,11 +16,11 @@ import {
   defaultSkillEmailRule
 } from '../server/wecom-bridge/automation.mjs';
 
-test('maps the current 9.9 skill-email plan to its own automation rule', () => {
+test('maps the annual AI Skills plan to a price-independent automation rule', () => {
   const automation = automationForPlan(SKILL_EMAIL_PLAN);
   assert.equal(automation.ruleKey, SKILL_EMAIL_RULE_KEY);
   assert.equal(automation.customerType, '付费订阅');
-  assert.deepEqual([...automation.tagNames], ['官网来源', '9.9元技能邮件订阅']);
+  assert.deepEqual([...automation.tagNames], ['官网来源', 'AI Skills年度订阅']);
   assert.doesNotMatch(automation.welcomeMessage, /199|年度会员/);
 });
 
@@ -33,7 +33,7 @@ test('keeps the historical annual member rule separate', () => {
 
 test('selects onboarding automation from Stripe metadata and safe legacy inference', () => {
   assert.equal(
-    automationFromSession({ metadata: { plan: SKILL_EMAIL_PLAN }, amount_total: 990 }).ruleKey,
+    automationFromSession({ metadata: { plan: SKILL_EMAIL_PLAN }, amount_total: 66_600 }).ruleKey,
     SKILL_EMAIL_RULE_KEY
   );
   assert.equal(
@@ -41,7 +41,7 @@ test('selects onboarding automation from Stripe metadata and safe legacy inferen
     ANNUAL_MEMBER_RULE_KEY
   );
   assert.equal(
-    automationFromSession({ metadata: {}, amount_total: 990 }).ruleKey,
+    automationFromSession({ metadata: {}, amount_total: 66_600 }).ruleKey,
     SKILL_EMAIL_RULE_KEY
   );
   assert.equal(

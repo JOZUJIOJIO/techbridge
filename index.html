@@ -50,7 +50,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <!-- 字重按实际用量裁剪：去掉未使用的 Mono 300、Sans SC 300/900、Serif SC 900，显著减少 CJK 字体加载 -->
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@400;700&family=Noto+Sans+SC:wght@400;700&family=Noto+Serif+SC:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=29">
+    <link rel="stylesheet" href="style.css?v=30">
     <link rel="stylesheet" href="jarvis-hud.css?v=6">
 
     <!-- Structured Data -->
@@ -1137,23 +1137,27 @@
 
             <article class="commercial-path commercial-path-member reveal" id="member-subscribe">
                 <div class="commercial-path-index">02</div>
-                <div class="commercial-path-meta">SKILL LETTER · 持续更新</div>
-                <h3>订阅 Tech Bridge 技能邮件</h3>
-                <p>输入邮箱，支付 9.9 元，接收我在真实项目中验证过、可以直接复用的技能与方法。</p>
+                <div class="partner-entry-context" id="partnerEntryContext" hidden>场景合伙人专属入口</div>
+                <div class="commercial-path-meta">AI SKILLS CURATOR · 创始订阅</div>
+                <h3>你的 AI 技能买手</h3>
+                <p>信息太多，你缺的不是更多链接，而是持续帮你判断、淘汰、实测和封装的人。</p>
                 <ul>
-                    <li>真实项目复盘：关键决策、结果与踩坑</li>
-                    <li>可直接使用的提示词、工作流与模板</li>
-                    <li>AI 商业化、内容增长与中国产品出海判断</li>
+                    <li>每月 1 期，精选 5–10 个经过审计与实测的 Skills</li>
+                    <li>附中文策展、安装顺序、风险边界与组合工作流</li>
+                    <li>365 天持续更新，加入进阶实践社群</li>
                 </ul>
-                <div class="skill-letter-delivery" aria-label="技能邮件交付说明">
-                    <span><strong>每月 2 封</strong><small>计划节奏</small></span>
-                    <span><strong>自动确认</strong><small>付款成功后</small></span>
-                    <span><strong>365 天</strong><small>一次性开通</small></span>
+                <div class="skill-letter-delivery" aria-label="AI Skills 年度买手服务交付说明">
+                    <span><strong>全年 12 期</strong><small>每月至少 1 期</small></span>
+                    <span><strong>5–10 个</strong><small>每期精选 Skills</small></span>
+                    <span><strong>365 天</strong><small>买手服务 + 社群</small></span>
                 </div>
-                <div class="commercial-price"><strong>¥9.9</strong><span>/ 365 天 · 一次性</span></div>
+                <div class="commercial-price skill-letter-price">
+                    <span class="commercial-price-public">公开价 <s>¥999</s></span>
+                    <strong>¥666</strong><span>/ 创始价 · 365 天</span>
+                </div>
                 <div class="commercial-member-actions">
-                    <button class="commercial-link commercial-link-orange" id="memberCheckoutToggle" type="button" aria-expanded="false" aria-controls="memberCheckout">立即订阅 →</button>
-                    <button class="skill-letter-sample-link open-skill-sample" type="button" data-analytics-event="skill_sample_open">先看一份样刊</button>
+                    <button class="commercial-link commercial-link-orange" id="memberCheckoutToggle" type="button" aria-expanded="false" aria-controls="memberCheckout">以创始价加入 →</button>
+                    <button class="skill-letter-sample-link open-skill-sample" type="button" data-analytics-event="skill_sample_open">查看第一期选品</button>
                 </div>
             </article>
 
@@ -1174,28 +1178,28 @@
 
         <div class="member-checkout" id="memberCheckout" hidden>
             <div class="member-checkout-copy">
-                <div class="paid-subscribe-kicker">Skill Letter</div>
-                <h3>你会得到什么</h3>
-                <p>技能邮件不做新闻搬运。它把我正在验证的产品、方法和商业判断，整理成可以直接使用的内容。</p>
+                <div class="paid-subscribe-kicker">AI Skills Buyer Service</div>
+                <h3>你买的不是链接，而是判断</h3>
+                <p>我会持续扫描全网 AI Skills，用真实项目把噱音过滤掉，把值得留下的能力组装成可直接复用的交付链。</p>
                 <ul class="member-checkout-benefits">
-                    <li><strong>项目复盘</strong><span>产品从 0 到 1、获客、商业化和出海过程</span></li>
-                    <li><strong>实用资料</strong><span>提示词、SOP、模板、案例和工具清单</span></li>
-                    <li><strong>决策参考</strong><span>重要趋势、机会判断与失败教训</span></li>
-                    <li><strong>持续更新</strong><span>新产品进展与可公开的内测资源</span></li>
+                    <li><strong>精选</strong><span>每月至少 1 期，从全网候选中只留 5–10 个</span></li>
+                    <li><strong>实测</strong><span>来源、脚本、权限、兼容性和真实交付效果</span></li>
+                    <li><strong>封装</strong><span>中文买手笔记、安装顺序、组合工作流和原创 Skill Pack</span></li>
+                    <li><strong>同行</strong><span>365 天更新与进阶社群，讨论 Skill 组合与生产实践</span></li>
                 </ul>
-                <button class="member-sample-inline open-skill-sample" type="button" data-analytics-event="skill_sample_open">预览样刊结构 <span>↗</span></button>
-                <button class="member-checkout-close" id="memberCheckoutClose" type="button" aria-label="关闭技能邮件订阅表单" title="关闭">
+                <button class="member-sample-inline open-skill-sample" type="button" data-analytics-event="skill_sample_open">预览第 001 期 <span>↗</span></button>
+                <button class="member-checkout-close" id="memberCheckoutClose" type="button" aria-label="关闭 AI Skills 年度买手服务订阅表单" title="关闭">
                     <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                 </button>
             </div>
             <form class="paid-subscribe-card" id="paidSubscribeForm" data-endpoint="/api/member-subscription/create" novalidate>
                 <div class="paid-subscribe-card-head">
-                    <span>Tech Bridge Skill Letter</span>
-                    <strong>¥9.9</strong>
+                    <span>Tech Bridge AI Skills</span>
+                    <strong><s>¥999</s> ¥666</strong>
                 </div>
                 <input type="hidden" name="plan" value="skill_email_365">
-                <p class="subscribe-single-plan">一次性支付 ¥9.9，有效期 365 天，不自动续费。填写邮箱后前往 Stripe 安全支付页。</p>
-                <label class="subscribe-email-label" for="paidSubscribeEmail">接收技能邮件的邮箱</label>
+                <p class="subscribe-single-plan">创始价一次性支付 ¥666，有效期 365 天，不自动续费。付款成功后立即获得第 001 期与 Skill Pack。</p>
+                <label class="subscribe-email-label" for="paidSubscribeEmail">接收买手信与 Skill Pack 的邮箱</label>
                 <div class="subscribe-email-row">
                     <input class="subscribe-email-input" id="paidSubscribeEmail" name="email" type="email" inputmode="email" autocomplete="email" placeholder="your@email.com" required>
                     <button class="subscribe-submit" id="paidSubscribeSubmit" type="submit">前往安全支付 →</button>
@@ -1206,8 +1210,8 @@
             <div class="member-payment-success" id="memberPaymentSuccess" hidden aria-live="polite">
                 <div class="member-payment-success-mark" aria-hidden="true">✓</div>
                 <div class="paid-subscribe-kicker">Payment confirmed</div>
-                <h3>支付成功，邮件订阅已开通</h3>
-                <p>你的支付和订阅资格已记录。后续技能内容将发送到付款邮箱。</p>
+                <h3>支付成功，年度买手服务已开通</h3>
+                <p>你的支付和服务资格已记录。第 001 期、Skill Pack 与社群入口将发送到付款邮箱。</p>
                 <dl class="member-payment-details">
                     <div><dt>订阅邮箱</dt><dd id="memberSuccessEmail">核验中</dd></div>
                     <div><dt>成交金额</dt><dd id="memberSuccessAmount">核验中</dd></div>
@@ -1215,7 +1219,7 @@
                 </dl>
                 <div class="member-payment-next">
                     <strong>接下来你会收到</strong>
-                    <span>系统会先发送开通确认。后续计划每月 2 封，内容包括项目复盘、提示词与 SOP、AI 商业化判断和技能更新。</span>
+                    <span>系统会先发送开通确认和第 001 期。后续每月至少 1 期，每期精选 5–10 个 Skills，全年至少 12 期。</span>
                 </div>
                 <a class="member-payment-home" href="#topics">先浏览精选内容 →</a>
             </div>
@@ -1228,41 +1232,42 @@
         <article class="skill-sample-panel" role="dialog" aria-modal="true" aria-labelledby="skillSampleTitle" aria-describedby="skillSampleDescription">
             <header class="skill-sample-head">
                 <div>
-                    <span>SKILL LETTER · SAMPLE 01</span>
+                    <span>SKILL LETTER · ISSUE 001</span>
                     <strong>TECH BRIDGE</strong>
                 </div>
                 <button class="skill-sample-close" id="skillSampleClose" type="button" aria-label="关闭样刊预览" title="关闭">×</button>
             </header>
             <div class="skill-sample-body">
-                <p class="skill-sample-eyebrow">样刊结构示例 · 约 6 分钟读完</p>
-                <h2 id="skillSampleTitle">如何把一个模糊需求，变成可以执行的 AI 工作流</h2>
-                <p id="skillSampleDescription">不讲泛泛的趋势，只拆一个真实项目中可以复用的决策和做法。</p>
+                <p class="skill-sample-eyebrow">全网精选第 001 期 · 8 个 Skills · 1 个原创 Skill Pack</p>
+                <h2 id="skillSampleTitle">把 Agent 从「会聊天」升级成「会交付」</h2>
+                <p id="skillSampleDescription">不做热门榜搬运。这一期只保留能构成「发现、审计、执行、调试、验证、业务落地」完整链路的能力。</p>
 
                 <section class="skill-sample-section">
-                    <span>01 · DECISION</span>
-                    <h3>先定义验收结果，再谈模型</h3>
-                    <p>把“做一个 AI 助手”改写为：谁在什么时候，用什么输入，需要系统返回什么可检查结果。</p>
+                    <span>01 · SELECTION</span>
+                    <h3>8 个选品，不是 8 个平行工具</h3>
+                    <p>find-skills → supply-chain-audit → skill-creator → frontend-design → agent-browser → systematic-debugging → verification-before-completion → lark-base。</p>
                 </section>
 
                 <section class="skill-sample-section">
-                    <span>02 · WORKFLOW</span>
-                    <h3>拆成三个不能混在一起的环节</h3>
+                    <span>02 · BUYER FILTER</span>
+                    <h3>每个 Skill 都要过四道关</h3>
                     <ol>
-                        <li><strong>收集</strong>只负责获得原始信息，不急着判断。</li>
-                        <li><strong>决策</strong>把规则、模型和人工审批分层。</li>
-                        <li><strong>交付</strong>输出可追踪的结果，而不是一段聊天文字。</li>
+                        <li><strong>来源</strong>是否来自官方或可追溯仓库。</li>
+                        <li><strong>权限</strong>是否读取凭证、会话或对外写入。</li>
+                        <li><strong>交付</strong>是否真正改善成果，而非只增加仪式。</li>
+                        <li><strong>验证</strong>是否有清楚证据证明它有效。</li>
                     </ol>
                 </section>
 
                 <section class="skill-sample-template">
-                    <span>03 · COPYABLE TEMPLATE</span>
-                    <code>目标 / 用户 / 输入 / 约束 / 输出 / 验收条件 / 人工介入点</code>
-                    <p>正式邮件会继续给出完整提示词、SOP、失败案例和工具清单。</p>
+                    <span>03 · ORIGINAL DELIVERY</span>
+                    <code>skill-supply-chain-audit → PASS / CONDITIONAL / REJECT + 风险分数 + 数据边界 + 修复清单</code>
+                    <p>正式交付包含完整买手信、固定版本源、3 套组合工作流、7 天实战路线，以及本期原创 Skill Pack。</p>
                 </section>
             </div>
             <footer class="skill-sample-footer">
-                <span>计划每月 2 封 · 重大项目节点加更</span>
-                <button id="sampleToCheckout" type="button" data-analytics-event="sample_to_checkout">¥9.9 开通 365 天 →</button>
+                <span>每月至少 1 期 · 每期 5–10 个精选 Skills</span>
+                <button id="sampleToCheckout" type="button" data-analytics-event="sample_to_checkout">¥666 创始价加入 →</button>
             </footer>
         </article>
     </div>
@@ -1349,7 +1354,7 @@
             </header>
 
             <div class="btx-chat-body">
-                <p class="visually-hidden" id="btxChatDescription">BTX 可以介绍技能邮件、产品与合作方式，并协助转接人工。</p>
+                <p class="visually-hidden" id="btxChatDescription">BTX 可以介绍 AI Skills 买手服务、产品与合作方式，并协助转接人工。</p>
                 <div class="btx-chat-messages" id="btxChatMessages" role="log" aria-live="polite" aria-relevant="additions">
                     <div class="btx-message btx-message-bot">
                         <span class="btx-message-label">BTX</span>
@@ -1358,7 +1363,7 @@
                 </div>
 
                 <div class="btx-quick-actions" id="btxQuickActions" aria-label="快捷咨询">
-                    <button type="button" data-btx-intent="membership">了解技能邮件</button>
+                    <button type="button" data-btx-intent="membership">了解 AI Skills 买手服务</button>
                     <button type="button" data-btx-intent="cooperation">咨询合作</button>
                     <button type="button" data-btx-intent="products">查看产品</button>
                     <button type="button" data-btx-intent="jarvis">体验 Jarvis</button>
@@ -1515,7 +1520,7 @@
     </div>
 
     <script src="analytics.js?v=1"></script>
-    <script src="main.js?v=28"></script>
+    <script src="main.js?v=29"></script>
     <script>
     (function() {
         var loading = false;

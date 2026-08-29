@@ -1,4 +1,6 @@
-const STRIPE_API_VERSION = '2026-02-25.clover';
+import { commissionForPartner, partnerFromRequest } from '../../lib/partner-program.js';
+
+const STRIPE_API_VERSION = '2026-07-29.dahlia';
 
 function json(data, status = 200) {
   return new Response(JSON.stringify(data), {
@@ -21,7 +23,7 @@ function sameOriginUrl(request, path) {
 
 async function createStripeCheckoutSession(env, request, payload) {
   const plan = 'skill_email_365';
-  const priceId = env.STRIPE_PRICE_ID_SKILL_EMAIL;
+  const priceId = env.STRIPE_PRICE_ID_SKILL_EMAIL_V2 || env.STRIPE_PRICE_ID_SKILL_EMAIL;
   const siteUrl = (env.PUBLIC_SITE_URL || sameOriginUrl(request, '')).replace(/\/$/, '');
   const successUrl = env.SUBSCRIPTION_SUCCESS_URL || `${siteUrl}/?subscription=success&session_id={CHECKOUT_SESSION_ID}#member-subscribe`;
   const cancelUrl = env.SUBSCRIPTION_CANCEL_URL || `${siteUrl}/?subscription=cancel#member-subscribe`;
@@ -29,9 +31,12 @@ async function createStripeCheckoutSession(env, request, payload) {
   if (!env.STRIPE_SECRET_KEY || !priceId) {
     return {
       missingConfig: true,
-      message: '技能邮件订阅支付正在配置中，请稍后再试。'
+      message: 'AI Skills 年度买手服务支付正在配置中，请稍后再试。'
     };
   }
+
+  const partner = await partnerFromRequest(env, request);
+  const partnerCommission = commissionForPartner(partner, 66_600);
 
   const body = new URLSearchParams();
   body.set('mode', 'payment');
@@ -42,13 +47,31 @@ async function createStripeCheckoutSession(env, request, payload) {
   body.set('line_items[0][quantity]', '1');
   body.set('success_url', successUrl);
   body.set('cancel_url', cancelUrl);
-  body.set('allow_promotion_codes', 'true');
+  body.set('allow_promotion_codes', partner ? 'false' : 'true');
   body.set('metadata[email]', payload.email);
   body.set('metadata[plan]', plan);
   body.set('metadata[source]', payload.source || 'qiaobit-homepage');
+  body.set('metadata[offer]', 'founding_666');
+  body.set('metadata[first_issue]', '001');
+  if (partner && partnerCommission) {
+    body.set('metadata[partner_id]', partner.id);
+    body.set('metadata[partner_code]', partner.partner_code);
+    body.set('metadata[partner_tier]', partner.partner_tier);
+    body.set('metadata[partner_commission]', String(partnerCommission));
+    body.set('metadata[partner_payout_delay]', String(partner.payout_delay_days || 8));
+  }
   body.set('payment_intent_data[metadata][email]', payload.email);
   body.set('payment_intent_data[metadata][plan]', plan);
   body.set('payment_intent_data[metadata][source]', payload.source || 'qiaobit-homepage');
+  body.set('payment_intent_data[metadata][offer]', 'founding_666');
+  body.set('payment_intent_data[metadata][first_issue]', '001');
+  if (partner && partnerCommission) {
+    body.set('payment_intent_data[metadata][partner_id]', partner.id);
+    body.set('payment_intent_data[metadata][partner_code]', partner.partner_code);
+    body.set('payment_intent_data[metadata][partner_tier]', partner.partner_tier);
+    body.set('payment_intent_data[metadata][partner_commission]', String(partnerCommission));
+    body.set('payment_intent_data[metadata][partner_payout_delay]', String(partner.payout_delay_days || 8));
+  }
 
   const res = await fetch('https://api.stripe.com/v1/checkout/sessions', {
     method: 'POST',

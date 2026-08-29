@@ -1,0 +1,43 @@
+@media (max-width: 700px) {
+  .orders {
+    border: 0;
+    overflow: visible;
+  }
+
+  table {
+    min-width: 0;
+  }
+
+  thead {
+    display: none;
+  }
+
+  tbody {
+    display: grid;
+    gap: 10px;
+  }
+
+  tr {
+    display: grid;
+    grid-template-columns: 1fr;
+    padding: 8px 14px;
+    border: 1px solid var(--line);
+    background: var(--panel);
+  }
+
+  td {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 0;
+    border: 0;
+    font-size: 12px;
+  }
+
+  td::before {
+    content: attr(data-label);
+    color: var(--muted);
+    font: 10px var(--mono);
+  }
+
+}

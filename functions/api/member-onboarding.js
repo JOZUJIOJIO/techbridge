@@ -5,7 +5,7 @@ import {
   automationForPlan
 } from '../../server/wecom-bridge/commerce-rules.mjs';
 
-const STRIPE_API_VERSION = '2026-02-25.clover';
+const STRIPE_API_VERSION = '2026-07-29.dahlia';
 
 function json(data, status = 200) {
   return new Response(JSON.stringify(data), {

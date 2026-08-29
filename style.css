@@ -2057,6 +2057,22 @@ a { text-decoration: none; color: inherit; }
 .commercial-path-start .commercial-path-meta { color: var(--green-light); }
 .commercial-path-member .commercial-path-meta { color: var(--orange-light); }
 
+.partner-entry-context {
+    width: fit-content;
+    margin: -20px 0 16px;
+    padding: 6px 9px;
+    border: 1px solid rgba(0, 140, 140, 0.46);
+    border-radius: 4px;
+    color: var(--green-light);
+    background: rgba(0, 140, 140, 0.08);
+    font-family: var(--font-mono);
+    font-size: 9px;
+    line-height: 1.2;
+    letter-spacing: 0;
+}
+
+.partner-entry-context[hidden] { display: none; }
+
 .commercial-path h3 {
     max-width: 280px;
     margin: 0 0 14px;
@@ -2184,6 +2200,26 @@ a { text-decoration: none; color: inherit; }
     font-size: 12px;
 }
 
+.skill-letter-price {
+    flex-wrap: wrap;
+    row-gap: 7px;
+}
+
+.skill-letter-price .commercial-price-public {
+    width: 100%;
+    color: var(--orange-light);
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0;
+}
+
+.skill-letter-price .commercial-price-public s {
+    margin-left: 5px;
+    color: var(--text-warm-grey);
+    text-decoration-color: var(--orange-main);
+    text-decoration-thickness: 1px;
+}
+
 .commercial-price-custom {
     display: grid;
     gap: 6px;
@@ -2281,8 +2317,8 @@ a { text-decoration: none; color: inherit; }
     margin-top: 42px;
     padding: 46px 0 0;
     display: grid;
-    grid-template-columns: minmax(0, 0.75fr) minmax(420px, 1fr);
-    gap: 64px;
+    grid-template-columns: minmax(0, 0.95fr) minmax(420px, 1.05fr);
+    gap: 48px;
     align-items: start;
     border-top: 1px solid rgba(233, 93, 33, 0.36);
     opacity: 0;
@@ -2753,6 +2789,14 @@ body.skill-sample-open {
     font-family: var(--font-cn-body);
     font-size: 18px;
     color: var(--text-warm-white);
+}
+
+.paid-subscribe-card-head strong s {
+    margin-right: 8px;
+    color: var(--text-warm-grey);
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration-color: var(--orange-main);
 }
 
 .subscribe-single-plan {

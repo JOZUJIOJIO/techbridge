@@ -616,7 +616,7 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
     }
 
     function onboardingMessage(data) {
-        if (data.groupJoined) return '已加入订阅用户群，技能邮件服务已全部激活。';
+        if (data.groupJoined) return '已加入订阅用户群，AI Skills 年度买手服务已全部激活。';
         if (data.status === 'group_invite_sent') return '已添加企业微信，订阅用户群入口已经自动发送给你。';
         if (data.wecomAdded) return '已识别你的订阅身份，正在发送订阅用户群入口...';
         return '请使用微信扫码添加。添加后无需发送订单截图，系统会自动识别。';
@@ -777,7 +777,17 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
     });
 })();
 
-// === 6f. BTX intelligent reception ===
+// === 6f. Partner referral context ===
+(function() {
+    var context = document.getElementById('partnerEntryContext');
+    if (!context) return;
+    var code = new URLSearchParams(window.location.search).get('partner') || '';
+    if (!/^[a-z0-9][a-z0-9-]{1,38}[a-z0-9]$/.test(code)) return;
+    context.hidden = false;
+    context.textContent = '场景合伙人专属入口 · ' + code.toUpperCase();
+})();
+
+// === 6g. BTX intelligent reception ===
 (function() {
     var trigger = document.getElementById('floatingSubscribe');
     var layer = document.getElementById('btxChatLayer');
@@ -807,8 +817,8 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
     var reduceMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     var routes = {
         membership: {
-            text: '技能邮件为一次性 ¥9.9，有效期 365 天，不自动续费。内容包括真实项目复盘、提示词、工作流、模板和商业判断。',
-            actions: [{ label: '查看并订阅', action: 'member' }]
+            text: 'AI Skills 年度买手服务创始价为 ¥666，有效期 365 天，不自动续费。每月至少 1 期，每期精选 5–10 个经过审计与实测的 Skills，并提供中文买手笔记、原创 Skill Pack 和进阶实践社群。',
+            actions: [{ label: '查看第一期并加入', action: 'member' }]
         },
         cooperation: {
             text: '可以。先用约 2 分钟说明目标、预算和启动时间，提交后需求会进入合作申请流程，再由人工评估和联系。',
@@ -1187,13 +1197,18 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
         updateHeroVisibility();
     }
 
-    var quietZone = document.getElementById('capabilities');
-    if (quietZone && 'IntersectionObserver' in window) {
+    var quietZones = Array.prototype.slice.call(document.querySelectorAll('#capabilities, #collab'));
+    if (quietZones.length && 'IntersectionObserver' in window) {
+        var visibleQuietZones = new Set();
         var quietZoneObserver = new IntersectionObserver(function(entries) {
-            quietZoneIsVisible = Boolean(entries[0] && entries[0].isIntersecting);
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) visibleQuietZones.add(entry.target);
+                else visibleQuietZones.delete(entry.target);
+            });
+            quietZoneIsVisible = visibleQuietZones.size > 0;
             syncTriggerVisibility();
         }, { threshold: 0.08 });
-        quietZoneObserver.observe(quietZone);
+        quietZones.forEach(function(zone) { quietZoneObserver.observe(zone); });
     }
 
     var syncSheetMode = function() {

@@ -17,6 +17,10 @@ tests
 worker.js
 wrangler.jsonc
 .dev.vars
+newsletter/
+internal/
+scripts/
+config/
 .dev.vars.example
 .env
 .env.*

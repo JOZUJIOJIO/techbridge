@@ -3,8 +3,19 @@ import * as memberSubscription from './functions/api/member-subscription/create.
 import * as memberSubscriptionStatus from './functions/api/member-subscription/status.js';
 import * as memberOnboarding from './functions/api/member-onboarding.js';
 import * as stripeWebhook from './functions/api/stripe-webhook.js';
+import * as skillPackDownload from './functions/api/skill-pack-download.js';
+import * as partnerReferral from './functions/api/partner-referral.js';
+import * as partnerQr from './functions/api/partner-qr.js';
+import * as partnerPortalSummary from './functions/api/partner-portal-summary.js';
+import * as partnerWithdrawal from './functions/api/partner-withdrawal.js';
+import * as channelWechatBindTicket from './functions/api/channel-wechat-bind-ticket.js';
 import * as analytics from './functions/api/analytics.js';
+import * as wechatPayWebhook from './functions/api/wechatpay-webhook.js';
+import * as wechatPayTransferWebhook from './functions/api/wechatpay-transfer-webhook.js';
 import { runAutomationSync } from './functions/automation-sync.js';
+import { runWechatPayReconcile } from './functions/api/wechatpay-webhook.js';
+import { runPartnerPayouts } from './functions/partner-payouts.js';
+import { runWechatPartnerPayoutReconcile } from './functions/partner-withdrawals.js';
 
 const API_ROUTES = new Map([
   ['/api/contact-inquiry', contactInquiry],
@@ -12,7 +23,14 @@ const API_ROUTES = new Map([
   ['/api/member-subscription/status', memberSubscriptionStatus],
   ['/api/member-onboarding', memberOnboarding],
   ['/api/analytics', analytics],
-  ['/api/stripe-webhook', stripeWebhook]
+  ['/api/stripe-webhook', stripeWebhook],
+  ['/api/skill-pack-download', skillPackDownload],
+  ['/api/partner-qr', partnerQr],
+  ['/api/partner-portal/summary', partnerPortalSummary],
+  ['/api/partner-portal/withdraw', partnerWithdrawal],
+  ['/api/channel/wechat/bind-ticket', channelWechatBindTicket],
+  ['/api/wechatpay-webhook', wechatPayWebhook],
+  ['/api/wechatpay-transfer-webhook', wechatPayTransferWebhook]
 ]);
 
 function json(data, status) {
@@ -45,6 +63,11 @@ export default {
       return env.ASSETS.fetch(new Request(url, request));
     }
 
+    const partnerMatch = url.pathname.match(/^\/s\/([a-z0-9][a-z0-9-]{1,38}[a-z0-9])\/?$/);
+    if (partnerMatch && request.method === 'GET') {
+      return partnerReferral.onRequestGet({ request, env, ctx, partnerCode: partnerMatch[1] });
+    }
+
     const handler = API_ROUTES.get(url.pathname);
 
     if (!handler) {
@@ -63,6 +86,11 @@ export default {
   },
 
   async scheduled(_controller, env, ctx) {
-    ctx.waitUntil(runAutomationSync(env));
+    ctx.waitUntil(Promise.all([
+      runAutomationSync(env),
+      runWechatPayReconcile(env),
+      runPartnerPayouts(env),
+      runWechatPartnerPayoutReconcile(env)
+    ]));
   }
 };

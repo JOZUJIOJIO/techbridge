@@ -1,0 +1,13 @@
+{
+  "name": "techbridge-official-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "check": "node --check main.js && node --check worker.js && node --check partner-portal.js && node --test tests/*.test.mjs",
+    "partner:link": "node scripts/create-partner-portal-link.mjs"
+  },
+  "dependencies": {
+    "qrcode": "1.5.4"
+  }
+}

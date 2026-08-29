@@ -1,0 +1,16 @@
+{
+  "issue": "001",
+  "title": "把 Agent 从会聊天升级成会交付的 8 个 Skills",
+  "published_at": "2026-08-28",
+  "selection_method": "source reputation, maintenance recency, license, static audit, compatibility, practical leverage",
+  "skills": [
+    { "name": "find-skills", "source": "vercel-labs/skills", "commit": "435076e78988e1e6ec40d00b0b1d76bdbbc5419a", "verdict": "recommend" },
+    { "name": "skill-supply-chain-audit", "source": "tech-bridge-original", "commit": "issue-001", "verdict": "recommend" },
+    { "name": "skill-creator", "source": "anthropics/skills", "commit": "3b3fad96af16a10759d930941b4520ba0c40edae", "verdict": "conditional" },
+    { "name": "frontend-design", "source": "anthropics/skills", "commit": "3b3fad96af16a10759d930941b4520ba0c40edae", "verdict": "recommend" },
+    { "name": "agent-browser", "source": "vercel-labs/agent-browser", "commit": "fbd046c23a2c1156891bda294aaaee715c23b3f1", "verdict": "conditional" },
+    { "name": "systematic-debugging", "source": "obra/superpowers", "commit": "b36e0829c6d0140e93cfef2ca599b1b07d4a7797", "verdict": "recommend" },
+    { "name": "verification-before-completion", "source": "obra/superpowers", "commit": "b36e0829c6d0140e93cfef2ca599b1b07d4a7797", "verdict": "recommend" },
+    { "name": "lark-base", "source": "feishu-official-lark-cli", "version": "1.2.2", "verdict": "conditional" }
+  ]
+}
