@@ -15,6 +15,8 @@ function env(extra = {}) {
     WECHATPAY_TRANSFER_APP_ID: 'wx_test_skill_letter',
     WECHATPAY_TRANSFER_SCENE_ID: '1005',
     WECHATPAY_TRANSFER_NOTIFY_URL: 'https://qiaobit.com/api/wechatpay-transfer-webhook',
+    PAYOUT_HUB_URL: 'https://siliconstory.cn',
+    PAYOUT_HUB_API_SECRET: 'payout-hub-secret',
     SUPABASE_URL: 'https://supabase.example.com',
     SUPABASE_SERVICE_ROLE_KEY: 'service-role',
     ...extra
@@ -30,10 +32,10 @@ test('scheduled reconciliation completes a transfer when WeChat reports success'
     if (href.includes('/partner_payout_requests?')) {
       return Response.json([{ id: 'request-id', out_bill_no: 'TBP20260829ABCDEF1234567890', status: 'processing' }]);
     }
-    if (href.includes('api.mch.weixin.qq.com/v3/fund-app/mch-transfer/transfer-bills/out-bill-no/')) {
+    if (href === 'https://siliconstory.cn/techbridge/transfer/query') {
       return Response.json({
         out_bill_no: 'TBP20260829ABCDEF1234567890',
-        transfer_bill_no: 'wx-transfer-id',
+        transferBillNo: 'wx-transfer-id',
         state: 'SUCCESS'
       });
     }

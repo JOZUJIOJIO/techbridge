@@ -1,4 +1,4 @@
-import { merchantTransferConfigured, queryWechatBalanceTransfer } from './lib/wechatpay-transfer.js';
+import { payoutHubConfigured, queryPayoutHubTransfer } from './lib/payout-hub-client.js';
 import { supabaseBaseUrl, supabaseServiceHeaders } from './lib/partner-portal.js';
 
 async function rpc(env, name, body) {
@@ -19,7 +19,7 @@ async function saveError(env, id, error) {
 }
 
 export async function runWechatPartnerPayoutReconcile(env) {
-  if (!merchantTransferConfigured(env) || !env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) {
+  if (!payoutHubConfigured(env) || !env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) {
     return { skipped: true, reason: 'wechat_transfer_not_configured' };
   }
   const before = new Date(Date.now() - 60_000).toISOString();
@@ -40,7 +40,7 @@ export async function runWechatPartnerPayoutReconcile(env) {
 
   for (const request of requests) {
     try {
-      const transfer = await queryWechatBalanceTransfer(env, request.out_bill_no);
+      const transfer = await queryPayoutHubTransfer(env, request.out_bill_no);
       if (transfer.state === 'SUCCESS') {
         await rpc(env, 'complete_partner_payout_request', {
           p_out_bill_no: request.out_bill_no,

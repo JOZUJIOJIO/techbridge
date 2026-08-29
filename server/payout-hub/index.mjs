@@ -2,7 +2,16 @@ import { createHash, createHmac, randomBytes, timingSafeEqual } from 'node:crypt
 import { createServer } from 'node:http';
 import { pathToFileURL } from 'node:url';
 
+import {
+  createWechatTransfer,
+  decryptWechatCallback,
+  queryWechatTransfer,
+  transferEnabled,
+  verifyWechatCallback
+} from './wechat-transfer.mjs';
+
 const STATE_TTL_MS = 10 * 60 * 1000;
+const API_SIGNATURE_TTL_MS = 5 * 60 * 1000;
 
 function required(env, names) {
   const missing = names.filter((name) => !env[name]);
@@ -19,6 +28,20 @@ function hash(value) {
 
 function sign(secret, value) {
   return createHmac('sha256', secret).update(value).digest('base64url');
+}
+
+export function payoutHubSignature(secret, timestamp, body) {
+  return createHmac('sha256', secret).update(`${timestamp}.${body}`).digest('hex');
+}
+
+export function verifyPayoutHubRequest(env, request, body, now = Date.now()) {
+  const timestamp = String(request.headers.get('x-tb-timestamp') || '');
+  const signature = String(request.headers.get('x-tb-signature') || '');
+  const millis = /^\d{13}$/.test(timestamp) ? Number(timestamp) : Number.NaN;
+  return Boolean(env.PAYOUT_HUB_API_SECRET)
+    && Number.isFinite(millis)
+    && Math.abs(now - millis) <= API_SIGNATURE_TTL_MS
+    && safeEqual(payoutHubSignature(env.PAYOUT_HUB_API_SECRET, timestamp, body), signature);
 }
 
 function safeEqual(left, right) {
@@ -114,6 +137,15 @@ async function bindChannel(env, ticket, openid, fetchFn) {
   if (!response.ok) throw new Error(`channel_wechat_bind_failed:${data.message || response.status}`);
 }
 
+async function payoutRpc(env, name, body, fetchFn) {
+  const response = await fetchFn(`${supabaseBase(env)}/rest/v1/rpc/${name}`, {
+    method: 'POST',
+    headers: supabaseHeaders(env),
+    body: JSON.stringify(body)
+  });
+  if (!response.ok) throw new Error(`${name}_failed:${response.status}`);
+}
+
 function redirect(location, status = 302) {
   return new Response(null, { status, headers: { location, 'cache-control': 'no-store' } });
 }
@@ -157,6 +189,61 @@ export function createPayoutHubHandler(env = process.env, fetchFn = fetch) {
       }
     }
 
+    if (url.pathname === '/techbridge/transfer/create' && request.method === 'POST') {
+      const body = await request.text();
+      if (!verifyPayoutHubRequest(env, request, body)) return Response.json({ error: 'unauthorized' }, { status: 401 });
+      if (!transferEnabled(env)) return Response.json({ error: 'transfer_disabled' }, { status: 503 });
+      try {
+        const input = JSON.parse(body);
+        return Response.json(await createWechatTransfer(env, input, fetchFn), { headers: { 'cache-control': 'no-store' } });
+      } catch (error) {
+        console.error(JSON.stringify({ event: 'payout_hub_transfer_create_failed', reason: error.message }));
+        return Response.json({ error: 'transfer_failed' }, { status: 502 });
+      }
+    }
+
+    if (url.pathname === '/techbridge/transfer/query' && request.method === 'POST') {
+      const body = await request.text();
+      if (!verifyPayoutHubRequest(env, request, body)) return Response.json({ error: 'unauthorized' }, { status: 401 });
+      if (!transferEnabled(env)) return Response.json({ error: 'transfer_disabled' }, { status: 503 });
+      try {
+        const input = JSON.parse(body);
+        return Response.json(await queryWechatTransfer(env, input.outBillNo, fetchFn), { headers: { 'cache-control': 'no-store' } });
+      } catch (error) {
+        console.error(JSON.stringify({ event: 'payout_hub_transfer_query_failed', reason: error.message }));
+        return Response.json({ error: 'query_failed' }, { status: 502 });
+      }
+    }
+
+    if (url.pathname === '/techbridge/transfer/callback' && request.method === 'POST') {
+      const body = await request.text();
+      if (!verifyWechatCallback(env, body, request.headers)) return Response.json({ error: 'invalid_signature' }, { status: 401 });
+      try {
+        const notification = JSON.parse(body);
+        const transfer = decryptWechatCallback(env, notification.resource);
+        const outBillNo = String(transfer.out_bill_no || '');
+        const state = String(transfer.state || transfer.transfer_bill_state || '').toUpperCase();
+        if (!/^TBP[A-Z0-9]{10,29}$/.test(outBillNo)) return Response.json({ error: 'invalid_out_bill_no' }, { status: 400 });
+        if (transfer.appid && transfer.appid !== env.WXPAY_TRANSFER_APPID) return Response.json({ error: 'appid_mismatch' }, { status: 403 });
+        if (state === 'SUCCESS') {
+          await payoutRpc(env, 'complete_partner_payout_request', {
+            p_out_bill_no: outBillNo,
+            p_external_transfer_id: String(transfer.transfer_bill_no || '')
+          }, fetchFn);
+        } else if (['FAIL', 'FAILED', 'CANCELLED', 'CANCELED'].includes(state)) {
+          await payoutRpc(env, 'release_partner_payout_by_bill_no', {
+            p_out_bill_no: outBillNo,
+            p_error: String(transfer.fail_reason || transfer.fail_reason_type || state).slice(0, 500),
+            p_cancelled: state === 'CANCELLED' || state === 'CANCELED'
+          }, fetchFn);
+        }
+        return new Response(null, { status: 204 });
+      } catch (error) {
+        console.error(JSON.stringify({ event: 'payout_hub_transfer_callback_failed', reason: error.message }));
+        return Response.json({ error: 'callback_failed' }, { status: 500 });
+      }
+    }
+
     return new Response('Not found', { status: 404 });
   };
 }
@@ -166,7 +253,24 @@ export function startPayoutHub(env = process.env) {
   const port = Number(env.PORT || 8792);
   const server = createServer(async (request, response) => {
     const origin = `http://${request.headers.host || `127.0.0.1:${port}`}`;
-    const body = await handler(new Request(new URL(request.url || '/', origin), { method: request.method, headers: request.headers }));
+    const chunks = [];
+    let size = 0;
+    for await (const chunk of request) {
+      size += chunk.length;
+      if (size > 1024 * 1024) {
+        response.writeHead(413, { 'content-type': 'text/plain; charset=utf-8' });
+        response.end('Payload too large');
+        return;
+      }
+      chunks.push(chunk);
+    }
+    const requestBody = Buffer.concat(chunks);
+    const init = {
+      method: request.method,
+      headers: request.headers,
+      ...(!['GET', 'HEAD'].includes(request.method || 'GET') ? { body: requestBody, duplex: 'half' } : {})
+    };
+    const body = await handler(new Request(new URL(request.url || '/', origin), init));
     response.writeHead(body.status, Object.fromEntries(body.headers));
     response.end(Buffer.from(await body.arrayBuffer()));
   });

@@ -14,6 +14,7 @@
     "WECHATPAY_TRANSFER_SCENE_ID": "1005",
     "WECHATPAY_TRANSFER_APP_ID": "wxaab68c7822881159",
     "WECHAT_OAUTH_HUB_URL": "https://siliconstory.cn",
+    "PAYOUT_HUB_URL": "https://siliconstory.cn",
     "WECOM_BRIDGE_URL": "https://api.siliconstory.cn",
     "FEISHU_REVENUE_BASE_TOKEN": "CBmDbVmVJaYwaes47cgcfPwknPd",
     "FEISHU_REVENUE_TABLE_ID": "tblOiNE9apjU64dI",

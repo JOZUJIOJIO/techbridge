@@ -1,4 +1,4 @@
-import { createWechatBalanceTransfer, merchantTransferConfigured } from '../lib/wechatpay-transfer.js';
+import { createPayoutHubTransfer, payoutHubConfigured } from '../lib/payout-hub-client.js';
 import {
   partnerPortalSession,
   payoutBillNumber,
@@ -38,7 +38,7 @@ async function updateRequest(env, id, patch) {
 }
 
 export async function onRequestPost({ request, env }) {
-  if (!merchantTransferConfigured(env)) {
+  if (!payoutHubConfigured(env)) {
     return json({
       error: 'withdrawal_not_enabled',
       message: '微信零钱提现正在配置中，当前不会创建或锁定提现单。'
@@ -103,7 +103,7 @@ export async function onRequestPost({ request, env }) {
       last_error: null
     });
     transferAttempted = true;
-    const transfer = await createWechatBalanceTransfer(env, {
+    const transfer = await createPayoutHubTransfer(env, {
       outBillNo,
       openid: partner.wechat_openid,
       amount: Number(payoutRequest.amount),

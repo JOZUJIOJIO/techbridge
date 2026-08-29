@@ -15,6 +15,7 @@ if [[ -z "$supabase_key" ]]; then
 fi
 
 scp -i "$SSH_KEY" "$ROOT/server/payout-hub/index.mjs" "$SERVER:/tmp/techbridge-payout-hub-index.mjs"
+scp -i "$SSH_KEY" "$ROOT/server/payout-hub/wechat-transfer.mjs" "$SERVER:/tmp/techbridge-payout-hub-wechat-transfer.mjs"
 scp -i "$SSH_KEY" "$ROOT/server/payout-hub/techbridge-payout-hub.service" "$SERVER:/tmp/techbridge-payout-hub.service"
 scp -i "$SSH_KEY" "$ROOT/server/payout-hub/nginx-location.conf" "$SERVER:/tmp/techbridge-payout-hub-nginx.conf"
 scp -i "$SSH_KEY" "$ROOT/server/payout-hub/install-remote.sh" "$SERVER:/tmp/techbridge-payout-hub-install.sh"
