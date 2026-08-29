@@ -62,6 +62,7 @@ export async function createWechatTransfer(env, payout, fetchFn = fetch) {
   if (!/^TBP[A-Z0-9]{10,29}$/.test(String(payout.outBillNo || ''))) throw new Error('invalid_out_bill_no');
   if (!/^o[A-Za-z0-9_-]{20,}$/.test(String(payout.openid || ''))) throw new Error('invalid_openid');
   if (Number(payout.amount) !== 20_000) throw new Error('invalid_transfer_amount');
+  const systemTest = payout.purpose === 'channel_system_test';
 
   const body = {
     appid: env.WXPAY_TRANSFER_APPID,
@@ -69,12 +70,12 @@ export async function createWechatTransfer(env, payout, fetchFn = fetch) {
     transfer_scene_id: '1005',
     openid: payout.openid,
     transfer_amount: 20_000,
-    transfer_remark: 'Tech Bridge渠道收入',
+    transfer_remark: systemTest ? 'Tech Bridge渠道测试报酬' : 'Tech Bridge渠道收入',
     notify_url: env.WXPAY_TRANSFER_NOTIFY_URL,
     user_recv_perception: '劳务报酬',
     transfer_scene_report_infos: [
-      { info_type: '岗位类型', info_content: '渠道推广' },
-      { info_type: '报酬说明', info_content: 'AI Skills订单渠道佣金' }
+      { info_type: '岗位类型', info_content: systemTest ? '渠道系统测试' : '渠道推广' },
+      { info_type: '报酬说明', info_content: systemTest ? '首次渠道系统联调报酬' : 'AI Skills订单渠道佣金' }
     ]
   };
   const data = await request(env, 'POST', CREATE_PATH, body, fetchFn);
@@ -99,6 +100,16 @@ export async function queryWechatTransfer(env, outBillNo, fetchFn = fetch) {
     transferBillNo: data.transfer_bill_no,
     state: String(data.state || data.transfer_bill_state || '').toUpperCase(),
     failReason: data.fail_reason || data.fail_reason_type || ''
+  };
+}
+
+export async function queryOperationBalance(env, fetchFn = fetch) {
+  required(env, ['WXPAY_MCHID', 'WXPAY_CERT_SERIAL', 'WXPAY_PRIVATE_KEY_PATH']);
+  const data = await request(env, 'GET', '/v3/merchant/fund/balance/OPERATION', null, fetchFn);
+  return {
+    availableAmount: Number(data.available_amount || 0),
+    pendingAmount: Number(data.pending_amount || 0),
+    currency: 'cny'
   };
 }
 

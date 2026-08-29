@@ -5,6 +5,7 @@ import { pathToFileURL } from 'node:url';
 import {
   createWechatTransfer,
   decryptWechatCallback,
+  queryOperationBalance,
   queryWechatTransfer,
   transferEnabled,
   verifyWechatCallback
@@ -152,7 +153,7 @@ function redirect(location, status = 302) {
 
 function errorPage(message, status = 400) {
   const text = String(message || '微信绑定未完成').replace(/[<>&"']/g, '');
-  return new Response(`<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>微信绑定</title><style>body{margin:0;background:#151513;color:#f4f1eb;font-family:system-ui;padding:48px 24px}main{max-width:620px;margin:auto;border:1px solid #3c3934;padding:28px}a{color:#20b8b1}</style><main><h1>微信绑定未完成</h1><p>${text}</p><p><a href="https://qiaobit.com/partner-portal.html">返回渠道中心</a></p></main>`, {
+  return new Response(`<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>微信绑定</title><style>body{margin:0;background:#151513;color:#f4f1eb;font-family:system-ui;padding:48px 24px}main{max-width:620px;margin:auto;border:1px solid #3c3934;padding:28px}a{color:#20b8b1}</style><main><h1>微信绑定未完成</h1><p>${text}</p><p><a href="https://qiaobit.com/channel">返回渠道中心</a></p></main>`, {
     status,
     headers: { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' }
   });
@@ -182,7 +183,7 @@ export function createPayoutHubHandler(env = process.env, fetchFn = fetch) {
         const openid = await exchangeOauthCode(env, code, fetchFn);
         await bindChannel(env, state.ticket, openid, fetchFn);
         const site = String(env.PUBLIC_SITE_URL || 'https://qiaobit.com').replace(/\/$/, '');
-        return redirect(`${site}/partner-portal.html?wechat=bound`);
+        return redirect(`${site}/channel?wechat=bound`);
       } catch (error) {
         console.error(JSON.stringify({ event: 'channel_wechat_oauth_failed', reason: error.message }));
         return errorPage('微信身份绑定失败，请返回渠道中心重新尝试。', 502);
@@ -212,6 +213,17 @@ export function createPayoutHubHandler(env = process.env, fetchFn = fetch) {
       } catch (error) {
         console.error(JSON.stringify({ event: 'payout_hub_transfer_query_failed', reason: error.message }));
         return Response.json({ error: 'query_failed' }, { status: 502 });
+      }
+    }
+
+    if (url.pathname === '/techbridge/transfer/balance' && request.method === 'POST') {
+      const body = await request.text();
+      if (!verifyPayoutHubRequest(env, request, body)) return Response.json({ error: 'unauthorized' }, { status: 401 });
+      try {
+        return Response.json(await queryOperationBalance(env, fetchFn), { headers: { 'cache-control': 'no-store' } });
+      } catch (error) {
+        console.error(JSON.stringify({ event: 'payout_hub_balance_query_failed', reason: error.message }));
+        return Response.json({ error: 'balance_query_failed' }, { status: 502 });
       }
     }
 

@@ -5,7 +5,8 @@
   "scripts": {
     "test": "node --test tests/*.test.mjs",
     "check": "node --check main.js && node --check worker.js && node --check partner-portal.js && node --test tests/*.test.mjs",
-    "partner:link": "node scripts/create-partner-portal-link.mjs"
+    "partner:link": "node scripts/create-partner-portal-link.mjs",
+    "channel:create": "node scripts/create-channel.mjs"
   },
   "dependencies": {
     "qrcode": "1.5.4"

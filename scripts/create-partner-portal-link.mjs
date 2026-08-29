@@ -46,4 +46,4 @@ if (!create.ok) {
 
 console.log(`渠道: ${partner.display_name}`);
 console.log(`有效期至: ${expiresAt}`);
-console.log(`专属后台: ${site}/partner-portal.html#token=${token}`);
+console.log(`渠道主入口: ${site}/channel#token=${token}`);

@@ -26,7 +26,7 @@
     "SKILL_PACK_ISSUE_001_KEY": "issue-001/techbridge-skill-pack-001.zip",
     "STRIPE_PRICE_ID_SKILL_EMAIL_V2": "price_1U9bF1CpzB6DL6bb9WHymXMX",
     "PARTNER_PAYOUTS_ENABLED": "false",
-    "WECHATPAY_MERCHANT_TRANSFER_ENABLED": "false",
+    "WECHATPAY_MERCHANT_TRANSFER_ENABLED": "true",
     "WECHATPAY_TRANSFER_NOTIFY_URL": "https://qiaobit.com/api/wechatpay-transfer-webhook"
   },
   "triggers": {

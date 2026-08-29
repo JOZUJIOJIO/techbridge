@@ -1,6 +1,7 @@
 const demoVariant = new URLSearchParams(location.search).get('demo') || '';
 const demoMode = ['127.0.0.1', 'localhost'].includes(location.hostname)
   && (demoVariant === '1' || demoVariant === 'bind');
+const confirmRequestId = new URLSearchParams(location.search).get('confirm') || '';
 const tokenKey = 'techbridge_partner_portal_token';
 
 function tokenFromLocation() {
@@ -28,9 +29,109 @@ const demoData = {
 const statusLabels = { pending: 'T+8 待结算', available: '可提现', withdrawing: '提现中', withdrawn: '已提现', cancelled: '已取消' };
 const $ = (id) => document.getElementById(id);
 let portalData = null;
+let bindingStarted = false;
 
 function dateLabel(value) {
   return new Intl.DateTimeFormat('zh-CN', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false }).format(new Date(value));
+}
+
+function imageFrom(src) {
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+    image.onload = () => resolve(image);
+    image.onerror = reject;
+    image.src = src;
+  });
+}
+
+async function buildChannelPoster(data) {
+  const canvas = $('channelPoster');
+  const context = canvas.getContext('2d');
+  const qr = await imageFrom(data.promotion.qr);
+  context.fillStyle = '#151513';
+  context.fillRect(0, 0, canvas.width, canvas.height);
+  context.fillStyle = '#f15d22';
+  context.fillRect(0, 0, canvas.width, 18);
+  context.fillStyle = '#20b8b1';
+  context.fillRect(0, 18, canvas.width, 8);
+
+  context.fillStyle = '#f15d22';
+  context.fillRect(76, 74, 72, 72);
+  context.fillStyle = '#ffffff';
+  context.font = '700 42px system-ui';
+  context.textAlign = 'center';
+  context.fillText('Q', 112, 125);
+  context.textAlign = 'left';
+  context.font = '700 34px system-ui';
+  context.fillText('TECH BRIDGE', 172, 124);
+
+  context.fillStyle = '#f4f1eb';
+  context.font = '700 76px system-ui';
+  context.fillText('AI Skills', 76, 280);
+  context.fillText('年度买手服务', 76, 378);
+  context.fillStyle = '#aaa39a';
+  context.font = '400 30px system-ui';
+  context.fillText('不是信息堆砌，而是持续一年的高价值筛选', 76, 442);
+
+  context.fillStyle = '#20201d';
+  context.fillRect(76, 520, 928, 300);
+  context.fillStyle = '#f4f1eb';
+  context.font = '600 34px system-ui';
+  ['全年 12 期精选', '每期 5-10 个高价值 Skill', '真实项目复盘与可复用工作流'].forEach((line, index) => {
+    context.fillStyle = index === 0 ? '#f15d22' : index === 1 ? '#20b8b1' : '#e3ba45';
+    context.fillRect(116, 578 + index * 82, 14, 14);
+    context.fillStyle = '#f4f1eb';
+    context.fillText(line, 160, 603 + index * 82);
+  });
+
+  context.fillStyle = '#ffffff';
+  context.fillRect(76, 884, 430, 430);
+  context.drawImage(qr, 100, 908, 382, 382);
+  context.fillStyle = '#f4f1eb';
+  context.font = '700 54px system-ui';
+  context.fillText('¥666', 582, 984);
+  context.fillStyle = '#aaa39a';
+  context.font = '400 28px system-ui';
+  context.fillText('创始版 · 一年', 582, 1034);
+  context.fillStyle = '#f4f1eb';
+  context.font = '600 34px system-ui';
+  context.fillText('微信扫码了解并订阅', 582, 1142);
+  context.fillStyle = '#777169';
+  context.font = '400 22px system-ui';
+  context.fillText(data.partner.displayName, 582, 1192);
+  context.fillText('qiaobit.com', 582, 1234);
+  $('posterPreview').src = canvas.toDataURL('image/png');
+}
+
+async function beginWechatLogin() {
+  if (bindingStarted || portalData?.partner.wechatBound) return;
+  bindingStarted = true;
+  const status = $('withdrawStatus');
+  $('wechatWithdraw').hidden = true;
+  $('wechatBound').textContent = '登录中';
+  if (demoMode) {
+    status.textContent = '微信打开专属入口后，将静默登录并自动绑定渠道身份。';
+    return;
+  }
+  if (!/MicroMessenger/i.test(navigator.userAgent)) {
+    status.textContent = '请在微信内打开这条专属渠道入口。';
+    $('wechatBound').textContent = '等待微信登录';
+    return;
+  }
+  status.textContent = '正在登录微信并确认渠道身份…';
+  try {
+    const response = await fetch('/api/channel/wechat/bind-ticket', {
+      method: 'POST',
+      headers: { authorization: `Bearer ${tokenFromLocation()}` }
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(data.message || '微信登录入口创建失败。');
+    if (data.alreadyBound) return location.reload();
+    location.assign(data.authorizeUrl);
+  } catch (error) {
+    status.textContent = error.message;
+    $('wechatBound').textContent = '登录失败';
+  }
 }
 
 function render(data) {
@@ -43,15 +144,20 @@ function render(data) {
   $('partnerLink').textContent = data.promotion.link;
   $('partnerQr').src = data.promotion.qr;
   $('openProduct').href = data.promotion.link;
-  const nextPayout = data.balance.nextPayout || data.balance.available;
+  const nextPayout = confirmRequestId
+    ? { amount: 20_000, display: '¥200' }
+    : (data.balance.nextPayout || data.balance.available);
   $('withdrawAmount').textContent = nextPayout.display;
-  $('wechatBound').textContent = data.partner.wechatBound ? '已绑定' : '未绑定';
+  $('wechatBound').textContent = data.partner.wechatBound ? '微信已登录' : '准备登录';
   $('wechatWithdraw').disabled = data.partner.wechatBound
-    ? nextPayout.amount < data.partner.minimumPayout.amount
+    ? (!confirmRequestId && nextPayout.amount < data.partner.minimumPayout.amount)
     : false;
-  $('wechatWithdraw').textContent = data.partner.wechatBound ? '确认收款到微信零钱' : '绑定微信';
+  $('wechatWithdraw').hidden = false;
+  $('wechatWithdraw').textContent = data.partner.wechatBound
+    ? (confirmRequestId ? '确认领取 ¥200' : '提现')
+    : '微信登录中';
   if (!data.partner.wechatBound) {
-    $('withdrawHint').textContent = '该邀请只绑定当前渠道资格。首次绑定成功后，其他微信不能覆盖。';
+    $('withdrawHint').textContent = '首次微信登录会自动绑定当前渠道身份，其他微信不能覆盖。';
   }
   if (new URLSearchParams(location.search).get('wechat') === 'bound') {
     $('withdrawStatus').textContent = data.partner.wechatBound ? '微信身份绑定成功。' : '微信绑定正在同步，请稍后刷新。';
@@ -80,6 +186,8 @@ function render(data) {
   $('ordersEmpty').hidden = data.orders.length > 0;
   $('portal').setAttribute('aria-busy', 'false');
   $('portalContent').hidden = false;
+  buildChannelPoster(data).catch(() => { $('posterPreview').alt = '海报生成失败，请刷新重试'; });
+  if (!data.partner.wechatBound) setTimeout(beginWechatLogin, 80);
 }
 
 function showError(message) {
@@ -126,6 +234,20 @@ $('copyLink').addEventListener('click', async (event) => {
   setTimeout(() => { event.currentTarget.textContent = '复制链接'; }, 1200);
 });
 
+$('saveQr').addEventListener('click', () => {
+  const link = document.createElement('a');
+  link.href = $('partnerQr').src;
+  link.download = `${portalData?.partner.code || 'techbridge-channel'}-qr.svg`;
+  link.click();
+});
+
+$('savePoster').addEventListener('click', () => {
+  const link = document.createElement('a');
+  link.href = $('channelPoster').toDataURL('image/png');
+  link.download = `${portalData?.partner.code || 'techbridge-channel'}-poster.png`;
+  link.click();
+});
+
 $('wechatWithdraw').addEventListener('click', async (event) => {
   const button = event.currentTarget;
   const status = $('withdrawStatus');
@@ -139,16 +261,23 @@ $('wechatWithdraw').addEventListener('click', async (event) => {
     return;
   }
   const token = tokenFromLocation();
-  if (!portalData?.partner.wechatBound) {
+  if (!portalData?.partner.wechatBound) return beginWechatLogin();
+  if (confirmRequestId) {
     try {
-      const response = await fetch('/api/channel/wechat/bind-ticket', {
+      const response = await fetch('/api/channel/payout/confirm', {
         method: 'POST',
-        headers: { authorization: `Bearer ${token}` }
+        headers: { authorization: `Bearer ${token}`, 'content-type': 'application/json' },
+        body: JSON.stringify({ requestId: confirmRequestId })
       });
       const data = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(data.message || '微信绑定入口创建失败。');
-      if (data.alreadyBound) return location.reload();
-      location.assign(data.authorizeUrl);
+      if (!response.ok) throw new Error(data.state === 'processing' ? '转账正在处理中，请稍后刷新。' : '这笔转账暂时无法确认。');
+      if (data.state === 'success') {
+        status.textContent = '¥200 已成功转入微信零钱。';
+        return;
+      }
+      await requestMerchantTransfer(data);
+      status.textContent = '微信已受理。到账后页面会自动更新。';
+      setTimeout(() => location.reload(), 1800);
     } catch (error) {
       status.textContent = error.message;
       button.disabled = false;

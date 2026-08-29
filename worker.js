@@ -9,6 +9,7 @@ import * as partnerQr from './functions/api/partner-qr.js';
 import * as partnerPortalSummary from './functions/api/partner-portal-summary.js';
 import * as partnerWithdrawal from './functions/api/partner-withdrawal.js';
 import * as channelWechatBindTicket from './functions/api/channel-wechat-bind-ticket.js';
+import * as channelPayoutConfirm from './functions/api/channel-payout-confirm.js';
 import * as analytics from './functions/api/analytics.js';
 import * as wechatPayWebhook from './functions/api/wechatpay-webhook.js';
 import * as wechatPayTransferWebhook from './functions/api/wechatpay-transfer-webhook.js';
@@ -29,6 +30,7 @@ const API_ROUTES = new Map([
   ['/api/partner-portal/summary', partnerPortalSummary],
   ['/api/partner-portal/withdraw', partnerWithdrawal],
   ['/api/channel/wechat/bind-ticket', channelWechatBindTicket],
+  ['/api/channel/payout/confirm', channelPayoutConfirm],
   ['/api/wechatpay-webhook', wechatPayWebhook],
   ['/api/wechatpay-transfer-webhook', wechatPayTransferWebhook]
 ]);
@@ -60,6 +62,11 @@ export default {
 
     if (url.pathname === '/ByteDanceVerify.html') {
       url.pathname = '/ByteDanceVerify';
+      return env.ASSETS.fetch(new Request(url, request));
+    }
+
+    if ((url.pathname === '/channel' || url.pathname === '/channel/') && ['GET', 'HEAD'].includes(request.method)) {
+      url.pathname = '/partner-portal';
       return env.ASSETS.fetch(new Request(url, request));
     }
 

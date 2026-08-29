@@ -8,6 +8,7 @@
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/partner-portal.css">
   <link rel="stylesheet" href="/partner-portal-mobile.css">
+  <link rel="stylesheet" href="/channel-promotion.css?v=20260829-1">
 </head>
 <body>
   <header class="topbar shell">
@@ -30,9 +31,10 @@
 
       <section class="section">
         <div class="section-head"><h2>专属推广入口</h2><p>二维码和链接自动记录你的渠道。直接发送即可，支付与内容交付由 Tech Bridge 完成。</p></div>
-        <div class="promote">
+        <div class="promote assets-grid">
           <div class="link-panel"><label>专属链接</label><div class="link" id="partnerLink"></div><div class="actions"><button class="primary" id="copyLink" type="button">复制链接</button><a class="secondary button" id="openProduct" href="#" target="_blank" rel="noopener">查看产品页</a></div></div>
-          <div class="qr-panel"><img id="partnerQr" src="" alt="专属推广二维码"><span>长按保存二维码<br>适合朋友圈与海报</span></div>
+          <div class="qr-panel asset-panel"><img id="partnerQr" src="" alt="专属推广二维码"><div><strong>专属二维码</strong><span>扫码进入同一个 Skill 落地页</span><button class="secondary compact" id="saveQr" type="button">保存二维码</button></div></div>
+          <div class="poster-panel asset-panel"><img id="posterPreview" alt="渠道推广海报预览"><canvas id="channelPoster" width="1080" height="1440" hidden></canvas><div><strong>品牌海报</strong><span>适合朋友圈、社群与线下活动</span><button class="secondary compact" id="savePoster" type="button">保存海报</button></div></div>
         </div>
       </section>
 
@@ -52,6 +54,6 @@
       </section>
     </div>
   </main>
-  <script type="module" src="/partner-portal.js"></script>
+  <script type="module" src="/partner-portal.js?v=20260829-3"></script>
 </body>
 </html>

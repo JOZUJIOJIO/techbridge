@@ -48,7 +48,7 @@ test('OAuth callback binds the exact invited channel and redirects to its channe
   const state = authorize.searchParams.get('state');
   const callback = await handler(new Request(`https://siliconstory.cn/techbridge/oauth/callback?code=oauth-code&state=${encodeURIComponent(state)}`));
   assert.equal(callback.status, 302);
-  assert.equal(callback.headers.get('location'), 'https://qiaobit.com/partner-portal.html?wechat=bound');
+  assert.equal(callback.headers.get('location'), 'https://qiaobit.com/channel?wechat=bound');
   const bind = calls.find(({ href }) => href.endsWith('/rpc/bind_channel_wechat_identity'));
   const body = JSON.parse(bind.init.body);
   assert.equal(body.p_appid, 'wxaab68c7822881159');
