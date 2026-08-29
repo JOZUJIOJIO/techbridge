@@ -9,6 +9,7 @@ ARCHIVE="$(mktemp /tmp/ai-skills-site.XXXXXX.tar.gz)"
 trap 'rm -f "$ARCHIVE"' EXIT
 
 FILES=(
+  assets/ai-skills
   skill-letter.html
   skill-letter.js
   skill-letter.css
