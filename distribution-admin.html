@@ -13,7 +13,7 @@
   <main>
     <section class="da-login" id="daLogin">
       <span>OWNER ACCESS</span><h1>分销管理后台</h1>
-      <form id="daLoginForm"><label for="daKey">管理员访问码</label><div><input id="daKey" type="password" autocomplete="current-password" required><button type="submit">进入后台</button></div><p id="daLoginStatus"></p></form>
+      <form id="daLoginForm"><label for="daKey">管理员密码</label><div><input id="daKey" type="password" autocomplete="current-password" required><button type="submit">进入后台</button></div><p id="daLoginStatus"></p></form>
     </section>
 
     <div id="daApp" hidden>
@@ -45,6 +45,6 @@
 
   <dialog id="inviteDialog"><form method="dialog" id="inviteForm"><header><h2>新建渠道邀请</h2><button value="cancel" aria-label="关闭" type="submit">×</button></header><label for="inviteLabel">接收人或渠道名称</label><input id="inviteLabel" maxlength="80" placeholder="例如：张三 / 未来科技社群" required><footer><button value="cancel" class="secondary" type="submit">取消</button><button value="default" class="primary" id="createInvite" type="button">生成随机邀请</button></footer><p id="inviteStatus"></p></form></dialog>
   <dialog id="productDialog"><form method="dialog" id="productForm"><header><h2>新增可分销产品</h2><button value="cancel" aria-label="关闭" type="submit">×</button></header><div class="form-grid"><label>产品名称<input id="productName" required></label><label>产品 slug<input id="productSlug" placeholder="ai-product"></label><label>落地页路径<input id="productPath" placeholder="/product"></label><label>价格（元）<input id="productPrice" type="number" min="1"></label><label>渠道收入（元）<input id="productCommission" type="number" min="1"></label><label class="full">产品简介<textarea id="productSummary" rows="3"></textarea></label></div><footer><button value="cancel" class="secondary" type="submit">取消</button><button value="default" class="primary" id="createProduct" type="button">创建产品</button></footer><p id="productStatus"></p></form></dialog>
-  <script type="module" src="/distribution-admin.js?v=1"></script>
+  <script type="module" src="/distribution-admin.js?v=2"></script>
 </body>
 </html>

@@ -31,7 +31,7 @@ function render(data){dashboard=data;$('mRevenue').textContent=data.metrics.reve
   $('daLogin').hidden=true;$('daApp').hidden=false;$('daLogout').hidden=false;
 }
 
-async function load(){if(demoMode)return render(demoData);if(!adminSecret)return;try{render(await api())}catch(error){sessionStorage.removeItem(secretKey);adminSecret='';$('daLoginStatus').textContent='访问码无效。'}}
+async function load(){if(demoMode)return render(demoData);if(!adminSecret)return;try{render(await api())}catch(error){sessionStorage.removeItem(secretKey);adminSecret='';$('daLoginStatus').textContent='管理员密码无效。'}}
 $('daLoginForm').onsubmit=async event=>{event.preventDefault();adminSecret=$('daKey').value.trim();sessionStorage.setItem(secretKey,adminSecret);$('daLoginStatus').textContent='正在读取…';await load()};
 $('daLogout').onclick=()=>{sessionStorage.removeItem(secretKey);location.reload()};
 document.querySelectorAll('[data-tab]').forEach(button=>button.onclick=()=>{document.querySelectorAll('[data-tab]').forEach(item=>item.classList.toggle('active',item===button));document.querySelectorAll('[data-panel]').forEach(panel=>panel.classList.toggle('active',panel.dataset.panel===button.dataset.tab))});
