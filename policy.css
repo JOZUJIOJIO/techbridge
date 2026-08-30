@@ -214,6 +214,11 @@
     font-weight: 800;
 }
 
+.policy-footer-meta { display: grid; justify-items: end; gap: 8px; text-align: right; }
+.policy-footer-meta div { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px 16px; }
+.policy-footer-meta div a { color: var(--text-warm-grey); font-family: var(--font-mono); font-size: 10px; font-weight: 400; }
+.policy-footer-meta div a:hover { color: var(--green-light); }
+
 @media (max-width: 760px) {
     .policy-topbar { padding: 0 20px; }
     .policy-main,
@@ -235,4 +240,7 @@
     .policy-index { grid-template-columns: 1fr; }
     .policy-index a { min-height: 64px; }
     .policy-contact > a { font-size: 12px; }
+    .policy-footer { min-height: 132px; align-items: flex-start; flex-direction: column; justify-content: center; gap: 14px; }
+    .policy-footer-meta { justify-items: start; text-align: left; }
+    .policy-footer-meta div { justify-content: flex-start; }
 }
