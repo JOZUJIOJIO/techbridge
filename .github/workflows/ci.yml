@@ -1,0 +1,39 @@
+name: Verify website
+
+on:
+  pull_request:
+    branches: [master]
+  push:
+    branches-ignore: [master]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Run website checks
+        run: npm run check
+
+      - name: Build Cloudflare deployment package
+        run: npm run deploy:dry-run
+        env:
+          WRANGLER_LOG_PATH: /tmp/wrangler-ci.log

@@ -2,7 +2,7 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "techbridge",
   "main": "worker.js",
-  "compatibility_date": "2026-07-13",
+  "compatibility_date": "2026-08-31",
   "compatibility_flags": [
     "nodejs_compat"
   ],
@@ -10,36 +10,8 @@
     "enabled": true
   },
   "vars": {
-    "WECHATPAY_MCHID": "1111987017",
-    "WECHATPAY_TRANSFER_SCENE_ID": "1005",
-    "WECHATPAY_TRANSFER_APP_ID": "wxaab68c7822881159",
-    "WECHAT_OAUTH_HUB_URL": "https://siliconstory.cn",
-    "PAYOUT_HUB_URL": "https://siliconstory.cn",
-    "WECOM_BRIDGE_URL": "https://api.siliconstory.cn",
-    "FEISHU_REVENUE_BASE_TOKEN": "CBmDbVmVJaYwaes47cgcfPwknPd",
-    "FEISHU_REVENUE_TABLE_ID": "tblOiNE9apjU64dI",
-    "FEISHU_REVENUE_BASE_URL": "https://mwl7eu6k5hr.feishu.cn/base/CBmDbVmVJaYwaes47cgcfPwknPd",
-    "FEISHU_AUTOMATION_BASE_TOKEN": "CBmDbVmVJaYwaes47cgcfPwknPd",
-    "FEISHU_AUTOMATION_RULES_TABLE_ID": "tblNaoc3lq5mPI75",
-    "FEISHU_CUSTOMER_ATTRIBUTION_TABLE_ID": "tbl3Msyhv5AMFjI8",
-    "FEISHU_AUTOMATION_LOG_TABLE_ID": "tblOsIcCEVTB6aus",
-    "SKILL_PACK_ISSUE_001_KEY": "issue-001/techbridge-skill-pack-001.zip",
-    "STRIPE_PRICE_ID_SKILL_EMAIL_V2": "price_1U9bF1CpzB6DL6bb9WHymXMX",
-    "PARTNER_PAYOUTS_ENABLED": "false",
-    "WECHATPAY_MERCHANT_TRANSFER_ENABLED": "true",
-    "WECHATPAY_TRANSFER_NOTIFY_URL": "https://qiaobit.com/api/wechatpay-transfer-webhook"
+    "PUBLIC_SITE_URL": "https://qiaobit.com"
   },
-  "triggers": {
-    "crons": [
-      "*/5 * * * *"
-    ]
-  },
-  "kv_namespaces": [
-    {
-      "binding": "SKILL_PACKS",
-      "id": "17acdecb5fee4d9b96fc14acf13be0e2"
-    }
-  ],
   "assets": {
     "directory": ".",
     "binding": "ASSETS",

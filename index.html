@@ -174,15 +174,16 @@
                 "name": "桥比特创建的 AI 产品矩阵",
                 "itemListElement": [
                     { "@type": "ListItem", "position": 1, "name": "硅基物语", "url": "https://siliconstory.cn/" },
-                    { "@type": "ListItem", "position": 2, "name": "择偶定位", "url": "https://mate.siliconstory.cn/" },
-                    { "@type": "ListItem", "position": 3, "name": "有问必显", "description": "AI 搜索可见度优化工具，也称 GEO。" },
-                    { "@type": "ListItem", "position": 4, "name": "Kairos", "url": "https://x-kairos.com/" },
-                    { "@type": "ListItem", "position": 5, "name": "Creator Studio" },
-                    { "@type": "ListItem", "position": 6, "name": "Novart" },
-                    { "@type": "ListItem", "position": 7, "name": "虚拟偶像 林雪妮", "url": "https://shirleylin.cc/" },
-                    { "@type": "ListItem", "position": 8, "name": "地球 Online" },
+                    { "@type": "ListItem", "position": 2, "name": "AI Skills 年度买手服务", "url": "https://skills.siliconstory.cn/skills", "description": "全年至少 12 期，每期精选 5 至 10 个高价值 AI Skills，并提供中文买手判断、原创 Skill Pack 与进阶实践社群。" },
+                    { "@type": "ListItem", "position": 3, "name": "择偶定位", "url": "https://mate.siliconstory.cn/" },
+                    { "@type": "ListItem", "position": 4, "name": "有问必显", "description": "AI 搜索可见度优化工具，也称 GEO。" },
+                    { "@type": "ListItem", "position": 5, "name": "Kairos", "url": "https://x-kairos.com/" },
+                    { "@type": "ListItem", "position": 6, "name": "虚拟偶像 林雪妮", "url": "https://shirleylin.cc/" },
+                    { "@type": "ListItem", "position": 7, "name": "Creator Studio" },
+                    { "@type": "ListItem", "position": 8, "name": "Novart" },
                     { "@type": "ListItem", "position": 9, "name": "超模算力", "url": "https://supmodai.com/", "description": "聚焦培训与咨询的算力服务公司。" },
-                    { "@type": "ListItem", "position": 10, "name": "电商AI素材通", "description": "外贸社媒素材生产工具，一张产品图生成朋友圈文案、产品场景图和短视频素材。" }
+                    { "@type": "ListItem", "position": 10, "name": "电商AI素材通", "description": "外贸社媒素材生产工具，一张产品图生成朋友圈文案、产品场景图和短视频素材。" },
+                    { "@type": "ListItem", "position": 11, "name": "地球 Online" }
                 ]
             },
             {
@@ -884,6 +885,19 @@
                     </div>
                 </div>
             </a>
+            <a class="project-card project-card-ai-skills reveal" href="https://skills.siliconstory.cn/skills" target="_blank" rel="noopener noreferrer" data-analytics-event="project_ai_skills">
+                <img class="project-visual" src="project-ai-skills.webp" alt="" loading="lazy" aria-hidden="true">
+                <div class="project-card-content">
+                    <div class="project-icon"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h5M8 17h7"/></svg></div>
+                    <div class="project-name">AI Skills 年度买手服务</div>
+                    <div class="project-desc">全年至少 12 期，每期精选 5–10 个高价值 AI Skills，提供中文买手判断、原创 Skill Pack 与进阶实践社群。创始订阅价 ¥666。</div>
+                    <div class="project-meta">
+                        <span class="project-status status-live">订阅开放</span>
+                        <span class="project-tag">AI Skills × 年度订阅</span>
+                        <span class="project-action">查看订阅 →</span>
+                    </div>
+                </div>
+            </a>
             <a class="project-card reveal" href="https://mate.siliconstory.cn/" target="_blank" rel="noopener noreferrer">
                 <img class="project-visual" src="project-mate-positioning.webp" alt="" loading="lazy" aria-hidden="true">
                 <div class="project-card-content">
@@ -999,7 +1013,7 @@
                 </div>
             </div>
         </div>
-        <button class="projects-toggle" id="projectsToggle" aria-expanded="false">展开全部 10 个产品 ↓</button>
+        <button class="projects-toggle" id="projectsToggle" aria-expanded="false">展开全部 11 个产品 ↓</button>
 
         <div class="hardware-products reveal" id="hardware-products" aria-labelledby="hardwareProductsTitle">
             <div class="hardware-products-head">
@@ -1137,7 +1151,6 @@
 
             <article class="commercial-path commercial-path-member reveal" id="member-subscribe">
                 <div class="commercial-path-index">02</div>
-                <div class="partner-entry-context" id="partnerEntryContext" hidden>场景合伙人专属入口</div>
                 <div class="commercial-path-meta">AI SKILLS CURATOR · 创始订阅</div>
                 <h3>你的 AI 技能买手</h3>
                 <p>信息太多，你缺的不是更多链接，而是持续帮你判断、淘汰、实测和封装的人。</p>
@@ -1156,8 +1169,8 @@
                     <strong>¥666</strong><span>/ 创始价 · 365 天</span>
                 </div>
                 <div class="commercial-member-actions">
-                    <button class="commercial-link commercial-link-orange" id="memberCheckoutToggle" type="button" aria-expanded="false" aria-controls="memberCheckout">以创始价加入 →</button>
-                    <button class="skill-letter-sample-link open-skill-sample" type="button" data-analytics-event="skill_sample_open">查看第一期选品</button>
+                    <a class="commercial-link commercial-link-orange" href="https://skills.siliconstory.cn/skills" target="_blank" rel="noopener noreferrer" data-analytics-event="skill_subscription_open">以创始价加入 →</a>
+                    <a class="skill-letter-sample-link" href="https://skills.siliconstory.cn/skills#issue001" target="_blank" rel="noopener noreferrer" data-analytics-event="skill_sample_open">查看第一期选品</a>
                 </div>
             </article>
 
@@ -1176,101 +1189,7 @@
             </article>
         </div>
 
-        <div class="member-checkout" id="memberCheckout" hidden>
-            <div class="member-checkout-copy">
-                <div class="paid-subscribe-kicker">AI Skills Buyer Service</div>
-                <h3>你买的不是链接，而是判断</h3>
-                <p>我会持续扫描全网 AI Skills，用真实项目把噱音过滤掉，把值得留下的能力组装成可直接复用的交付链。</p>
-                <ul class="member-checkout-benefits">
-                    <li><strong>精选</strong><span>每月至少 1 期，从全网候选中只留 5–10 个</span></li>
-                    <li><strong>实测</strong><span>来源、脚本、权限、兼容性和真实交付效果</span></li>
-                    <li><strong>封装</strong><span>中文买手笔记、安装顺序、组合工作流和原创 Skill Pack</span></li>
-                    <li><strong>同行</strong><span>365 天更新与进阶社群，讨论 Skill 组合与生产实践</span></li>
-                </ul>
-                <button class="member-sample-inline open-skill-sample" type="button" data-analytics-event="skill_sample_open">预览第 001 期 <span>↗</span></button>
-                <button class="member-checkout-close" id="memberCheckoutClose" type="button" aria-label="关闭 AI Skills 年度买手服务订阅表单" title="关闭">
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                </button>
-            </div>
-            <form class="paid-subscribe-card" id="paidSubscribeForm" data-endpoint="/api/member-subscription/create" novalidate>
-                <div class="paid-subscribe-card-head">
-                    <span>Tech Bridge AI Skills</span>
-                    <strong><s>¥999</s> ¥666</strong>
-                </div>
-                <input type="hidden" name="plan" value="skill_email_365">
-                <p class="subscribe-single-plan">创始价一次性支付 ¥666，有效期 365 天，不自动续费。付款成功后立即获得第 001 期与 Skill Pack。</p>
-                <label class="subscribe-email-label" for="paidSubscribeEmail">接收买手信与 Skill Pack 的邮箱</label>
-                <div class="subscribe-email-row">
-                    <input class="subscribe-email-input" id="paidSubscribeEmail" name="email" type="email" inputmode="email" autocomplete="email" placeholder="your@email.com" required>
-                    <button class="subscribe-submit" id="paidSubscribeSubmit" type="submit">前往安全支付 →</button>
-                </div>
-                <p class="subscribe-trust">支付将在 Stripe Checkout 完成；本页面不会保存银行卡信息。继续支付即表示你已阅读<a href="service-policy#delivery" target="_blank" rel="noopener">订阅交付</a>、<a href="service-policy#refund" target="_blank" rel="noopener">退款规则</a>和<a href="service-policy#privacy" target="_blank" rel="noopener">隐私说明</a>。</p>
-                <p class="subscribe-status" id="paidSubscribeStatus" aria-live="polite"></p>
-            </form>
-            <div class="member-payment-success" id="memberPaymentSuccess" hidden aria-live="polite">
-                <div class="member-payment-success-mark" aria-hidden="true">✓</div>
-                <div class="paid-subscribe-kicker">Payment confirmed</div>
-                <h3>支付成功，年度买手服务已开通</h3>
-                <p>你的支付和服务资格已记录。第 001 期、Skill Pack 与社群入口将发送到付款邮箱。</p>
-                <dl class="member-payment-details">
-                    <div><dt>订阅邮箱</dt><dd id="memberSuccessEmail">核验中</dd></div>
-                    <div><dt>成交金额</dt><dd id="memberSuccessAmount">核验中</dd></div>
-                    <div><dt>有效期至</dt><dd id="memberSuccessUntil">核验中</dd></div>
-                </dl>
-                <div class="member-payment-next">
-                    <strong>接下来你会收到</strong>
-                    <span>系统会先发送开通确认和第 001 期。后续每月至少 1 期，每期精选 5–10 个 Skills，全年至少 12 期。</span>
-                </div>
-                <a class="member-payment-home" href="#topics">先浏览精选内容 →</a>
-            </div>
-        </div>
     </section>
-
-    <!-- Skill Letter sample preview -->
-    <div class="skill-sample-modal" id="skillSampleModal" aria-hidden="true">
-        <button class="skill-sample-backdrop" id="skillSampleBackdrop" type="button" tabindex="-1" aria-label="关闭样刊预览"></button>
-        <article class="skill-sample-panel" role="dialog" aria-modal="true" aria-labelledby="skillSampleTitle" aria-describedby="skillSampleDescription">
-            <header class="skill-sample-head">
-                <div>
-                    <span>SKILL LETTER · ISSUE 001</span>
-                    <strong>TECH BRIDGE</strong>
-                </div>
-                <button class="skill-sample-close" id="skillSampleClose" type="button" aria-label="关闭样刊预览" title="关闭">×</button>
-            </header>
-            <div class="skill-sample-body">
-                <p class="skill-sample-eyebrow">全网精选第 001 期 · 8 个 Skills · 1 个原创 Skill Pack</p>
-                <h2 id="skillSampleTitle">把 Agent 从「会聊天」升级成「会交付」</h2>
-                <p id="skillSampleDescription">不做热门榜搬运。这一期只保留能构成「发现、审计、执行、调试、验证、业务落地」完整链路的能力。</p>
-
-                <section class="skill-sample-section">
-                    <span>01 · SELECTION</span>
-                    <h3>8 个选品，不是 8 个平行工具</h3>
-                    <p>find-skills → supply-chain-audit → skill-creator → frontend-design → agent-browser → systematic-debugging → verification-before-completion → lark-base。</p>
-                </section>
-
-                <section class="skill-sample-section">
-                    <span>02 · BUYER FILTER</span>
-                    <h3>每个 Skill 都要过四道关</h3>
-                    <ol>
-                        <li><strong>来源</strong>是否来自官方或可追溯仓库。</li>
-                        <li><strong>权限</strong>是否读取凭证、会话或对外写入。</li>
-                        <li><strong>交付</strong>是否真正改善成果，而非只增加仪式。</li>
-                        <li><strong>验证</strong>是否有清楚证据证明它有效。</li>
-                    </ol>
-                </section>
-
-                <section class="skill-sample-template">
-                    <span>03 · ORIGINAL DELIVERY</span>
-                    <code>skill-supply-chain-audit → PASS / CONDITIONAL / REJECT + 风险分数 + 数据边界 + 修复清单</code>
-                    <p>正式交付包含完整买手信、固定版本源、3 套组合工作流、7 天实战路线，以及本期原创 Skill Pack。</p>
-                </section>
-            </div>
-            <footer class="skill-sample-footer">
-                <span>每月至少 1 期 · 每期 5–10 个精选 Skills</span>
-                <button id="sampleToCheckout" type="button" data-analytics-event="sample_to_checkout">¥666 创始价加入 →</button>
-            </footer>
-        </article>
-    </div>
 
     <!-- Connect -->
     <div class="newsletter reveal">

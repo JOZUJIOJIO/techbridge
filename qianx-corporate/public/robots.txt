@@ -1,7 +1,0 @@
-User-agent: *
-Allow: /
-
-User-agent: ByteSpider
-Allow: /
-
-Sitemap: https://qianx.ai/sitemap.xml

@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 310 120" role="img" aria-labelledby="title desc">
-  <title id="title">QianX.ai primary wordmark</title>
-  <desc id="desc">Qian and ai in Marrs Green, with an orange X and a true circular orange domain dot.</desc>
-  <text x="4" y="88" fill="#008C8C" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="82" font-weight="750" letter-spacing="-3.2">Qian</text>
-  <text x="177" y="88" fill="#F37021" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="82" font-weight="750" font-style="italic" letter-spacing="-3.2">X</text>
-  <circle cx="239" cy="80" r="7" fill="#F37021"/>
-  <text x="251" y="88" fill="#008C8C" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="62" font-weight="650" letter-spacing="-1.8">ai</text>
-</svg>

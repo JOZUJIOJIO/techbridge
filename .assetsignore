@@ -8,8 +8,11 @@
 .playwright-cli
 .vscode
 .cloudflare-pages
+.trae
 output
 node_modules
+qianx-corporate
+videos
 functions
 server
 supabase

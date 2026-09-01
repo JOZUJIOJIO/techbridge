@@ -1,7 +1,0 @@
-#!/bin/zsh
-set -euo pipefail
-
-STRIPE_BIN="${STRIPE_BIN:-/Users/yewudao/.local/bin/stripe}"
-API_KEY="$(security find-generic-password -a techbridge -s 'Stripe Pricing Automation' -w)"
-
-exec "$STRIPE_BIN" --api-key "$API_KEY" "$@"

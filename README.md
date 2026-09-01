@@ -1,52 +1,64 @@
-# 桥比特 QiaoBit 官方网站
+# 桥比特官网
 
-[桥比特 QiaoBit](https://qiaobit.com/) 的官方个人网站源码。桥比特（也写作乔比特）是 Tech Bridge 主理人、硅基物语创始人和乾X CEO，关注人工智能、科技数码、新能源汽车、AI 硬件出海与产品商业化。
+`https://qiaobit.com/` 的唯一源码项目。
 
-- 官方网站：[https://qiaobit.com/](https://qiaobit.com/)
-- 官方人物资料：[https://qiaobit.com/about-qiaobit](https://qiaobit.com/about-qiaobit)
-- 公司官网：[https://qianx.ai/](https://qianx.ai/)
+## 项目边界
 
-## Tech Bridge 品牌视觉系统
+本仓库只负责：
 
-本项目包含 Tech Bridge 品牌视觉系统的完整 HTML 实现。该系统旨在为 AI、人工智能和科技领域的内容创作者 IP 提供统一的视觉识别。
+- 桥比特个人介绍、内容、播客、活动、项目矩阵与联系页面
+- 官网商务合作申请
+- 隐私最小化的网站访问统计
+- Cloudflare Worker 静态资源托管、HTTPS 跳转和内部路径保护
 
-## 项目内容
+本仓库不负责：
 
-- **tech_bridge_brand_identity.html**: 包含品牌视觉系统所有模块的单页 HTML 文件。
-  - 品牌背景信息
-  - 设计风格与色彩
-  - 字体系统
-  - 页面结构（8 个模块 + 设计规范）
-  - 交互与动画
-  - 响应式设计
-- **tech_bridge_avatars.html**: 包含三种不同风格的品牌头像设计概念（极简符号、高冲击力文字、科技纹理）。
-- **tech_bridge_logo_1x1.html**: 1:1 比例的 Tech Bridge Logo 容器，适用于社交媒体头像或应用图标。
+- AI Skills 的支付、分销、邮件交付与后台，源码位于平行项目 `../AI Skills`
+- 容易发扩展、授权、兑换码与商店材料，源码位于平行项目 `../谷歌插件`
+- 乾X企业官网，源码位于平行项目 `../乾X官网`
+- 企业微信运营自动化，源码位于平行项目 `../Techbridge运营自动化`
+- 硅基物语会员原型，源码位于 `../硅基物语H5/website-prototype`
 
-## 使用方法
+官网可以展示这些产品的卡片和外链，但不得重新引入它们的支付、授权、数据库迁移、后台或部署代码。
 
-1.  下载或克隆本项目。
-2.  双击 `tech_bridge_brand_identity.html` 文件，使用任意现代浏览器（Chrome, Safari, Edge, Firefox）打开即可查看。
+## 本地运行
 
-## 技术说明
+```bash
+npm install
+python3 -m http.server 8080 --bind 127.0.0.1
+```
 
-- **纯 HTML/CSS**: 不依赖任何外部框架（如 Bootstrap, Tailwind）。
-- **无 JavaScript**: 所有交互效果（如悬停、动画）均使用 CSS 实现。
-- **字体**: 使用 Google Fonts CDN 引入 (Syne, DM Serif Display, Noto Serif SC, Noto Sans SC, JetBrains Mono)。
-- **响应式**: 适配桌面端和移动端（< 768px）。
+访问：`http://127.0.0.1:8080/index.html`
 
-## 功能模块
+## 验证
 
-1.  **Hero 首屏**: 品牌核心视觉展示。
-2.  **品牌定位**: Core Identity, Audience, Tone, Slogan。
-3.  **命名体系**: 国际/国内账号架构。
-4.  **Logo 系统**: SVG 桥形图标及不同背景适配。
-5.  **品牌色彩**: 爱马仕橙 × 马尔斯绿色彩系统。
-6.  **字体规范**: 字体层级展示。
-7.  **视频封面系统**: 横屏与竖屏封面模板。
-7.5. **设计规范**: Do's and Don'ts。
-8.  **UI 组件**: 频道横幅、字幕条、社交帖子模拟。
-9.  **内容策略**: 各平台内容发布节奏。
+```bash
+npm run check
+npm run deploy:dry-run
+```
 
-## 维护
+检查内容包括 JavaScript 语法、官网 API 测试、内部目录防公开测试和 Cloudflare 部署包生成。
 
-如需修改内容或样式，请直接编辑 `tech_bridge_brand_identity.html` 文件中的 HTML 结构或 `<style>` 标签内的 CSS 代码。
+## 生产安全
+
+当前满意的线上黄金版本：
+
+- Worker：`techbridge`
+- Version ID：`f5a9dd06-36b2-4a5e-a9ea-64845a3b0ad6`
+- 上线时间：2026-08-30
+
+本地清理版已经移除容易发生产接口。**在容易发独立 Worker 接管 `qiaobit.com/rongyifa/*`、`qiaobit.com/api/rongyifa/*` 和专用 Stripe Webhook 之前，禁止部署本仓库。**
+
+## 目标发布流程
+
+```text
+codex/功能分支
+→ Pull Request
+→ npm run check
+→ npm run deploy:dry-run
+→ 合并受保护的 master
+→ GitHub Actions 自动部署 Cloudflare
+→ 线上冒烟验证
+```
+
+日常发布不再从脏的本地工作区直接执行 `wrangler deploy`。紧急情况可以回滚到上面的黄金 Worker Version。
