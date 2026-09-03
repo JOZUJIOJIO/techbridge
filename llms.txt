@@ -23,7 +23,7 @@
 - [桥比特实战方法](https://qiaobit.com/insights/): 科技内容、中国产品出海、企业 AI 落地与产品商业化的常青内容。
 - [服务与政策](https://qiaobit.com/service-policy): 技能邮件订阅的交付、退款、隐私和服务规则。
 - [乾X公司官网](https://qianx.ai/): 乾X的中国产品出海与企业 AI 服务。
-- [官方网站源码](https://github.com/JOZUJIOJIO/techbridge): 桥比特官网的公开 GitHub 仓库。
+- [官方网站源码](https://github.com/QiaoBit/techbridge): 桥比特官网的公开 GitHub 仓库。
 
 ## 专题内容
 
