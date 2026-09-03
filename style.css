@@ -3175,6 +3175,10 @@ footer::before {
     --btx-x: 0px;
     --btx-y: 0px;
     --btx-rotate: 0deg;
+    --btx-drag-x: 0px;
+    --btx-drag-y: 0px;
+    --btx-drag-rotate: 0deg;
+    --btx-drag-scale: 1;
     position: fixed;
     right: 24px;
     bottom: 76px;
@@ -3267,10 +3271,36 @@ footer::before {
     overflow: hidden;
     border-radius: 50%;
     background: #f9f9f9;
-    transform: translate3d(var(--btx-x), var(--btx-y), 0) rotate(var(--btx-rotate));
+    touch-action: none;
+    transform:
+        translate3d(
+            calc(var(--btx-x) + var(--btx-drag-x)),
+            calc(var(--btx-y) + var(--btx-drag-y)),
+            0
+        )
+        rotate(calc(var(--btx-rotate) + var(--btx-drag-rotate)))
+        scale(var(--btx-drag-scale));
     transform-origin: 50% 50%;
     transition: transform 0.24s ease-out;
     will-change: transform;
+}
+
+.floating-subscribe.is-pointer-held,
+.floating-subscribe.is-dragging {
+    cursor: grabbing;
+}
+
+.floating-subscribe.is-dragging .floating-subscribe-mascot {
+    z-index: 4;
+    transition: none;
+}
+
+.floating-subscribe.is-dragging .floating-subscribe-copy {
+    opacity: 0.58;
+}
+
+.floating-subscribe.is-returning .floating-subscribe-mascot {
+    transition: transform 0.72s cubic-bezier(0.18, 1.28, 0.35, 1);
 }
 
 .btx-morph-canvas {

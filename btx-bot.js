@@ -673,7 +673,7 @@ function bootBTXBot() {
     if (trigger) {
         trigger.addEventListener('btx:reveal', () => setState('swirl', 'curious', 2400));
         trigger.addEventListener('pointerenter', () => setState('wide', 'curious', 1800));
-        trigger.addEventListener('pointerdown', () => setState('burst', 'excited', 2600));
+        trigger.addEventListener('pointerdown', () => wake(2600));
         trigger.addEventListener('focus', () => setState('notify', 'attentive', 2000));
     }
 

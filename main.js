@@ -429,6 +429,9 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
     var sheetY = 0;
     var sheetVelocity = 0;
     var dragState = null;
+    var mascotDrag = null;
+    var suppressTriggerClickUntil = 0;
+    var dragReturnTimer = 0;
     var heroIsVisible = true;
     var quietZoneIsVisible = false;
     var mobileSheetQuery = window.matchMedia('(max-width: 768px)');
@@ -728,7 +731,14 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
         }
     }
 
-    trigger.addEventListener('click', openChat);
+    trigger.addEventListener('click', function(e) {
+        if (performance.now() < suppressTriggerClickUntil) {
+            e.preventDefault();
+            e.stopPropagation();
+            return;
+        }
+        openChat();
+    });
     if (backdrop) backdrop.addEventListener('click', function() { closeChat(); });
     if (closeButton) closeButton.addEventListener('click', function() { closeChat(); });
 
@@ -886,8 +896,106 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
     var mascot = trigger.querySelector('.floating-subscribe-mascot');
     var reduceMotion = reduceMotionQuery.matches;
     var finePointer = window.matchMedia('(pointer: fine)').matches;
+
+    function clampMascotDrag(dx, dy, rect) {
+        var margin = 12;
+        return {
+            x: Math.max(margin - rect.left, Math.min(window.innerWidth - margin - rect.right, dx)),
+            y: Math.max(margin - rect.top, Math.min(window.innerHeight - margin - rect.bottom, dy))
+        };
+    }
+
+    function dragEmotion(dx, dy, speed) {
+        if (speed > 1150) return { key: 'comet', state: 'comet', mood: 'excited' };
+        if (Math.abs(dx) > Math.abs(dy) * 1.35) return { key: 'wide', state: 'wide', mood: 'scared' };
+        if (dy < -34) return { key: 'egg', state: 'egg', mood: 'shy' };
+        if (dy > 34) return { key: 'alert', state: 'alert', mood: 'attentive' };
+        return { key: 'hexagon', state: 'hexagon', mood: 'confused' };
+    }
+
+    function beginMascotDrag(e) {
+        if (!mascot || reduceMotion || e.button > 0 || layer.classList.contains('is-open')) return;
+        if (!e.target.closest('.floating-subscribe-mascot')) return;
+        window.clearTimeout(dragReturnTimer);
+        trigger.classList.remove('is-returning');
+        trigger.classList.add('is-pointer-held');
+        trigger.setPointerCapture(e.pointerId);
+        mascotDrag = {
+            pointerId: e.pointerId,
+            startX: e.clientX,
+            startY: e.clientY,
+            lastX: e.clientX,
+            lastY: e.clientY,
+            lastTime: performance.now(),
+            lastSpeed: 0,
+            baseRect: mascot.getBoundingClientRect(),
+            moved: false,
+            emotion: ''
+        };
+        setBotEmotion('wide', 'surprised', 900);
+    }
+
+    function moveMascotDrag(e) {
+        if (!mascotDrag || mascotDrag.pointerId !== e.pointerId) return;
+        var now = performance.now();
+        var dx = e.clientX - mascotDrag.startX;
+        var dy = e.clientY - mascotDrag.startY;
+        var distance = Math.hypot(dx, dy);
+        var elapsed = Math.max(now - mascotDrag.lastTime, 16);
+        var speed = Math.hypot(e.clientX - mascotDrag.lastX, e.clientY - mascotDrag.lastY) / elapsed * 1000;
+        mascotDrag.lastX = e.clientX;
+        mascotDrag.lastY = e.clientY;
+        mascotDrag.lastTime = now;
+        mascotDrag.lastSpeed = speed;
+
+        if (!mascotDrag.moved && distance < 7) return;
+        mascotDrag.moved = true;
+        trigger.classList.add('is-dragging');
+        var clamped = clampMascotDrag(dx, dy, mascotDrag.baseRect);
+        trigger.style.setProperty('--btx-drag-x', clamped.x.toFixed(2) + 'px');
+        trigger.style.setProperty('--btx-drag-y', clamped.y.toFixed(2) + 'px');
+        trigger.style.setProperty('--btx-drag-rotate', Math.max(-14, Math.min(14, clamped.x * 0.035)).toFixed(2) + 'deg');
+        trigger.style.setProperty('--btx-drag-scale', Math.min(1.08, 1 + distance / 2200).toFixed(3));
+
+        var emotion = dragEmotion(clamped.x, clamped.y, speed);
+        if (emotion.key !== mascotDrag.emotion) {
+            mascotDrag.emotion = emotion.key;
+            setBotEmotion(emotion.state, emotion.mood, 1100);
+        }
+        e.preventDefault();
+    }
+
+    function endMascotDrag(e) {
+        if (!mascotDrag || mascotDrag.pointerId !== e.pointerId) return;
+        var moved = mascotDrag.moved;
+        var speed = mascotDrag.lastSpeed;
+        mascotDrag = null;
+        trigger.classList.remove('is-pointer-held', 'is-dragging');
+        if (trigger.hasPointerCapture(e.pointerId)) trigger.releasePointerCapture(e.pointerId);
+        if (!moved) return;
+
+        suppressTriggerClickUntil = performance.now() + 520;
+        trigger.classList.add('is-returning');
+        trigger.style.setProperty('--btx-drag-x', '0px');
+        trigger.style.setProperty('--btx-drag-y', '0px');
+        trigger.style.setProperty('--btx-drag-rotate', '0deg');
+        trigger.style.setProperty('--btx-drag-scale', '1');
+        setBotEmotion(speed > 1000 ? 'burst' : 'wink', speed > 1000 ? 'excited' : 'happy', 2200);
+        dragReturnTimer = window.setTimeout(function() {
+            trigger.classList.remove('is-returning');
+        }, 760);
+    }
+
+    if (mascot) {
+        trigger.addEventListener('pointerdown', beginMascotDrag);
+        trigger.addEventListener('pointermove', moveMascotDrag);
+        trigger.addEventListener('pointerup', endMascotDrag);
+        trigger.addEventListener('pointercancel', endMascotDrag);
+    }
+
     if (mascot && !reduceMotion && finePointer) {
         window.addEventListener('pointermove', function(e) {
+            if (mascotDrag) return;
             var nx = (e.clientX / window.innerWidth) - 0.5;
             var ny = (e.clientY / window.innerHeight) - 0.5;
             trigger.style.setProperty('--btx-x', (nx * 8).toFixed(2) + 'px');
