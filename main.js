@@ -463,6 +463,21 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
             actions: [{ label: '提交人工咨询', action: 'inquiry' }]
         }
     };
+    var responseEmotions = {
+        membership: { state: 'notify', mood: 'excited', duration: 3600 },
+        cooperation: { state: 'wide', mood: 'attentive', duration: 2800 },
+        products: { state: 'orbit', mood: 'curious', duration: 4200 },
+        jarvis: { state: 'burst', mood: 'excited', duration: 3800 },
+        human: { state: 'wink', mood: 'happy', duration: 2600 },
+        policy: { state: 'alert', mood: 'attentive', duration: 3000 },
+        fallback: { state: 'hexagon', mood: 'confused', duration: 3000 }
+    };
+
+    function setBotEmotion(state, mood, duration) {
+        window.dispatchEvent(new CustomEvent('btx:emotion', {
+            detail: { state: state, mood: mood, duration: duration }
+        }));
+    }
 
     function scrollMessages() {
         window.requestAnimationFrame(function() {
@@ -508,6 +523,7 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
         typing.innerHTML = '<span></span><span></span><span></span>';
         messages.appendChild(typing);
         scrollMessages();
+        setBotEmotion('thinking', 'attentive', 2200);
         return typing;
     }
 
@@ -524,6 +540,7 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
 
     function answer(intent) {
         var route = routes[intent] || routes.fallback;
+        var emotion = responseEmotions[intent] || responseEmotions.fallback;
         window.clearTimeout(responseTimer);
         if (currentTyping && currentTyping.parentNode) {
             currentTyping.parentNode.removeChild(currentTyping);
@@ -535,6 +552,7 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
             }
             currentTyping = null;
             appendMessage('bot', route.text, route.actions);
+            setBotEmotion(emotion.state, emotion.mood, emotion.duration);
         }, 420);
     }
 
@@ -635,6 +653,7 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
         trigger.setAttribute('aria-expanded', 'true');
         document.body.classList.add('btx-chat-open');
         TBTrack('btx_open');
+        setBotEmotion('swirl', 'happy', 3200);
         syncTriggerVisibility();
 
         if (isMobileSheet()) {
@@ -648,6 +667,7 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
 
     function closeChat(options) {
         var settings = options || {};
+        setBotEmotion('wink', 'happy', 2200);
         window.clearTimeout(responseTimer);
         if (currentTyping && currentTyping.parentNode) {
             currentTyping.parentNode.removeChild(currentTyping);
@@ -737,6 +757,12 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
         appendMessage('user', value);
         input.value = '';
         answer(detectIntent(value));
+    });
+    input.addEventListener('focus', function() {
+        setBotEmotion('wide', 'attentive', 1800);
+    });
+    input.addEventListener('input', function() {
+        if (input.value.trim()) setBotEmotion('thinking', 'curious', 1400);
     });
 
     function rubberband(distance, dimension, constant) {
@@ -869,327 +895,6 @@ document.querySelectorAll('.reveal, .section-divider').forEach(el => observer.ob
             trigger.style.setProperty('--btx-rotate', (nx * 3).toFixed(2) + 'deg');
         }, { passive: true });
     }
-})();
-
-// === BTX morph mascot — expressive code-drawn states inspired by the supplied reference ===
-(function() {
-    var canvases = Array.prototype.slice.call(document.querySelectorAll('[data-btx-morph]'));
-    if (!canvases.length) return;
-
-    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var pointer = { x: 0, y: 0 };
-    var dpr = Math.min(window.devicePixelRatio || 1, 2);
-    var startedAt = performance.now();
-    var animationFrame = 0;
-    var activeUntil = 0;
-
-    function clamp(value, min, max) {
-        return Math.max(min, Math.min(max, value));
-    }
-
-    function ease(value) {
-        value = clamp(value, 0, 1);
-        return value * value * (3 - 2 * value);
-    }
-
-    function pulse(time, start, end, fade) {
-        if (time < start || time > end) return 0;
-        if (time < start + fade) return ease((time - start) / fade);
-        if (time > end - fade) return ease((end - time) / fade);
-        return 1;
-    }
-
-    function roundedCapsule(ctx, x, y, width, height, rotation, color, alpha) {
-        ctx.save();
-        ctx.translate(x, y);
-        ctx.rotate(rotation);
-        ctx.globalAlpha = alpha;
-        ctx.fillStyle = color;
-        ctx.beginPath();
-        ctx.roundRect(-width / 2, -height / 2, width, height, height / 2);
-        ctx.fill();
-        ctx.restore();
-    }
-
-    function drawOrbits(ctx, alpha, now, front) {
-        if (alpha <= 0.01) return;
-        var colors = ['#63d66f', '#57b8ff', '#8a73ff', '#e95d74'];
-        ctx.save();
-        ctx.globalAlpha = alpha * (front ? 0.95 : 0.58);
-        ctx.lineWidth = 3.3;
-        ctx.lineCap = 'round';
-        colors.forEach(function(color, index) {
-            var rotation = -0.55 + index * 0.34 + Math.sin(now * 0.0007 + index) * 0.08;
-            ctx.strokeStyle = color;
-            ctx.beginPath();
-            ctx.ellipse(
-                120,
-                120,
-                81 - index * 3,
-                33 + index * 4,
-                rotation,
-                front ? Math.PI * 0.02 : Math.PI,
-                front ? Math.PI * 0.94 : Math.PI * 1.94
-            );
-            ctx.stroke();
-        });
-        ctx.restore();
-    }
-
-    function blobPath(ctx, cx, cy, rx, ry, now, triangle, hexagon) {
-        var points = [];
-        var count = 18;
-        for (var i = 0; i < count; i++) {
-            var angle = (Math.PI * 2 * i / count) - Math.PI / 2;
-            var organic = 1
-                + Math.sin(angle * 3 + now * 0.0012) * 0.018
-                + Math.cos(angle * 5 - now * 0.0009) * 0.012;
-            var triangleShape = 1 + triangle * 0.21 * Math.cos(3 * (angle + Math.PI / 6));
-            var hexagonShape = 1 + hexagon * 0.075 * Math.cos(6 * angle);
-            points.push({
-                x: cx + Math.cos(angle) * rx * organic * triangleShape * hexagonShape,
-                y: cy + Math.sin(angle) * ry * organic * triangleShape * hexagonShape
-            });
-        }
-        ctx.beginPath();
-        var firstMid = {
-            x: (points[0].x + points[1].x) / 2,
-            y: (points[0].y + points[1].y) / 2
-        };
-        ctx.moveTo(firstMid.x, firstMid.y);
-        for (var j = 1; j <= count; j++) {
-            var point = points[j % count];
-            var next = points[(j + 1) % count];
-            ctx.quadraticCurveTo(point.x, point.y, (point.x + next.x) / 2, (point.y + next.y) / 2);
-        }
-        ctx.closePath();
-    }
-
-    function prepare(canvas) {
-        var rect = canvas.getBoundingClientRect();
-        var width = Math.max(1, Math.round(rect.width));
-        var height = Math.max(1, Math.round(rect.height));
-        var pixelWidth = Math.round(width * dpr);
-        var pixelHeight = Math.round(height * dpr);
-        if (canvas.width !== pixelWidth || canvas.height !== pixelHeight) {
-            canvas.width = pixelWidth;
-            canvas.height = pixelHeight;
-        }
-        var ctx = canvas.getContext('2d');
-        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        ctx.clearRect(0, 0, width, height);
-        return { ctx: ctx, width: width, height: height };
-    }
-
-    function draw(canvas, now) {
-        var frame = prepare(canvas);
-        var ctx = frame.ctx;
-        var scale = Math.min(frame.width, frame.height) / 240;
-        var offsetX = (frame.width - 240 * scale) / 2;
-        var offsetY = (frame.height - 240 * scale) / 2;
-        var elapsed = now - startedAt;
-        var cycle = reduceMotion ? 0.8 : (elapsed % 21000) / 1000;
-        var isFloating = canvas.getAttribute('data-btx-morph') === 'floating';
-
-        var dots = reduceMotion ? 0 : pulse(cycle, 1.55, 2.75, 0.32);
-        var slits = reduceMotion ? 0 : pulse(cycle, 3.1, 4.55, 0.34);
-        var exclamation = reduceMotion ? 0 : pulse(cycle, 5.05, 6.55, 0.35);
-        var wideEyes = reduceMotion ? 0 : pulse(cycle, 7.05, 8.45, 0.35);
-        var singleDot = reduceMotion ? 0 : pulse(cycle, 8.85, 9.95, 0.28);
-        var oval = reduceMotion ? 0 : pulse(cycle, 10.15, 11.05, 0.26);
-        var hexagon = reduceMotion ? 0 : pulse(cycle, 11.0, 12.0, 0.28);
-        var triangle = reduceMotion ? 0 : pulse(cycle, 12.2, 14.75, 0.52);
-        var orbit = reduceMotion ? 0 : pulse(cycle, 12.15, 16.15, 0.65);
-        var cluster = reduceMotion ? 0 : pulse(cycle, 16.45, 17.6, 0.3);
-        var satellite = reduceMotion ? 0 : pulse(cycle, 18.0, 19.35, 0.38);
-        var collapsed = Math.max(dots, singleDot, cluster, satellite);
-
-        ctx.save();
-        ctx.translate(offsetX, offsetY);
-        ctx.scale(scale, scale);
-
-        // A neutral light field keeps the black character legible on the dark site.
-        ctx.save();
-        ctx.shadowColor = 'rgba(0, 0, 0, 0.28)';
-        ctx.shadowBlur = 18;
-        ctx.fillStyle = '#f4f2ec';
-        ctx.beginPath();
-        ctx.arc(120, 120, 102, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.shadowBlur = 0;
-        ctx.strokeStyle = 'rgba(15, 16, 17, 0.13)';
-        ctx.lineWidth = 1.5;
-        ctx.stroke();
-        ctx.restore();
-
-        var centerX = 120;
-        var centerY = 120 + (reduceMotion ? 0 : Math.sin(elapsed * 0.0021) * 1.2) - exclamation * 14;
-        var radiusX = 62 * (1 + oval * 0.12) * (1 - exclamation * 0.66) * (1 - collapsed * 0.8);
-        var radiusY = 58 * (1 - oval * 0.08) * (1 + exclamation * 0.16) * (1 - collapsed * 0.8);
-
-        drawOrbits(ctx, Math.max(orbit, satellite * 0.74), now, false);
-
-        ctx.save();
-        ctx.fillStyle = '#08090a';
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
-        ctx.lineWidth = 1.5;
-        blobPath(ctx, centerX, centerY, radiusX, radiusY, now, triangle, hexagon);
-        ctx.fill();
-        ctx.stroke();
-        ctx.restore();
-
-        // Exclamation dot and the three-dot thinking state.
-        if (exclamation > 0.01) {
-            ctx.save();
-            ctx.globalAlpha = exclamation;
-            ctx.fillStyle = '#08090a';
-            ctx.beginPath();
-            ctx.arc(120, 184, 12, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.restore();
-        }
-        if (dots > 0.01) {
-            ctx.save();
-            ctx.globalAlpha = dots;
-            ctx.fillStyle = '#08090a';
-            [-44, 0, 44].forEach(function(dx, index) {
-                ctx.globalAlpha = dots * (index === 1 ? 1 : 0.5);
-                ctx.beginPath();
-                ctx.arc(120 + dx, 120, index === 1 ? 13 : 11, 0, Math.PI * 2);
-                ctx.fill();
-            });
-            ctx.restore();
-        }
-        if (cluster > 0.01) {
-            ctx.save();
-            ctx.fillStyle = '#08090a';
-            [
-                { x: 88, y: 106, r: 5, a: 0.42 },
-                { x: 111, y: 125, r: 7, a: 0.72 },
-                { x: 140, y: 116, r: 13, a: 1 },
-                { x: 160, y: 91, r: 3.5, a: 0.28 }
-            ].forEach(function(dot) {
-                ctx.globalAlpha = cluster * dot.a;
-                ctx.beginPath();
-                ctx.arc(dot.x, dot.y, dot.r, 0, Math.PI * 2);
-                ctx.fill();
-            });
-            ctx.restore();
-        }
-
-        var faceAlpha = 1 - Math.max(exclamation, collapsed);
-        var lookX = isFloating ? pointer.x * 7 : Math.sin(now * 0.0013) * 3;
-        var lookY = isFloating ? pointer.y * 4 : Math.cos(now * 0.0011) * 1.5;
-        var normalAlpha = faceAlpha * (1 - Math.max(slits, wideEyes, triangle * 0.72));
-
-        // The reference communicates character only through two white eye capsules.
-        roundedCapsule(ctx, 102 + lookX, 104 + lookY, 13, 28, -0.12, '#fffdfa', normalAlpha);
-        roundedCapsule(ctx, 137 + lookX, 106 + lookY, 13, 28, 0.08, '#fffdfa', normalAlpha);
-
-        // Sleepy / scanning state: both eyes narrow into horizontal slits.
-        roundedCapsule(ctx, 98 + lookX, 108 + lookY, 27, 5, -0.06, '#fffdfa', faceAlpha * slits);
-        roundedCapsule(ctx, 143 + lookX, 109 + lookY, 27, 5, 0.06, '#fffdfa', faceAlpha * slits);
-
-        // Curious state from the video: two large white eyes and one blue status dot.
-        if (wideEyes > 0.01) {
-            ctx.save();
-            ctx.globalAlpha = faceAlpha * wideEyes;
-            ctx.fillStyle = '#fffdfa';
-            ctx.beginPath();
-            ctx.arc(98 + lookX * 0.3, 110 + lookY * 0.3, 13, 0, Math.PI * 2);
-            ctx.arc(140 + lookX * 0.3, 108 + lookY * 0.3, 13, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.fillStyle = '#2f9df4';
-            ctx.strokeStyle = '#f4f2ec';
-            ctx.lineWidth = 3;
-            ctx.beginPath();
-            ctx.arc(172, 73, 9, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.stroke();
-            ctx.restore();
-        }
-
-        // In the triangular state the face gives way to the single green trace seen in the reference.
-        if (triangle > 0.04) {
-            ctx.save();
-            ctx.globalAlpha = triangle;
-            ctx.strokeStyle = '#63d66f';
-            ctx.lineWidth = 4;
-            ctx.lineCap = 'round';
-            ctx.beginPath();
-            ctx.moveTo(82, 108);
-            ctx.bezierCurveTo(99, 95, 122, 98, 148, 112);
-            ctx.stroke();
-            ctx.restore();
-        }
-
-        drawOrbits(ctx, Math.max(orbit, satellite * 0.74), now, true);
-
-        ctx.restore();
-    }
-
-    function render(now) {
-        animationFrame = 0;
-        var isActive = !reduceMotion && now < activeUntil;
-        var frameTime = isActive ? now : startedAt + 800;
-        canvases.forEach(function(canvas) { draw(canvas, frameTime); });
-        if (isActive && document.visibilityState !== 'hidden') start();
-    }
-
-    function start() {
-        if (!animationFrame) animationFrame = requestAnimationFrame(render);
-    }
-
-    function wake(duration) {
-        if (reduceMotion || document.visibilityState === 'hidden') return;
-        var now = performance.now();
-        if (now >= activeUntil) startedAt = now;
-        activeUntil = Math.max(activeUntil, now + (duration || 1800));
-        start();
-    }
-
-    window.addEventListener('pointermove', function(event) {
-        pointer.x = clamp((event.clientX / window.innerWidth - 0.5) * 2, -1, 1);
-        pointer.y = clamp((event.clientY / window.innerHeight - 0.5) * 2, -1, 1);
-        var trigger = document.getElementById('floatingSubscribe');
-        if (!trigger || trigger.classList.contains('is-context-hidden')) return;
-        var rect = trigger.getBoundingClientRect();
-        var nearestX = Math.max(rect.left, Math.min(event.clientX, rect.right));
-        var nearestY = Math.max(rect.top, Math.min(event.clientY, rect.bottom));
-        var distance = Math.hypot(event.clientX - nearestX, event.clientY - nearestY);
-        if (distance < 220) wake(650);
-    }, { passive: true });
-
-    var trigger = document.getElementById('floatingSubscribe');
-    var layer = document.getElementById('btxChatLayer');
-    if (trigger) {
-        trigger.addEventListener('btx:reveal', function() { wake(2400); });
-        ['pointerenter', 'pointerdown', 'focus'].forEach(function(eventName) {
-            trigger.addEventListener(eventName, function() { wake(2600); });
-        });
-        if ('IntersectionObserver' in window) {
-            var mascotObserver = new IntersectionObserver(function(entries) {
-                if (entries[0] && entries[0].isIntersecting && !trigger.classList.contains('is-context-hidden')) {
-                    wake(2400);
-                }
-            }, { threshold: 0.2 });
-            mascotObserver.observe(trigger);
-        }
-    }
-    if (layer && 'MutationObserver' in window) {
-        var chatObserver = new MutationObserver(function() {
-            if (layer.classList.contains('is-open')) wake(7200);
-        });
-        chatObserver.observe(layer, { attributes: true, attributeFilter: ['class'] });
-        layer.addEventListener('pointerdown', function() { wake(2200); }, { passive: true });
-    }
-
-    document.addEventListener('visibilitychange', function() {
-        if (document.visibilityState !== 'hidden' && !reduceMotion && performance.now() < activeUntil) start();
-    });
-
-    if (reduceMotion) render(startedAt + 1200);
-    else start();
 })();
 
 // === 7. Scroll Progress Bar (A3: passive) ===

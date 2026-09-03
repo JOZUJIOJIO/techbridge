@@ -3270,6 +3270,19 @@ footer::before {
     will-change: transform;
 }
 
+.floating-subscribe-mascot::before {
+    content: '';
+    position: absolute;
+    inset: 15%;
+    z-index: -1;
+    border: 1px solid rgba(0, 184, 176, 0.24);
+    border-radius: 50%;
+    box-shadow:
+        0 0 24px rgba(0, 184, 176, 0.12),
+        0 0 44px rgba(233, 93, 33, 0.08);
+    animation: btx-signal 3.8s ease-in-out infinite;
+}
+
 .btx-morph-canvas {
     display: block;
     width: 100%;
@@ -3455,8 +3468,11 @@ body.btx-chat-open .floating-subscribe {
     height: 52px;
     display: grid;
     place-items: center;
-    overflow: hidden;
+    overflow: visible;
+    border: 1px solid rgba(0, 184, 176, 0.2);
     border-radius: 50%;
+    background: rgba(255, 252, 248, 0.025);
+    box-shadow: 0 0 22px rgba(0, 184, 176, 0.08);
 }
 
 .btx-chat-avatar .btx-morph-canvas {
@@ -3721,6 +3737,11 @@ body.btx-chat-open .floating-subscribe {
 @keyframes btx-typing {
     0%, 100% { opacity: 0.35; transform: translateY(0); }
     50% { opacity: 1; transform: translateY(-2px); }
+}
+
+@keyframes btx-signal {
+    0%, 100% { opacity: 0.38; transform: scale(0.92); }
+    50% { opacity: 0.78; transform: scale(1.08); }
 }
 
 /* Hamburger menu (mobile) */

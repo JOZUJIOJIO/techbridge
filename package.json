@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "test": "node --test tests/*.test.mjs",
-    "check": "node --check main.js && node --check worker.js && node --test tests/*.test.mjs",
+    "check": "node --check main.js && node --check btx-bot.js && node --check worker.js && node --test tests/*.test.mjs",
     "deploy:dry-run": "wrangler deploy --dry-run",
     "deploy": "wrangler deploy"
   },
