@@ -17,4 +17,4 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-The upstream project states that its code license does not grant rights to the x.ai visual design it studies. BTX reuses the engineering approach, not the upstream avatar artwork, names, measured profiles or brand assets.
+This integration intentionally keeps the upstream project's default ink/paper palette, measured silhouettes and animation states. The upstream project states that its MIT code license does not grant rights to the x.ai visual design it studies; no x.ai logo, name or packaged brand asset is included here.

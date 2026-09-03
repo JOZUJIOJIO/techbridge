@@ -2,7 +2,10 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 
 import {
+  BTX_INK,
   BTX_MOOD_IDS,
+  BTX_NOTIFY_BLUE,
+  BTX_PAPER,
   BTX_STATE_IDS,
   blendBTXPoses,
   isFiniteBTXPose,
@@ -15,6 +18,9 @@ test('ships the complete BTX state and mood catalogues', () => {
     'sleep', 'egg', 'hexagon', 'play', 'orbit', 'burst', 'comet', 'swirl'
   ]);
   assert.equal(BTX_MOOD_IDS.length, 16);
+  assert.equal(BTX_INK, '#0a0a0c');
+  assert.equal(BTX_PAPER, '#f9f9f9');
+  assert.equal(BTX_NOTIFY_BLUE, '#2496e8');
 });
 
 test('every state and mood produces finite deterministic geometry', () => {
@@ -24,7 +30,7 @@ test('every state and mood produces finite deterministic geometry', () => {
       const second = sampleBTXPose(state, 1.234, mood);
       assert.equal(isFiniteBTXPose(first), true, `${state}/${mood}`);
       assert.deepEqual(first, second, `${state}/${mood}`);
-      assert.equal(first.profile.length, 48);
+      assert.equal(first.profile.length, 64);
     }
   }
 });

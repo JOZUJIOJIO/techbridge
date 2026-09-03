@@ -3264,23 +3264,13 @@ footer::before {
     height: 146px;
     display: grid;
     place-items: center;
+    overflow: hidden;
+    border-radius: 50%;
+    background: #f9f9f9;
     transform: translate3d(var(--btx-x), var(--btx-y), 0) rotate(var(--btx-rotate));
     transform-origin: 50% 50%;
     transition: transform 0.24s ease-out;
     will-change: transform;
-}
-
-.floating-subscribe-mascot::before {
-    content: '';
-    position: absolute;
-    inset: 15%;
-    z-index: -1;
-    border: 1px solid rgba(0, 184, 176, 0.24);
-    border-radius: 50%;
-    box-shadow:
-        0 0 24px rgba(0, 184, 176, 0.12),
-        0 0 44px rgba(233, 93, 33, 0.08);
-    animation: btx-signal 3.8s ease-in-out infinite;
 }
 
 .btx-morph-canvas {
@@ -3290,7 +3280,7 @@ footer::before {
 }
 
 .floating-subscribe-mascot .btx-morph-canvas {
-    filter: drop-shadow(0 15px 18px rgba(0, 0, 0, 0.34));
+    filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.24));
     will-change: transform;
 }
 
@@ -3362,9 +3352,7 @@ footer::before {
 
 .floating-subscribe:hover .floating-subscribe-mascot .btx-morph-canvas,
 .floating-subscribe:focus-visible .floating-subscribe-mascot .btx-morph-canvas {
-    filter:
-        drop-shadow(0 16px 20px rgba(0, 0, 0, 0.42))
-        drop-shadow(0 0 12px rgba(0, 140, 140, 0.14));
+    filter: drop-shadow(0 14px 20px rgba(0, 0, 0, 0.3));
     transform: translateY(-4px) rotate(1deg);
     transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), filter 0.25s ease;
 }
@@ -3468,11 +3456,11 @@ body.btx-chat-open .floating-subscribe {
     height: 52px;
     display: grid;
     place-items: center;
-    overflow: visible;
-    border: 1px solid rgba(0, 184, 176, 0.2);
+    overflow: hidden;
+    border: 0;
     border-radius: 50%;
-    background: rgba(255, 252, 248, 0.025);
-    box-shadow: 0 0 22px rgba(0, 184, 176, 0.08);
+    background: #f9f9f9;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
 }
 
 .btx-chat-avatar .btx-morph-canvas {
@@ -3737,11 +3725,6 @@ body.btx-chat-open .floating-subscribe {
 @keyframes btx-typing {
     0%, 100% { opacity: 0.35; transform: translateY(0); }
     50% { opacity: 1; transform: translateY(-2px); }
-}
-
-@keyframes btx-signal {
-    0%, 100% { opacity: 0.38; transform: scale(0.92); }
-    50% { opacity: 0.78; transform: scale(1.08); }
 }
 
 /* Hamburger menu (mobile) */
